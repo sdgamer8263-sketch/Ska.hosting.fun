@@ -21,12 +21,7 @@ body{background:#000;color:#0ff;overflow-x:hidden}
 #particles{position:fixed;inset:0;z-index:-2}
 
 /* HEADER */
-header{
-  padding:15px;
-  display:flex;
-  align-items:center;
-  gap:15px;
-}
+header{padding:15px;display:flex;align-items:center;gap:15px}
 header img{
   width:55px;
   animation:spin 30s linear infinite;
@@ -35,108 +30,76 @@ header img{
 @keyframes spin{to{transform:rotate(360deg)}}
 header button{
   margin-left:auto;
-  background:#f33;
-  color:#000;
-  padding:10px 18px;
-  border-radius:18px;
-  font-weight:bold;
-  border:none;
-  cursor:pointer;
+  background:#f33;color:#000;
+  padding:10px 18px;border-radius:18px;
+  font-weight:bold;border:none;cursor:pointer
 }
 
 /* CENTER */
 .center{text-align:center;padding:20px}
-#typing{
-  font-size:26px;
-  margin:40px 0;
-  text-shadow:0 0 25px #0ff;
-}
+#typing{font-size:26px;margin:40px 0;text-shadow:0 0 25px #0ff}
 
-/* BUTTONS */
+/* BUTTON */
 .btn{
-  background:#0ff;
-  color:#000;
-  padding:14px 22px;
-  border-radius:20px;
-  font-weight:bold;
-  cursor:pointer;
+  background:#0ff;color:#000;
+  padding:14px 22px;border-radius:20px;
+  font-weight:bold;cursor:pointer;
   box-shadow:0 0 25px #0ff;
-  display:inline-block;
-  margin:10px;
-  transition:.2s;
+  display:inline-block;margin:10px;
+  transition:.2s
 }
 .btn:active{transform:scale(.92)}
-
 .link{cursor:pointer}
 
 /* PAGES */
 .page{
-  display:none;
-  max-width:560px;
-  margin:30px auto;
-  padding:22px;
+  display:none;max-width:560px;
+  margin:30px auto;padding:22px;
   background:rgba(0,0,0,.55);
   backdrop-filter:blur(16px);
   border-radius:24px;
   box-shadow:0 0 35px #0ff;
-  position:relative;
+  position:relative
 }
 .back{
-  position:absolute;
-  right:15px;
-  top:15px;
+  position:absolute;right:15px;top:15px;
   padding:10px 20px;
   background:rgba(0,255,255,.25);
-  border-radius:18px;
-  cursor:pointer;
+  border-radius:18px;cursor:pointer
 }
 
 /* FORM */
 input,select,button{
-  width:100%;
-  padding:14px;
-  margin:10px 0;
-  border-radius:12px;
-  border:none;
+  width:100%;padding:14px;margin:10px 0;
+  border-radius:12px;border:none
 }
 input,select{background:#111;color:#0ff}
 button{background:#0ff;color:#000;font-weight:bold}
 
-/* LOGIN */
+/* LOGIN / REGISTER */
 #loginScreen{
-  position:fixed;
-  inset:0;
+  position:fixed;inset:0;
   background:rgba(0,0,0,.95);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  z-index:9999;
+  display:flex;align-items:center;justify-content:center;
+  z-index:9999
 }
 #loginBox{
   background:rgba(0,0,0,.65);
-  padding:32px;
-  border-radius:24px;
+  padding:32px;border-radius:24px;
   box-shadow:0 0 40px #0ff;
-  width:320px;
-  text-align:center;
+  width:330px;text-align:center
 }
+.switch{margin-top:10px;font-size:13px;cursor:pointer}
 
 /* BADGES */
 .badge{font-weight:bold;padding:8px 14px;border-radius:14px}
-.good{color:#0f0}
-.bad{color:#f33}
+.good{color:#0f0}.bad{color:#f33}
 
 /* GRAPH */
 canvas{width:100%;height:140px;margin-top:12px}
 
 /* FOOTER */
-footer{
-  margin-top:40px;
-  padding:20px;
-  text-align:center;
-  font-size:14px;
-  opacity:.9;
-}
+footer{margin-top:40px;padding:20px;text-align:center;font-size:14px}
 
 /* LOCK */
 .locked{animation:shake .3s}
@@ -154,14 +117,17 @@ footer{
 <div class="bg"></div>
 <canvas id="particles"></canvas>
 
-<!-- LOGIN -->
+<!-- LOGIN / REGISTER -->
 <div id="loginScreen">
   <div id="loginBox">
-    <h2>🔐 Login</h2>
-    <input id="loginUser" placeholder="Username">
-    <input id="loginPass" type="password" placeholder="Password">
-    <button onclick="login()">Login</button>
-    <div id="loginMsg" style="margin-top:10px;color:#f33"></div>
+    <h2 id="authTitle">🔐 Login</h2>
+    <input id="authUser" placeholder="Username">
+    <input id="authPass" type="password" placeholder="Password">
+    <button onclick="authAction()">Login</button>
+    <div id="authMsg" style="margin-top:10px;color:#f33"></div>
+    <div class="switch" onclick="toggleAuth()" id="authSwitch">
+      New user? Register here
+    </div>
   </div>
 </div>
 
@@ -205,9 +171,9 @@ footer{
   <h2 style="text-align:center">Server Status</h2>
   <input id="sip" placeholder="Server IP">
   <select id="stype">
-    <option value="java">Java</option>
-    <option value="bedrock">Bedrock</option>
-    <option value="geyser">Geyser</option>
+    <option>Java</option>
+    <option>Bedrock</option>
+    <option>Geyser</option>
   </select>
   <button onclick="checkStatus()">Check</button>
   <div id="sbadge" style="text-align:center;margin-top:10px"></div>
@@ -223,7 +189,7 @@ footer{
   <h2>Paper Build Number</h2>
   <input id="ver" placeholder="Minecraft Version">
   <button onclick="checkBuild()">Check</button>
-  <div id="buildRes" style="margin-top:10px"></div>
+  <div id="buildRes"></div>
 </div>
 
 <footer>
@@ -231,25 +197,48 @@ footer{
 </footer>
 
 <script>
-/* USERS */
-const USERS={admin:"ska123",user:"user123"};
+/* USER STORAGE */
 const LOGIN_EXPIRE=86400000;
-const WEBHOOK="https://discord.com/api/webhooks/1464870423165669432/e9uEiu1QlGpHHmsyVLQxPIoczsysaImBnYp_rio1PIhaxYMR4edq3eWJvMvon1yAx2Ix";
+let users=JSON.parse(localStorage.getItem("users"))||{
+  admin:{pass:"ska123"}
+};
+let isRegister=false;
 
-/* LOGIN */
-function login(){
-  if(USERS[loginUser.value]!==loginPass.value){
-    loginMsg.innerText="Wrong login";return;
+/* AUTH */
+function toggleAuth(){
+  isRegister=!isRegister;
+  authTitle.innerText=isRegister?"📝 Register":"🔐 Login";
+  authSwitch.innerText=isRegister?"Already have account? Login":"New user? Register here";
+}
+function authAction(){
+  const u=authUser.value.trim();
+  const p=authPass.value.trim();
+  if(!u||!p){authMsg.innerText="Fill all fields";return}
+
+  if(isRegister){
+    if(users[u]){authMsg.innerText="User already exists";return}
+    users[u]={pass:p};
+    localStorage.setItem("users",JSON.stringify(users));
+    authMsg.style.color="#0f0";
+    authMsg.innerText="Registered! Now login";
+    toggleAuth();
+  }else{
+    if(!users[u]||users[u].pass!==p){
+      authMsg.innerText="Invalid login";return
+    }
+    localStorage.setItem("auth",Date.now());
+    loginScreen.style.display="none";
   }
-  localStorage.setItem("auth",Date.now());
-  loginScreen.style.display="none";
 }
 function logout(){
-  localStorage.clear();location.reload();
+  localStorage.removeItem("auth");
+  location.reload();
 }
 (function(){
   const t=localStorage.getItem("auth");
-  if(!t||Date.now()-t>LOGIN_EXPIRE) loginScreen.style.display="flex";
+  if(!t||Date.now()-t>LOGIN_EXPIRE){
+    loginScreen.style.display="flex";
+  }
 })();
 
 /* NAV */
@@ -286,7 +275,7 @@ typeWelcome();
 setInterval(()=>{i=0;typeWelcome()},180000);
 
 /* FOOTER TYPING */
-const fmsg="Why choose SKA Hosting? Fast servers, smart monitoring, premium tools and gamer-first experience.";
+const fmsg="Why choose SKA Hosting? Fast servers, smart monitoring and premium tools for gamers.";
 let fi=0;
 function typeFooter(){
   footerText.innerText=fmsg.slice(0,fi++);
@@ -302,11 +291,8 @@ rs();onresize=rs;
 let ps=[...Array(80)].map(()=>({x:Math.random()*pc.width,y:Math.random()*pc.height}));
 (function anim(){
   pctx.clearRect(0,0,pc.width,pc.height);
-  ps.forEach(p=>{
-    p.y+=.6;if(p.y>pc.height)p.y=0;
-    pctx.fillStyle="#0ff";
-    pctx.fillRect(p.x,p.y,2,2);
-  });
+  ps.forEach(p=>{p.y+=.6;if(p.y>pc.height)p.y=0;
+    pctx.fillStyle="#0ff";pctx.fillRect(p.x,p.y,2,2)});
   requestAnimationFrame(anim);
 })();
 
@@ -317,21 +303,10 @@ function checkStatus(){
   fetch(`https://api.mcsrvstat.us/2/${sip.value}`)
   .then(r=>r.json()).then(d=>{
     const on=d.online;
-    sbadge.innerHTML=on
-      ?'<span class="badge good">ONLINE</span>'
-      :'<span class="badge bad">OFFLINE</span>';
+    sbadge.innerHTML=on?'<span class="badge good">ONLINE</span>':'<span class="badge bad">OFFLINE</span>';
     log.push({t:Date.now(),o:on});
     localStorage.setItem("uptime",JSON.stringify(log));
-    if(on&&last!=="on"){send("🟢 Server ONLINE");last="on"}
-    if(!on&&last!=="off"){send("🔴 Server OFFLINE");last="off"}
     drawUptime();updateStats();
-  });
-}
-function send(m){
-  fetch(WEBHOOK,{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({content:m})
   });
 }
 const ug=uptimeGraph.getContext("2d");
@@ -353,8 +328,8 @@ function updateStats(){
   uptimeStats.style.display="block";
 }
 
-/* PAPER BUILDS */
-const builds={"1.21":130,"1.20.4":499,"1.19.4":550,"1.18.2":388};
+/* PAPER */
+const builds={"1.21":130,"1.20.4":499,"1.19.4":550};
 function checkBuild(){
   buildRes.innerText=builds[ver.value]
     ?`## Build number is ${builds[ver.value]}`
