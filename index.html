@@ -5,141 +5,83 @@
 <title>SKA HOSTING</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<link href="https://fonts.cdnfonts.com/css/minecraft-4" rel="stylesheet">
+
 <style>
-body { background:#000; color:#0ff; font-family: monospace; }
-.auth-box { width:300px; margin:100px auto; padding:20px; border:1px solid #0ff; }
-input, button { width:100%; padding:10px; margin:5px 0; }
-#dashboard { display:none; }
-#admin-tools { display:none; border:2px solid red; padding:10px; margin:10px; }
+*{
+  box-sizing:border-box;
+  font-family:'Minecraft',sans-serif;
+}
+body{
+  margin:0;
+  min-height:100vh;
+  background:
+   linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.45)),
+   url("fx58j1opheu71.gif") center/cover no-repeat fixed;
+  color:#0ff;
+}
+.center{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  min-height:100vh;
+}
+.logo{
+  position:absolute;
+  top:15px;
+  left:15px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.logo img{
+  width:45px;
+  height:45px;
+  animation:spin 30s linear infinite;
+}
+@keyframes spin{
+  to{transform:rotate(360deg)}
+}
+#welcome{
+  font-size:22px;
+  min-height:40px;
+}
 </style>
 </head>
 
 <body>
 
-<!-- AUTH -->
-<div id="auth">
-  <div class="auth-box">
-    <h3>LOGIN</h3>
-    <input id="user" placeholder="Username">
-    <input id="pass" type="password" placeholder="Password">
-    <button onclick="login()">LOGIN</button>
-
-    <hr>
-
-    <h4>REGISTER (User only)</h4>
-    <input id="ruser" placeholder="Username">
-    <input id="rpass" type="password" placeholder="Password">
-    <button onclick="register()">REGISTER</button>
-
-    <p id="err" style="color:red;"></p>
-  </div>
+<!-- LOGO -->
+<div class="logo">
+  <img src="file_00000000387071faa7c92db633a8f726.png">
+  <b>SKA HOSTING</b>
 </div>
 
-<!-- DASHBOARD -->
-<div id="dashboard">
-  <h2>Welcome <span id="who"></span></h2>
-  <button onclick="logout()">LOGOUT</button>
-
-  <div id="admin-tools">
-    <h3>👑 ADMIN TOOLS</h3>
-    <p>Only admin can see this</p>
-  </div>
-
-  <div id="user-tools">
-    <h3>User Dashboard</h3>
-    <p>Normal users only</p>
-  </div>
+<!-- CENTER -->
+<div class="center">
+  <div id="welcome"></div>
 </div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyBvlOV7L3g_lBDRR7mcNincGVyM16xtd90",
-  authDomain: "ska-web-168fe.firebaseapp.com",
-  projectId: "ska-web-168fe"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-
-// 🔑 ADMIN CREDENTIALS
-const ADMIN_USER = "skahosting";
-const ADMIN_PASS = "Z62BGma)qTi!Szs";
-
-// 🔐 LOGIN
-window.login = async () => {
-  const u = user.value.trim().toLowerCase();
-  const p = pass.value;
-  err.innerText = "";
-
-  // 👑 ADMIN LOGIN (NO FIREBASE)
-  if (u === ADMIN_USER && p === ADMIN_PASS) {
-    sessionStorage.setItem("role", "admin");
-    sessionStorage.setItem("user", u);
-    showDashboard();
-    return;
-  }
-
-  // 👤 NORMAL USER LOGIN
-  const email = `${u}@ska.local`;
-
-  try {
-    await signInWithEmailAndPassword(auth, email, p);
-    sessionStorage.setItem("role", "user");
-    sessionStorage.setItem("user", u);
-    showDashboard();
-  } catch (e) {
-    err.innerText = "Login failed";
-  }
-};
-
-// 📝 REGISTER (USER ONLY)
-window.register = async () => {
-  const u = ruser.value.trim().toLowerCase();
-  const p = rpass.value;
-  err.innerText = "";
-
-  if (!/^[a-z0-9]{3,15}$/.test(u)) {
-    err.innerText = "Invalid username";
-    return;
-  }
-
-  if (p.length < 6) {
-    err.innerText = "Password min 6 char";
-    return;
-  }
-
-  const email = `${u}@ska.local`;
-
-  try {
-    await createUserWithEmailAndPassword(auth, email, p);
-    alert("Registered! Login now.");
-  } catch (e) {
-    err.innerText = "User already exists";
-  }
-};
-
-// 🚪 LOGOUT
-window.logout = () => {
-  sessionStorage.clear();
-  location.reload();
-};
-
-// 🖥 SHOW DASHBOARD
-function showDashboard() {
-  auth.style.display = "none";
-  dashboard.style.display = "block";
-  who.innerText = sessionStorage.getItem("user");
-
-  if (sessionStorage.getItem("role") === "admin") {
-    admin-tools.style.display = "block";
+<script>
+/* WELCOME TYPING */
+const text="WELCOME IN MY GAMING NETWORK";
+let i=0;
+function typeText(){
+  if(i<=text.length){
+    welcome.innerText=text.slice(0,i++);
+    setTimeout(typeText,80);
   }
 }
+typeText();
 
-// 🔄 AUTO LOGIN
-if (sessionStorage.getItem("user")) showDashboard();
+/* retype after 3 minutes */
+setInterval(()=>{
+  i=0;
+  welcome.innerText="";
+  typeText();
+},180000);
 </script>
 
 </body>
