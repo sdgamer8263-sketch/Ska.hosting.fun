@@ -24,19 +24,26 @@ body{background:#000;color:#0ff}
 
 /* HEADER */
 header{
- display:flex;
- align-items:center;
- gap:10px;
- padding:10px
+ display:flex;align-items:center;
+ gap:10px;padding:10px
 }
-header img{width:42px}
-header h2{flex:1;font-size:18px}
+header h2{flex:1}
+
+/* LOGO ROTATE */
+.logo{
+ width:42px;
+ animation:spin 6s linear infinite
+}
+@keyframes spin{
+ from{transform:rotate(0deg)}
+ to{transform:rotate(360deg)}
+}
 
 /* SMALL LOGOUT */
 #logoutBtn{
- font-size:10px;
- padding:4px 8px;
- border-radius:10px;
+ font-size:9px;
+ padding:3px 6px;
+ border-radius:8px;
  background:rgba(0,255,255,.2);
  border:none;
  cursor:pointer
@@ -98,16 +105,6 @@ button{background:#0ff;color:#000;font-weight:bold}
 .good{color:#0f0;font-weight:bold}
 .bad{color:#f33;font-weight:bold}
 
-/* GRAPH */
-#pingGraph{
- width:100%;
- height:140px;
- margin-top:20px;
- border-radius:20px;
- background:rgba(0,0,0,.4);
- box-shadow:0 0 20px #0ff;
-}
-
 /* LOGIN */
 #loginScreen{
  position:fixed;inset:0;
@@ -130,8 +127,9 @@ button{background:#0ff;color:#000;font-weight:bold}
 /* FOOTER */
 footer{
  text-align:center;
- padding:20px;
- margin-top:40px
+ padding:30px;
+ margin-top:40px;
+ background:rgba(0,0,0,.6)
 }
 </style>
 </head>
@@ -147,12 +145,11 @@ footer{
   <input id="authPass" type="password" placeholder="Password">
   <button class="click" onclick="auth()">Login</button>
   <div id="msg"></div>
-  <div class="switch" onclick="toggle()">New user? Register</div>
  </div>
 </div>
 
 <header>
- <img src="file_00000000387071faa7c92db633a8f726.png">
+ <img src="file_00000000387071faa7c92db633a8f726.png" class="logo">
  <h2>SKA HOSTING</h2>
  <button id="logoutBtn" onclick="logout()">⎋</button>
 </header>
@@ -160,15 +157,15 @@ footer{
 <div class="center" id="home">
  <div id="typing"></div>
 
- <div class="btn click" data-lock onclick="openHidden('https://dash.sgaming9107.qzz.io')">
+ <div class="btn click" onclick="openHidden('https://dash.sgaming9107.qzz.io')">
   🟢 Free Dashboard
  </div>
 
- <div class="btn click" data-lock onclick="openHidden('https://dash2.sgaming9107.qzz.io')">
+ <div class="btn click" onclick="openHidden('https://dash2.sgaming9107.qzz.io')">
   👑 Premium Dashboard
  </div>
 
- <div class="btn click" data-lock onclick="showPage('tools')">
+ <div class="btn click" onclick="showPage('tools')">
   🧰 Server Tool
  </div>
 
@@ -180,26 +177,19 @@ footer{
 <!-- SERVER TOOLS -->
 <div class="page" id="tools">
  <div class="back click" onclick="goHome()">⬅</div>
- <h2 style="text-align:center">Server Tools</h2>
-
- <div class="btn click" data-lock onclick="showPage('status')">🌐 Server Status</div>
- <div class="btn click" data-lock onclick="showPage('ping')">📡 Server Ping</div>
- <div class="btn click" data-lock onclick="showPage('paper')">📄 Paper Build Number</div>
+ <h2 style="text-align:center">Server Tool</h2>
+ <div class="btn click" onclick="showPage('status')">🌐 Server Status</div>
+ <div class="btn click" onclick="showPage('ping')">📡 Server Ping</div>
+ <div class="btn click" onclick="showPage('paper')">📄 Paper Build Number</div>
 </div>
 
 <!-- SERVER STATUS -->
 <div class="page" id="status">
  <div class="back click" onclick="showPage('tools')">⬅</div>
  <h2 style="text-align:center">Server Status</h2>
-
- <input id="sip" placeholder="Server IP">
+ <input id="sip" placeholder="IP">
  <input id="sport" placeholder="Port">
- <select>
-  <option>Java</option>
-  <option>Bedrock</option>
-  <option>Geyser</option>
- </select>
-
+ <select><option>Java</option><option>Bedrock</option><option>Geyser</option></select>
  <button class="click" onclick="checkStatus()">Check</button>
  <div class="statusBox" id="statusResult"></div>
 </div>
@@ -208,25 +198,18 @@ footer{
 <div class="page" id="ping">
  <div class="back click" onclick="showPage('tools')">⬅</div>
  <h2 style="text-align:center">Server Ping</h2>
-
- <input id="pip" placeholder="Server IP">
+ <input id="pip" placeholder="IP">
  <input id="pport" placeholder="Port">
- <select>
-  <option>Java</option>
-  <option>Bedrock</option>
-  <option>Geyser</option>
- </select>
-
+ <select><option>Java</option><option>Bedrock</option><option>Geyser</option></select>
  <button class="click" onclick="checkPing()">Check</button>
  <div class="statusBox" id="pingResult"></div>
- <canvas id="pingGraph"></canvas>
 </div>
 
 <!-- PAPER -->
 <div class="page" id="paper">
  <div class="back click" onclick="showPage('tools')">⬅</div>
- <h2 style="text-align:center">Paper Build Number</h2>
- <input id="ver" placeholder="Version (1.20.4)">
+ <h2 style="text-align:center">Paper Build</h2>
+ <input id="ver" placeholder="Version">
  <button class="click" onclick="paper()">Check</button>
  <div class="statusBox" id="paperResult"></div>
 </div>
@@ -234,11 +217,8 @@ footer{
 <!-- ADMIN -->
 <div class="page" id="admin">
  <div class="back click" onclick="goHome()">⬅</div>
- <h2 style="text-align:center">Admin Panel</h2>
- <label>
-  <input type="checkbox" onchange="toggleLock(this.checked)">
-  Enable Global Lock
- </label>
+ <h2 style="text-align:center">Admin Lock Panel</h2>
+ <label><input type="checkbox" onchange="lockAll(this.checked)"> Lock All Tools</label>
 </div>
 
 <footer>
@@ -246,84 +226,49 @@ footer{
 </footer>
 
 <script>
-/* ADMIN */
 const ADMIN_USER="skahosting";
-const ADMIN_PASS="Z62BGma)qTi!Szs";
-
-/* LOGIN */
-let users=JSON.parse(localStorage.getItem("users"))||{};
-let reg=false;
-
-function toggle(){
- reg=!reg;
- authTitle.innerText=reg?"Register":"Login";
-}
+const ADMIN_PASS="Z62BGma)qTi!Szsl";
 
 function auth(){
- let u=authUser.value.trim(),p=authPass.value;
- if(reg){
-  users[u]={pass:p};
-  localStorage.setItem("users",JSON.stringify(users));
-  msg.innerText="Registered!";
-  toggle();return;
- }
- if(u===ADMIN_USER && p===ADMIN_PASS){
-  sessionStorage.setItem("role","admin");
+ if(authUser.value===ADMIN_USER && authPass.value===ADMIN_PASS){
+  sessionStorage.setItem("admin","1");
   loginScreen.style.display="none";
   adminBtn.style.display="inline-block";
-  return;
+ }else{
+  loginScreen.style.display="none";
  }
- if(!users[u]||users[u].pass!==p){msg.innerText="Wrong login";return}
- sessionStorage.setItem("role","user");
- loginScreen.style.display="none";
 }
-
 function logout(){sessionStorage.clear();location.reload()}
+window.onload=()=>{if(!sessionStorage.getItem("admin"))loginScreen.style.display="flex"}
 
-window.onload=()=>{
- if(localStorage.getItem("lock")==="on"){sessionStorage.clear()}
- if(!sessionStorage.getItem("role")) loginScreen.style.display="flex";
- if(sessionStorage.getItem("role")==="admin") adminBtn.style.display="inline-block";
-}
-
-/* LOCK */
-function toggleLock(v){
- localStorage.setItem("lock",v?"on":"off");
- if(v){sessionStorage.clear();location.reload()}
-}
-function locked(){
- return localStorage.getItem("lock")==="on";
-}
-
-/* NAV */
 function showPage(p){
- if(locked()) return alert("🔒 Locked by Admin");
  home.style.display="none";
- tools.style.display=status.style.display=ping.style.display=paper.style.display=admin.style.display="none";
+ document.querySelectorAll(".page").forEach(e=>e.style.display="none");
  document.getElementById(p).style.display="block";
 }
 function goHome(){
- tools.style.display=status.style.display=ping.style.display=paper.style.display=admin.style.display="none";
+ document.querySelectorAll(".page").forEach(e=>e.style.display="none");
  home.style.display="block";
 }
-function openHidden(u){
- if(locked()) return alert("🔒 Locked by Admin");
- window.open(u,"_blank");
+function openHidden(u){window.open(u,"_blank")}
+
+function lockAll(v){
+ if(v){sessionStorage.clear();location.reload()}
 }
 
-/* TYPING */
-let t="WELCOME TO SKA HOSTING",i=0;
-(function type(){
- typing.innerText=t.slice(0,i++);
- if(i<=t.length)setTimeout(type,120);
-})();
-let ft="Fast • Secure • No Lag • 24/7 Uptime";
+/* FOOTER TYPING */
+const ft=`Why choose SKA Hosting?
+✔ 24/7 Uptime
+✔ No Lag
+✔ Auto Monitoring
+✔ Secure System`;
 function footerType(){
  let i=0;
- let iv=setInterval(()=>{
+ footerText.innerText="";
+ let t=setInterval(()=>{
   footerText.innerText=ft.slice(0,i++);
-  if(i>ft.length) clearInterval(iv);
- },80);
+  if(i>ft.length)clearInterval(t);
+ },50);
 }
 footerType();
 setInterval(footerType,180000);
@@ -332,53 +277,19 @@ setInterval(footerType,180000);
 function checkStatus(){
  fetch(`https://api.mcsrvstat.us/2/${sip.value}:${sport.value||25565}`)
  .then(r=>r.json()).then(d=>{
-  if(!d.online){
-   statusResult.innerHTML="<div class='bad'>OFFLINE</div>";
-   return;
-  }
-  statusResult.innerHTML=`
-   <div class='good'>ONLINE</div><br>
-   ${d.hostname||"Unknown"}<br>
-   Players: ${d.players.online}/${d.players.max}
-  `;
+  statusResult.innerHTML=d.online?
+  "<div class='good'>ONLINE</div><br>Players: "+d.players.online+"/"+d.players.max:
+  "<div class='bad'>OFFLINE</div>";
  });
 }
 
 /* PING */
-let pings=[],pt=null;
 function checkPing(){
- clearInterval(pt);
- pings=[];
- pt=setInterval(()=>{
-  const t0=performance.now();
-  fetch(`https://api.mcsrvstat.us/2/${pip.value}:${pport.value||25565}`)
-  .then(r=>r.json()).then(d=>{
-   if(!d.online)return;
-   pings.push(performance.now()-t0);
-   if(pings.length>20)pings.shift();
-   draw();
-  });
- },5000);
+ pingResult.innerText="Checking...";
 }
-function draw(){
- const c=pingGraph,ctx=c.getContext("2d");
- c.width=c.offsetWidth;
- ctx.clearRect(0,0,c.width,c.height);
- ctx.beginPath();
- ctx.strokeStyle="#0ff";
- pings.forEach((p,i)=>{
-  const x=i*(c.width/(pings.length-1||1));
-  const y=c.height-(p/Math.max(...pings))*c.height;
-  i?ctx.lineTo(x,y):ctx.moveTo(x,y);
- });
- ctx.stroke();
-}
-
-/* PAPER */
-const paperMap={"1.20.4":499,"1.20.2":318,"1.19.4":550};
+const paperMap={"1.20.4":499,"1.19.4":550};
 function paper(){
- paperResult.innerHTML=paperMap[ver.value]?
-  `## ${paperMap[ver.value]}`:"Not found";
+ paperResult.innerText=paperMap[ver.value]?"## "+paperMap[ver.value]:"Not found";
 }
 </script>
 </body>
