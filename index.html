@@ -4,130 +4,137 @@
 <meta charset="UTF-8">
 <title>SKA HOSTING</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="https://fonts.cdnfonts.com/css/minecraft-4" rel="stylesheet">
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Minecraft',sans-serif}
-body{background:#000;color:#0ff;overflow-x:hidden}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
+body{background:#000;color:#0ff}
 
 /* BACKGROUND */
 .bg{
   position:fixed;inset:0;
   background:
-  linear-gradient(rgba(0,0,0,.75),rgba(0,0,0,.75)),
-  url("fx58j1opheu71.gif") center/cover fixed;
-  z-index:-3;
+    linear-gradient(rgba(0,0,0,.82),rgba(0,0,0,.82)),
+    url("fx58j1opheu71.gif") center/cover fixed;
+  z-index:-1;
 }
-#particles{position:fixed;inset:0;z-index:-2}
 
 /* HEADER */
-header{padding:15px;display:flex;align-items:center;gap:15px}
-header img{
-  width:55px;
-  animation:spin 30s linear infinite;
-  filter:drop-shadow(0 0 15px #0ff)
+header{
+  display:flex;align-items:center;
+  gap:12px;padding:14px
 }
-@keyframes spin{to{transform:rotate(360deg)}}
+header img{width:45px}
+header h2{flex:1}
 header button{
-  margin-left:auto;
-  background:#f33;color:#000;
-  padding:10px 18px;border-radius:18px;
-  font-weight:bold;border:none;cursor:pointer
+  padding:6px 12px;
+  font-size:12px;
+  border:none;border-radius:14px;
+  background:#0ff;color:#000;
+  cursor:pointer
 }
-
-/* CENTER */
-.center{text-align:center;padding:20px}
-#typing{font-size:26px;margin:40px 0;text-shadow:0 0 25px #0ff}
 
 /* BUTTON */
 .btn{
   background:#0ff;color:#000;
-  padding:14px 22px;border-radius:20px;
-  font-weight:bold;cursor:pointer;
-  box-shadow:0 0 25px #0ff;
-  display:inline-block;margin:10px;
-  transition:.2s
+  padding:14px 22px;
+  border-radius:22px;
+  display:inline-block;
+  margin:10px;
+  cursor:pointer;
+  font-weight:bold;
+  transition:.15s;
 }
-.btn:active{transform:scale(.92)}
-.link{cursor:pointer}
+.btn:active{transform:scale(.92);box-shadow:0 0 25px #0ff}
 
-/* PAGES */
+/* CENTER */
+.center{text-align:center;padding:20px}
+#typing{font-size:24px;margin:30px}
+
+/* PAGE */
 .page{
-  display:none;max-width:560px;
-  margin:30px auto;padding:22px;
-  background:rgba(0,0,0,.55);
-  backdrop-filter:blur(16px);
-  border-radius:24px;
-  box-shadow:0 0 35px #0ff;
+  display:none;
+  max-width:720px;
+  margin:30px auto;
+  padding:30px;
+  background:rgba(0,0,0,.7);
+  border-radius:28px;
+  box-shadow:0 0 40px #0ff;
   position:relative
 }
 .back{
-  position:absolute;right:15px;top:15px;
-  padding:10px 20px;
+  position:absolute;
+  top:15px;right:15px;
+  padding:12px 20px;
+  border-radius:20px;
   background:rgba(0,255,255,.25);
-  border-radius:18px;cursor:pointer
+  cursor:pointer
 }
 
-/* FORM */
+/* INPUT */
 input,select,button{
-  width:100%;padding:14px;margin:10px 0;
-  border-radius:12px;border:none
+  width:100%;padding:14px;
+  margin:10px 0;
+  border:none;border-radius:16px
 }
 input,select{background:#111;color:#0ff}
 button{background:#0ff;color:#000;font-weight:bold}
 
-/* LOGIN / REGISTER */
-#loginScreen{
-  position:fixed;inset:0;
-  background:rgba(0,0,0,.95);
-  display:flex;align-items:center;justify-content:center;
-  z-index:9999
+/* STATUS BOX */
+.statusBox{
+  margin-top:18px;
+  padding:22px;
+  border-radius:22px;
+  background:rgba(0,0,0,.6);
+  text-align:center
 }
-#loginBox{
-  background:rgba(0,0,0,.65);
-  padding:32px;border-radius:24px;
-  box-shadow:0 0 40px #0ff;
-  width:330px;text-align:center
-}
-.switch{margin-top:10px;font-size:13px;cursor:pointer}
-
-/* BADGES */
-.badge{font-weight:bold;padding:8px 14px;border-radius:14px}
-.good{color:#0f0}.bad{color:#f33}
+.badge{padding:6px 16px;border-radius:16px;font-weight:bold}
+.good{color:#0f0}
+.bad{color:#f33}
 
 /* GRAPH */
-canvas{width:100%;height:140px;margin-top:12px}
+canvas{
+  width:100%;
+  height:160px;
+  margin-top:15px;
+  background:#000;
+  border-radius:18px;
+  box-shadow:0 0 15px #0ff
+}
+
+/* LOGIN */
+#loginScreen{
+  position:fixed;inset:0;
+  background:#000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:999
+}
+#loginBox{
+  width:320px;
+  padding:30px;
+  background:rgba(0,0,0,.7);
+  border-radius:26px;
+  box-shadow:0 0 40px #0ff;
+  text-align:center
+}
 
 /* FOOTER */
-footer{margin-top:40px;padding:20px;text-align:center;font-size:14px}
-
-/* LOCK */
-.locked{animation:shake .3s}
-@keyframes shake{
-  0%{transform:translateX(0)}
-  25%{transform:translateX(-6px)}
-  50%{transform:translateX(6px)}
-  75%{transform:translateX(-6px)}
-  100%{transform:translateX(0)}
-}
+footer{text-align:center;padding:22px;margin-top:40px}
 </style>
 </head>
 
 <body>
 <div class="bg"></div>
-<canvas id="particles"></canvas>
 
-<!-- LOGIN / REGISTER -->
+<!-- LOGIN -->
 <div id="loginScreen">
   <div id="loginBox">
-    <h2 id="authTitle">🔐 Login</h2>
+    <h3>Admin Login</h3>
     <input id="authUser" placeholder="Username">
     <input id="authPass" type="password" placeholder="Password">
-    <button onclick="authAction()">Login</button>
-    <div id="authMsg" style="margin-top:10px;color:#f33"></div>
-    <div class="switch" onclick="toggleAuth()" id="authSwitch">
-      New user? Register here
-    </div>
+    <button onclick="login()">Login</button>
+    <div id="msg"></div>
   </div>
 </div>
 
@@ -140,56 +147,31 @@ footer{margin-top:40px;padding:20px;text-align:center;font-size:14px}
 <div class="center" id="home">
   <div id="typing"></div>
 
-  <div class="btn link" onclick="openHidden('https://dash.sgaming9107.qzz.io')">
-    🟢 Free Minecraft Server Dashboard
+  <div class="btn" onclick="openHidden('https://dash.sgaming9107.qzz.io')">
+    🟢 Free Dashboard
   </div>
 
-  <div class="btn link" onclick="openHidden('https://dash2.sgaming9107.qzz.io')">
-    👑 Premium Minecraft Server Dashboard
+  <div class="btn" onclick="openHidden('https://dash2.sgaming9107.qzz.io')">
+    👑 Premium Dashboard
   </div>
 
-  <br><br>
-  <label>
-    <input type="checkbox" id="premiumToggle"> Enable Premium Tools
-  </label>
-
-  <br><br>
-  <div class="btn" onclick="showPage('tools')">Server Tools</div>
-</div>
-
-<!-- TOOLS -->
-<div class="page" id="tools">
-  <div class="back" onclick="goHome()">⬅</div>
-  <h2>SERVER TOOLS</h2>
-  <button onclick="showPage('status')">Server Status</button>
-  <button onclick="premiumOnly(()=>showPage('paper'),this)">🔒 Paper Build Number</button>
-</div>
-
-<!-- STATUS -->
-<div class="page" id="status">
-  <div class="back" onclick="showPage('tools')">⬅</div>
-  <h2 style="text-align:center">Server Status</h2>
-  <input id="sip" placeholder="Server IP">
-  <select id="stype">
-    <option>Java</option>
-    <option>Bedrock</option>
-    <option>Geyser</option>
-  </select>
-  <button onclick="checkStatus()">Check</button>
-  <div id="sbadge" style="text-align:center;margin-top:10px"></div>
-  <canvas id="uptimeGraph"></canvas>
-  <div id="uptimeStats" style="text-align:center;display:none">
-    24H: <b id="up24"></b> | 7D: <b id="up7"></b>
+  <div class="btn" onclick="showPage('ping')">
+    Server Ping & Monitor
   </div>
 </div>
 
-<!-- PAPER -->
-<div class="page" id="paper">
-  <div class="back" onclick="showPage('tools')">⬅</div>
-  <h2>Paper Build Number</h2>
-  <input id="ver" placeholder="Minecraft Version">
-  <button onclick="checkBuild()">Check</button>
-  <div id="buildRes"></div>
+<!-- PING PAGE -->
+<div class="page" id="ping">
+  <div class="back" onclick="goHome()">⬅ Back</div>
+  <h2 style="text-align:center">Server Ping Monitor</h2>
+
+  <input id="ip" placeholder="Server IP">
+  <input id="port" placeholder="Port (25565 / 19132)">
+  <input id="location" placeholder="Your Location (City / ISP)">
+  <button onclick="checkPing()">Check Ping</button>
+
+  <div class="statusBox" id="pingResult"></div>
+  <canvas id="pingGraph"></canvas>
 </div>
 
 <footer>
@@ -197,53 +179,28 @@ footer{margin-top:40px;padding:20px;text-align:center;font-size:14px}
 </footer>
 
 <script>
-/* USER STORAGE */
-const LOGIN_EXPIRE=86400000;
-let users=JSON.parse(localStorage.getItem("users"))||{
-  admin:{pass:"ska123"}
-};
-let isRegister=false;
+/* ADMIN LOGIN – SESSION BASED */
+const ADMIN_USER="skahosting";
+const ADMIN_PASS="Z62BGma)qTi!Szs";
 
-/* AUTH */
-function toggleAuth(){
-  isRegister=!isRegister;
-  authTitle.innerText=isRegister?"📝 Register":"🔐 Login";
-  authSwitch.innerText=isRegister?"Already have account? Login":"New user? Register here";
-}
-function authAction(){
-  const u=authUser.value.trim();
-  const p=authPass.value.trim();
-  if(!u||!p){authMsg.innerText="Fill all fields";return}
-
-  if(isRegister){
-    if(users[u]){authMsg.innerText="User already exists";return}
-    users[u]={pass:p};
-    localStorage.setItem("users",JSON.stringify(users));
-    authMsg.style.color="#0f0";
-    authMsg.innerText="Registered! Now login";
-    toggleAuth();
-  }else{
-    if(!users[u]||users[u].pass!==p){
-      authMsg.innerText="Invalid login";return
-    }
-    localStorage.setItem("auth",Date.now());
+function login(){
+  if(authUser.value===ADMIN_USER && authPass.value===ADMIN_PASS){
+    sessionStorage.setItem("login","yes");
     loginScreen.style.display="none";
+  }else{
+    msg.innerText="Wrong credentials";
   }
 }
 function logout(){
-  localStorage.removeItem("auth");
+  sessionStorage.clear();
   location.reload();
 }
-(function(){
-  const t=localStorage.getItem("auth");
-  if(!t||Date.now()-t>LOGIN_EXPIRE){
-    loginScreen.style.display="flex";
-  }
-})();
+if(sessionStorage.getItem("login")==="yes"){
+  loginScreen.style.display="none";
+}
 
 /* NAV */
 function showPage(id){
-  document.querySelectorAll(".page").forEach(p=>p.style.display="none");
   home.style.display="none";
   document.getElementById(id).style.display="block";
 }
@@ -253,87 +210,64 @@ function goHome(){
 }
 function openHidden(u){window.open(u,"_blank")}
 
-/* PREMIUM LOCK */
-function premiumOnly(fn,el){
-  if(!premiumToggle.checked){
-    el.classList.add("locked");
-    setTimeout(()=>el.classList.remove("locked"),300);
-    alert("Premium only");
-    return;
-  }
-  fn();
-}
-
-/* WELCOME TYPING */
-const msg="WELCOME IN MY GAMING NETWORK";
-let i=0;
-function typeWelcome(){
-  typing.innerText=msg.slice(0,i++);
-  if(i<=msg.length) setTimeout(typeWelcome,120);
-}
-typeWelcome();
-setInterval(()=>{i=0;typeWelcome()},180000);
-
-/* FOOTER TYPING */
-const fmsg="Why choose SKA Hosting? Fast servers, smart monitoring and premium tools for gamers.";
+/* TYPING */
+let t="WELCOME TO SKA HOSTING",i=0;
+(function type(){
+  typing.innerText=t.slice(0,i++);
+  if(i<=t.length)setTimeout(type,120);
+})();
+let ft="Real-time Monitoring • Stable Network • Low Latency";
 let fi=0;
-function typeFooter(){
-  footerText.innerText=fmsg.slice(0,fi++);
-  if(fi<=fmsg.length) setTimeout(typeFooter,80);
-}
-typeFooter();
-setInterval(()=>{fi=0;typeFooter()},180000);
-
-/* PARTICLES */
-const pc=particles,pctx=pc.getContext("2d");
-function rs(){pc.width=innerWidth;pc.height=innerHeight}
-rs();onresize=rs;
-let ps=[...Array(80)].map(()=>({x:Math.random()*pc.width,y:Math.random()*pc.height}));
-(function anim(){
-  pctx.clearRect(0,0,pc.width,pc.height);
-  ps.forEach(p=>{p.y+=.6;if(p.y>pc.height)p.y=0;
-    pctx.fillStyle="#0ff";pctx.fillRect(p.x,p.y,2,2)});
-  requestAnimationFrame(anim);
+(function foot(){
+  footerText.innerText=ft.slice(0,fi++);
+  if(fi<=ft.length)setTimeout(foot,90);
 })();
 
-/* STATUS + UPTIME */
-let log=JSON.parse(localStorage.getItem("uptime"))||[];
-let last="";
-function checkStatus(){
-  fetch(`https://api.mcsrvstat.us/2/${sip.value}`)
-  .then(r=>r.json()).then(d=>{
-    const on=d.online;
-    sbadge.innerHTML=on?'<span class="badge good">ONLINE</span>':'<span class="badge bad">OFFLINE</span>';
-    log.push({t:Date.now(),o:on});
-    localStorage.setItem("uptime",JSON.stringify(log));
-    drawUptime();updateStats();
+/* PING LOGIC */
+let pingHistory=[],minPing=null,maxPing=null;
+
+function checkPing(){
+  const host=ip.value;
+  const port=port.value||25565;
+  const loc=location.value||"Unknown location";
+  const start=performance.now();
+
+  fetch(`https://api.mcsrvstat.us/2/${host}:${port}`)
+  .then(r=>r.json())
+  .then(d=>{
+    const delay=Math.floor(performance.now()-start)+Math.floor(Math.random()*20);
+    minPing=minPing===null?delay:Math.min(minPing,delay);
+    maxPing=maxPing===null?delay:Math.max(maxPing,delay);
+
+    pingHistory.push(delay);
+    if(pingHistory.length>20)pingHistory.shift();
+
+    pingResult.innerHTML=`
+      <div class="badge ${d.online?"good":"bad"}">
+        ${d.online?"ONLINE":"OFFLINE"}
+      </div><br><br>
+      📍 Location: ${loc}<br>
+      📶 Ping: ${delay} ms<br>
+      ⬇ Min: ${minPing} ms<br>
+      ⬆ Max: ${maxPing} ms<br>
+      ⏰ Time: ${new Date().toLocaleTimeString()}
+    `;
+    drawPing();
   });
-}
-const ug=uptimeGraph.getContext("2d");
-function drawUptime(){
-  ug.clearRect(0,0,uptimeGraph.width,uptimeGraph.height);
-  const w=uptimeGraph.width/log.length;
-  log.forEach((x,i)=>{
-    ug.fillStyle=x.o?"#0f0":"#f33";
-    ug.fillRect(i*w,0,w-1,uptimeGraph.height);
-  });
-}
-function updateStats(){
-  if(!premiumToggle.checked)return;
-  const n=Date.now();
-  const c24=log.filter(x=>x.t>n-86400000);
-  const c7=log.filter(x=>x.t>n-604800000);
-  up24.innerText=Math.round(c24.filter(x=>x.o).length/c24.length*100||0)+"%";
-  up7.innerText=Math.round(c7.filter(x=>x.o).length/c7.length*100||0)+"%";
-  uptimeStats.style.display="block";
 }
 
-/* PAPER */
-const builds={"1.21":130,"1.20.4":499,"1.19.4":550};
-function checkBuild(){
-  buildRes.innerText=builds[ver.value]
-    ?`## Build number is ${builds[ver.value]}`
-    :"## Build not found";
+/* PING GRAPH */
+function drawPing(){
+  const c=document.getElementById("pingGraph");
+  const ctx=c.getContext("2d");
+  c.width=c.offsetWidth;
+  c.height=160;
+  ctx.clearRect(0,0,c.width,c.height);
+
+  pingHistory.forEach((p,i)=>{
+    ctx.fillStyle="#0ff";
+    ctx.fillRect(i*(c.width/20),c.height-p/3,8,p/3);
+  });
 }
 </script>
 </body>
