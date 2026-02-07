@@ -1,461 +1,348 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SKA HOSTING - Ultimate Gaming Network</title>
-
-<link href="https://fonts.cdnfonts.com/css/minecraft-4" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<style>
-    :root {
-        --primary: #00ffff;
-        --secondary: #9d00ff;
-        --dark: #050505;
-        --glass: rgba(0, 0, 0, 0.85);
-        --glass-border: 1px solid rgba(0, 255, 255, 0.3);
-    }
-
-    * { box-sizing: border-box; font-family: 'Minecraft', sans-serif; user-select: none; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SKA HOSTING | Official Dashboard</title>
     
-    body {
-        margin: 0;
-        min-height: 100vh;
-        /* BACKGROUND IMAGE FIX: Using a high-quality online GIF */
-        background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.9)), 
-                    url('https://i.pinimg.com/originals/2a/36/45/2a3645391c5e917d2d3a3399086f6d0f.gif') center/cover fixed;
-        color: white;
-        overflow-x: hidden;
-    }
+    <link href="https://fonts.cdnfonts.com/css/minecraft-4" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    /* Particles Container */
-    #particles {
-        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        pointer-events: none; z-index: 0;
-    }
+    <style>
+        :root {
+            --primary: #00ffff;
+            --secondary: #9d00ff;
+            --bg-dark: rgba(0, 0, 0, 0.7);
+            --neon-shadow: 0 0 15px var(--primary);
+        }
 
-    /* Container */
-    .container {
-        position: relative; z-index: 2;
-        max-width: 1200px; margin: 0 auto; padding: 20px;
-        display: flex; flex-direction: column; min-height: 100vh;
-    }
+        * { box-sizing: border-box; font-family: 'Minecraft', sans-serif; }
+        
+        body {
+            margin: 0; padding: 0;
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.8)), 
+                        url('https://i.ibb.co/3ykS8Vz/fx58j1opheu71.gif') center/cover fixed;
+            color: white; overflow-x: hidden; min-height: 100vh;
+        }
 
-    /* --- LOGIN SCREEN --- */
-    #auth-screen {
-        display: flex; flex-direction: column; justify-content: center; align-items: center;
-        height: 100vh; width: 100%; position: absolute; top:0; left:0; z-index: 100;
-        background: rgba(0,0,0,0.95); backdrop-filter: blur(10px);
-    }
-    .auth-box {
-        background: var(--glass); border: var(--glass-border);
-        padding: 40px; border-radius: 15px; width: 90%; max-width: 400px;
-        box-shadow: 0 0 30px var(--primary); text-align: center;
-    }
-    .auth-input {
-        width: 100%; padding: 12px; margin: 10px 0;
-        background: #111; border: 1px solid #333; color: var(--primary);
-        border-radius: 5px; outline: none; text-align: center;
-    }
-    .auth-btn {
-        width: 100%; padding: 12px; margin-top: 10px;
-        background: var(--primary); color: black; font-weight: bold;
-        border: none; cursor: pointer; transition: 0.3s;
-        text-transform: uppercase; letter-spacing: 1px;
-    }
-    .auth-btn:hover { box-shadow: 0 0 15px var(--primary); transform: scale(1.02); }
-    .auth-btn:disabled { background: #555; cursor: not-allowed; }
-    
-    .switch-link { margin-top: 15px; font-size: 12px; cursor: pointer; color: #888; text-decoration: underline; }
-    .error-msg { color: #ff3333; font-size: 12px; margin-top: 5px; min-height: 15px; }
+        #particles { position: fixed; top: 0; left: 0; z-index: 1; pointer-events: none; }
 
-    /* --- MAIN DASHBOARD --- */
-    #dashboard-screen { display: none; }
+        /* Auth Screen */
+        #auth-screen {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.9);
+            display: flex; justify-content: center; align-items: center; z-index: 1000;
+        }
+        .auth-box {
+            background: rgba(15, 15, 15, 0.9); border: 2px solid var(--primary);
+            padding: 30px; border-radius: 15px; width: 350px; text-align: center;
+            box-shadow: var(--neon-shadow);
+        }
+        .auth-input {
+            width: 100%; padding: 12px; margin: 10px 0; background: #000;
+            border: 1px solid #333; color: var(--primary); border-radius: 5px;
+        }
+        .auth-btn {
+            width: 100%; padding: 12px; background: var(--primary); color: #000;
+            font-weight: bold; border: none; cursor: pointer; transition: 0.3s;
+        }
+        .auth-btn:hover { box-shadow: 0 0 20px var(--primary); transform: scale(1.02); }
 
-    /* Header */
-    header {
-        display: flex; flex-direction: column; align-items: center; margin-bottom: 40px;
-    }
-    .logo-img {
-        width: 150px; height: 150px; border-radius: 50%;
-        /* LOGO FIX: Using a placeholder if yours is missing */
-        /* If you have 'sourin.gif', just change the src back to 'sourin.gif' */
-        border: 4px solid var(--primary); box-shadow: 0 0 40px var(--primary);
-        animation: rotate360 30s linear infinite;
-        margin-bottom: 20px;
-        object-fit: cover;
-    }
-    @keyframes rotate360 { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        /* Dashboard */
+        #dashboard-screen { display: none; position: relative; z-index: 10; padding: 20px; }
 
-    h1 { font-size: 2.5rem; text-shadow: 0 0 20px var(--secondary); margin: 0; letter-spacing: 2px; text-align: center; }
-    
-    .typing-container {
-        min-height: 30px; margin-top: 10px; text-align: center;
-        color: var(--primary); font-size: 1.2rem; text-shadow: 0 0 10px var(--primary);
-    }
+        header { text-align: center; margin-bottom: 30px; }
+        .logo-container {
+            width: 120px; height: 120px; margin: 0 auto 15px;
+            border: 3px solid var(--primary); border-radius: 50%;
+            overflow: hidden; box-shadow: var(--neon-shadow);
+            animation: rotate360 30s linear infinite;
+        }
+        .logo-container img { width: 100%; height: 100%; object-fit: cover; }
+        @keyframes rotate360 { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-    /* Logout Button */
-    .logout-btn {
-        position: absolute; top: 20px; right: 20px;
-        padding: 5px 10px; background: red; color: white; border: none;
-        font-size: 10px; border-radius: 5px; cursor: pointer; opacity: 0.7; z-index: 10;
-    }
-    .logout-btn:hover { opacity: 1; }
+        .typing-text { min-height: 25px; color: var(--primary); font-size: 1.2rem; text-shadow: var(--neon-shadow); }
 
-    /* Grid Layout */
-    .grid {
-        display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 20px; margin-bottom: 40px;
-    }
+        .grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px; max-width: 1100px; margin: 0 auto;
+        }
 
-    .card {
-        background: var(--glass); border: var(--glass-border);
-        padding: 20px; border-radius: 15px; text-align: center;
-        transition: 0.3s; position: relative; overflow: hidden;
-    }
-    .card:hover { transform: translateY(-5px); box-shadow: 0 0 20px var(--secondary); }
-    
-    /* Lock Overlay */
-    .locked-overlay {
-        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(0,0,0,0.85); display: flex; flex-direction: column;
-        justify-content: center; align-items: center; z-index: 10;
-        color: red; font-size: 1.5rem; display: none; backdrop-filter: blur(5px);
-    }
-    .card.is-locked .locked-overlay { display: flex; }
+        .card {
+            background: var(--bg-dark); border: 1px solid rgba(255,255,255,0.1);
+            padding: 20px; border-radius: 15px; text-align: center;
+            backdrop-filter: blur(10px); transition: 0.3s; position: relative;
+        }
+        .card:hover { border-color: var(--primary); transform: translateY(-5px); }
 
-    .btn-link {
-        display: block; padding: 15px; margin: 10px 0;
-        background: linear-gradient(45deg, #111, #222);
-        color: var(--primary); text-decoration: none; border: 1px solid var(--primary);
-        font-weight: bold; cursor: pointer; position: relative;
-    }
-    .btn-link:hover { background: var(--primary); color: black; }
-    
-    /* Special Admin Section */
-    #admin-panel {
-        display: none; border: 2px solid red; box-shadow: 0 0 20px red;
-        margin-bottom: 40px;
-    }
-    .admin-controls label { display: block; margin: 10px 0; cursor: pointer; text-align: left; padding-left: 20px;}
+        .locked-overlay {
+            position: absolute; inset: 0; background: rgba(0,0,0,0.8);
+            display: none; flex-direction: column; justify-content: center;
+            align-items: center; color: #ff3333; z-index: 5; border-radius: 15px;
+        }
+        .card.is-locked .locked-overlay { display: flex; }
 
-    /* --- TOOLS SECTIONS (Hidden by default) --- */
-    .tool-section { display: none; width: 100%; max-width: 800px; margin: 0 auto 50px; }
-    .tool-active { display: block; animation: fadeIn 0.5s; }
-    
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .btn-action {
+            display: block; width: 100%; padding: 12px; margin: 10px 0;
+            background: #111; color: var(--primary); border: 1px solid var(--primary);
+            text-decoration: none; font-weight: bold; cursor: pointer;
+        }
+        .btn-action:hover { background: var(--primary); color: #000; }
 
-    /* Inputs & Selects */
-    input, select {
-        width: 100%; padding: 10px; background: #000; color: var(--primary);
-        border: 1px solid var(--secondary); margin-bottom: 10px;
-    }
-    button.action-btn {
-        width: 100%; padding: 12px; background: var(--secondary); color: white;
-        border: none; font-weight: bold; cursor: pointer; text-shadow: 0 0 5px black;
-    }
-    button.back-btn {
-        background: #333; margin-bottom: 20px; width: auto; padding: 8px 20px; color: white; border: none; cursor: pointer;
-    }
+        /* Tool Sections */
+        .tool-section { display: none; max-width: 700px; margin: 20px auto; }
+        .active-tool { display: block; animation: slideUp 0.4s ease; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* Result Boxes */
-    .result-box {
-        margin-top: 15px; padding: 15px; background: rgba(0,255,255,0.05);
-        border-radius: 10px; text-align: left;
-    }
-    .status-indicator { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 5px; }
-    .online { background: #0f0; box-shadow: 0 0 10px #0f0; }
-    .offline { background: #f00; box-shadow: 0 0 10px #f00; }
+        .back-btn { background: #333; color: white; border: none; padding: 5px 15px; cursor: pointer; float: right; }
 
-    /* Canvas */
-    canvas { background: rgba(0,0,0,0.5); border-radius: 10px; margin-top: 10px; width: 100%; }
-    #map { height: 250px; border-radius: 10px; margin-top: 10px; z-index: 1; width: 100%; }
+        /* Utils */
+        .logout-btn { position: fixed; top: 10px; right: 10px; font-size: 10px; padding: 5px; background: #ff3333; border: none; color: white; border-radius: 3px; cursor: pointer; }
+        #map { height: 200px; width: 100%; margin-top: 10px; border-radius: 8px; }
+        footer { margin-top: 50px; text-align: center; border-top: 1px solid #333; padding: 20px; background: rgba(0,0,0,0.8); }
+        .discord-icon { width: 40px; cursor: pointer; margin-top: 10px; }
 
-    /* Footer */
-    footer {
-        margin-top: auto; padding: 20px; text-align: center;
-        border-top: 1px solid var(--secondary); background: rgba(0,0,0,0.9);
-    }
-    .footer-typing { color: #aaa; font-size: 0.9rem; min-height: 20px; margin-bottom: 10px; }
-    .discord-btn {
-        width: 50px; cursor: pointer; transition: 0.3s;
-    }
-    .discord-btn:hover { transform: scale(1.1); filter: drop-shadow(0 0 10px #7289da); }
-
-</style>
+    </style>
 </head>
 <body>
 
-<audio id="clickSound" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.m4a"></audio>
-<audio id="alertSound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.m4a"></audio>
+    <canvas id="particles"></canvas>
+    <audio id="clickSound" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.m4a"></audio>
 
-<canvas id="particles"></canvas>
+    <div id="auth-screen">
+        <div class="auth-box">
+            <h2 id="auth-title">SKA LOGIN</h2>
+            <div id="login-fields">
+                <input type="text" id="user-input" class="auth-input" placeholder="Username">
+                <input type="password" id="pass-input" class="auth-input" placeholder="Password">
+                <button onclick="handleAuth('login')" class="auth-btn">LOGIN</button>
+                <p style="font-size: 12px; cursor: pointer; color: #888;" onclick="toggleAuthUI(true)">New here? Register</p>
+            </div>
+            <div id="register-fields" style="display:none;">
+                <input type="text" id="reg-user" class="auth-input" placeholder="Choose Username">
+                <input type="password" id="reg-pass" class="auth-input" placeholder="Choose Password">
+                <button onclick="handleAuth('register')" class="auth-btn" style="background:var(--secondary); color:white;">REGISTER</button>
+                <p style="font-size: 12px; cursor: pointer; color: #888;" onclick="toggleAuthUI(false)">Back to Login</p>
+            </div>
+            <p id="auth-error" style="color:red; font-size:12px; margin-top:10px;"></p>
+        </div>
+    </div>
 
-<div id="auth-screen">
-    <div class="auth-box">
-        <h2 style="color:var(--primary)">SKA SECURE LOGIN</h2>
+    <div id="dashboard-screen">
+        <button class="logout-btn" onclick="logout()">LOGOUT</button>
         
-        <div id="login-form">
-            <input type="text" id="l-user" class="auth-input" placeholder="Username (e.g. Gamer123)">
-            <input type="password" id="l-pass" class="auth-input" placeholder="Password">
-            <div id="l-error" class="error-msg"></div>
-            <button id="btn-login" class="auth-btn">ENTER NETWORK</button>
-            <div class="switch-link" onclick="toggleAuth('register')">New? Create Account</div>
+        <header>
+            <div class="logo-container">
+                <img src="https://i.ibb.co/XF8gYgC/sourin.gif" alt="Logo">
+            </div>
+            <h1>SKA HOSTING</h1>
+            <div id="header-typing" class="typing-text"></div>
+        </header>
+
+        <div id="admin-tools" class="card" style="display:none; border: 2px solid red; margin-bottom: 20px;">
+            <h3 style="color:red;">👑 ADMIN PANEL</h3>
+            <div style="text-align: left; display: inline-block;">
+                <label><input type="checkbox" onchange="toggleLock('status')"> Lock Server Status</label><br>
+                <label><input type="checkbox" onchange="toggleLock('ping')"> Lock Server Ping</label><br>
+                <label><input type="checkbox" onchange="toggleLock('paper')"> Lock Paper Builds</label>
+            </div>
         </div>
 
-        <div id="register-form" style="display:none">
-            <input type="text" id="r-user" class="auth-input" placeholder="Choose Username">
-            <input type="password" id="r-pass" class="auth-input" placeholder="Choose Password (min 6 chars)">
-            <div id="r-error" class="error-msg"></div>
-            <button id="btn-register" class="auth-btn" style="background:var(--secondary); color:white">REGISTER</button>
-            <div class="switch-link" onclick="toggleAuth('login')">Back to Login</div>
-        </div>
-    </div>
-</div>
-
-<div id="dashboard-screen" class="container">
-    <button id="btn-logout" class="logout-btn"><i class="fas fa-sign-out-alt"></i> LOGOUT</button>
-
-    <header>
-        <img src="https://media.tenor.com/XF8gYgC0kGQAAAAi/minecraft-block.gif" class="logo-img" alt="SKA LOGO"> 
-        <h1>SKA HOSTING</h1>
-        <div class="typing-container" id="hero-typing"></div>
-    </header>
-
-    <div id="admin-panel" class="card">
-        <h3 style="color:red">👑 ADMIN COMMAND CENTER</h3>
-        <p>Welcome, Master SKA.</p>
-        <div class="admin-controls">
-            <label><input type="checkbox" onchange="toggleLock('server-status')"> Lock Server Status</label>
-            <label><input type="checkbox" onchange="toggleLock('server-ping')"> Lock Server Ping</label>
-            <label><input type="checkbox" onchange="toggleLock('paper-build')"> Lock Paper Build</label>
-            <label><input type="checkbox" onchange="toggleLock('premium-dash')"> Lock Premium Dashboard</label>
-            <hr>
-            <button onclick="sendWebhook('Admin Test Alert')" class="action-btn" style="background:#444">Test Discord Alert</button>
-        </div>
-    </div>
-
-    <div id="main-menu" class="grid">
-        <div class="card">
-            <h3>Free Minecraft Server Dashboard</h3>
-            <button onclick="openLink('http://dash.sgaming9107.qzz.io')" class="btn-link">OPEN DASHBOARD</button>
+        <div id="main-menu" class="grid">
+            <div class="card">
+                <h3>Free Dashboard</h3>
+                <button onclick="window.open('https://dash.sgaming9107.qzz.io','_blank')" class="btn-action">OPEN LINK</button>
+            </div>
+            <div class="card" id="premium-card">
+                <div class="locked-overlay">LOCKED</div>
+                <h3>Premium Dashboard</h3>
+                <button onclick="window.open('https://dash2.sgaming9107.qzz.io','_blank')" class="btn-action" style="color:gold; border-color:gold;">OPEN LINK</button>
+            </div>
+            <div class="card">
+                <h3>Server Tools</h3>
+                <button onclick="openTool('status-tool')" class="btn-action">Server Status</button>
+                <button onclick="openTool('ping-tool')" class="btn-action">Server Ping</button>
+                <button onclick="openTool('paper-tool')" class="btn-action">Paper Builds</button>
+            </div>
         </div>
 
-        <div class="card" id="card-premium-dash">
-            <div class="locked-overlay"><i class="fas fa-lock"></i> LOCKED</div>
-            <h3>Premium Minecraft Server Dashboard</h3>
-            <button onclick="openLink('http://dash2.sgaming9107.qzz.io')" class="btn-link" style="border-color:gold; color:gold">OPEN PREMIUM</button>
-        </div>
-
-        <div class="card">
-            <h3>Server Tools</h3>
-            <button onclick="showTool('tool-status')" class="btn-link">Server Status</button>
-            <button onclick="showTool('tool-ping')" class="btn-link">Server Ping & Graph</button>
-            <button onclick="showTool('tool-paper')" class="btn-link">Paper Build ##</button>
-        </div>
-
-        <div class="card">
-            <h3>Own Hosting Create</h3>
-            <button onclick="openLink('https://sdgamer8263-sketch.github.io/Own-hosting-making/')" class="btn-link">START CREATION</button>
-        </div>
-    </div>
-
-    <div id="tool-status" class="card tool-section" id="card-server-status">
-        <div class="locked-overlay"><i class="fas fa-lock"></i> LOCKED</div>
-        <div style="display:flex; justify-content:space-between">
-            <h2>📊 Server Status</h2>
-            <button onclick="showMain()" class="back-btn">Back</button>
-        </div>
-        
-        <input id="st-ip" placeholder="Server Address (e.g., play.hypixel.net)">
-        <div style="display:flex; gap:10px">
-            <input id="st-port" placeholder="Port (Default: 25565)" style="width:30%">
-            <select id="st-type">
-                <option value="java">Java Edition</option>
-                <option value="bedrock">Bedrock/Geyser</option>
+        <div id="status-tool" class="card tool-section">
+            <button class="back-btn" onclick="closeTools()">X</button>
+            <h3>Server Status</h3>
+            <input id="st-ip" class="auth-input" placeholder="play.hypixel.net">
+            <input id="st-port" class="auth-input" placeholder="25565">
+            <select id="st-type" class="auth-input">
+                <option value="java">Java</option>
+                <option value="bedrock">Bedrock</option>
             </select>
-        </div>
-        <button onclick="checkStatus()" class="action-btn">CHECK STATUS</button>
-
-        <div id="st-result" class="result-box" style="display:none">
-            <h3 id="st-name">Server Name</h3>
-            <p><span id="st-online" class="status-indicator"></span> <span id="st-text">Checking...</span></p>
-            <p>👥 Players: <span id="st-players">0/0</span></p>
-            <p>🔧 Version: <span id="st-version">?</span></p>
-            <p>🌍 MOTD: <br><span id="st-motd" style="color:#aaa; font-style:italic"></span></p>
-        </div>
-    </div>
-
-    <div id="tool-ping" class="card tool-section" id="card-server-ping">
-        <div class="locked-overlay"><i class="fas fa-lock"></i> LOCKED</div>
-        <div style="display:flex; justify-content:space-between">
-            <h2>📡 Advanced Ping Tool</h2>
-            <button onclick="showMain()" class="back-btn">Back</button>
+            <button class="auth-btn" onclick="checkServer()">CHECK</button>
+            <div id="st-res" style="margin-top:15px; text-align:left; font-size:14px;"></div>
         </div>
 
-        <input id="pi-ip" placeholder="IP Address">
-        <input id="pi-port" placeholder="Port" value="25565">
-        <select id="pi-type">
-            <option value="java">Java</option>
-            <option value="bedrock">Bedrock/Geyser</option>
-        </select>
-        <button onclick="startPing()" class="action-btn">START TRACKING</button>
-
-        <div class="result-box">
-            <div style="display:flex; justify-content:space-between; margin-bottom:10px">
-                <span>Current: <b id="pi-val">0 ms</b></span>
-                <span>Quality: <b id="pi-qual">-</b></span>
-            </div>
-            <div style="font-size:12px; color:#aaa; margin-bottom:5px">
-                Min: <span id="pi-min">-</span> | Max: <span id="pi-max">-</span> | Time: <span id="pi-time">-</span>
-            </div>
-            
+        <div id="ping-tool" class="card tool-section">
+            <button class="back-btn" onclick="closeTools()">X</button>
+            <h3>Server Ping & Graph</h3>
+            <input id="pg-ip" class="auth-input" placeholder="IP Address">
+            <button class="auth-btn" onclick="startPing()">START PING</button>
+            <div id="pg-info" style="margin:10px 0;">Ping: -- ms</div>
             <canvas id="pingChart" height="150"></canvas>
-            
-            <div id="loc-info" style="margin-top:10px">Location: <span id="pi-loc">Unknown</span></div>
             <div id="map"></div>
         </div>
+
+        <div id="paper-tool" class="card tool-section">
+            <button class="back-btn" onclick="closeTools()">X</button>
+            <h3>Paper Build Finder</h3>
+            <select id="pp-ver" class="auth-input" onchange="findPaper()"></select>
+            <div id="pp-res" style="font-size:20px; margin-top:20px; color:var(--primary);">## Result</div>
+        </div>
+
+        <footer>
+            <div id="footer-typing" class="footer-typing" style="color:#888; font-size:12px;"></div>
+            <img src="https://cdn-icons-png.flaticon.com/512/3670/3670157.png" class="discord-icon" onclick="window.open('https://discord.gg/C46pnM3Xz')">
+            <p>© 2026 SKA HOSTING NETWORK</p>
+        </footer>
     </div>
 
-    <div id="tool-paper" class="card tool-section" id="card-paper-build">
-        <div class="locked-overlay"><i class="fas fa-lock"></i> LOCKED</div>
-        <div style="display:flex; justify-content:space-between">
-            <h2>📜 Paper Build Finder</h2>
-            <button onclick="showMain()" class="back-btn">Back</button>
-        </div>
-        
-        <p>Select Version to find stable build:</p>
-        <select id="pb-ver" onchange="findBuild()">
-            <option>Select Version</option>
-            </select>
-        <div id="pb-result" class="result-box" style="text-align:center; font-size:1.5rem">
-            Build: <span style="color:var(--primary)">---</span>
-        </div>
-    </div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-    <footer>
-        <div class="typing-container footer-typing" id="footer-typing"></div>
-        
-        <div style="margin-top:20px">
-            <img src="https://assets-global.website-files.com/6257adef93867e56f84d3092/636e0a6a49cf127bf92de1e2_icon_clyde_blurple_RGB.png" 
-                 class="discord-btn" 
-                 onclick="openLink('https://discord.gg/C46pnM3Xz')" 
-                 alt="Discord">
-        </div>
-        <p style="font-size:10px; color:#555; margin-top:20px">SKA HOSTING © 2026. All rights reserved.</p>
-    </footer>
-</div>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBvlOV7L3g_lBDRR7mcNincGVyM16xtd90",
+            authDomain: "ska-web-168fe.firebaseapp.com",
+            databaseURL: "https://ska-web-168fe-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "ska-web-168fe",
+            appId: "1:782823377176:web:e2f62ba16d5fe0af7f366d"
+        };
 
-<script type="module">
-    // --- 1. FIREBASE SETUP ---
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
 
-    // YOUR API KEYS
-    const firebaseConfig = {
-      apiKey: "AIzaSyBvlOV7L3g_lBDRR7mcNincGVyM16xtd90",
-      authDomain: "ska-web-168fe.firebaseapp.com",
-      databaseURL: "https://ska-web-168fe-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "ska-web-168fe",
-      appId: "1:782823377176:web:e2f62ba16d5fe0af7f366d"
-    };
+        const ADMIN_ID = "skahosting";
+        const ADMIN_PW = "Z62BGma)qTi!Szs";
 
-    // INIT FIREBASE
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getDatabase(app);
+        // --- Auth Logic ---
+        window.handleAuth = async (type) => {
+            const u = type === 'login' ? document.getElementById('user-input').value : document.getElementById('reg-user').value;
+            const p = type === 'login' ? document.getElementById('pass-input').value : document.getElementById('reg-pass').value;
+            const err = document.getElementById('auth-error');
 
-    // --- 2. GLOBAL VARIABLES & UTILS ---
-    const ADMIN_USER = "skahosting";
-    const ADMIN_PASS = "Z62BGma)qTi!Szs";
-    
-    // Attach functions to window because type="module" has local scope
-    window.openLink = (url) => {
-        playClick();
-        if(url.includes('dash2') && isLocked('premium-dash') && !isAdmin()) {
-            document.getElementById('alertSound').play();
-            return alert("🔒 This feature is currently LOCKED by Admin.");
-        }
-        window.open(url, '_blank');
-    };
+            if(u === ADMIN_ID && p === ADMIN_PW) {
+                sessionStorage.setItem('ska_user', u);
+                sessionStorage.setItem('ska_role', 'admin');
+                location.reload(); return;
+            }
 
-    window.toggleAuth = (mode) => {
-        playClick();
-        document.getElementById('l-error').innerText = "";
-        document.getElementById('r-error').innerText = "";
-        if(mode === 'register') {
-            document.getElementById('login-form').style.display = 'none';
-            document.getElementById('register-form').style.display = 'block';
-        } else {
-            document.getElementById('login-form').style.display = 'block';
-            document.getElementById('register-form').style.display = 'none';
-        }
-    };
+            const email = u.toLowerCase() + "@ska.com";
+            try {
+                if(type === 'register') {
+                    await createUserWithEmailAndPassword(auth, email, p);
+                    alert("Registered! Please login.");
+                    toggleAuthUI(false);
+                } else {
+                    await signInWithEmailAndPassword(auth, email, p);
+                    sessionStorage.setItem('ska_user', u);
+                    sessionStorage.setItem('ska_role', 'user');
+                    location.reload();
+                }
+            } catch(e) { err.innerText = e.message; }
+        };
 
-    window.playClick = () => document.getElementById('clickSound').play().catch(()=>{});
+        window.logout = () => { sessionStorage.clear(); location.reload(); };
 
-    function isAdmin() { return sessionStorage.getItem('ska_role') === 'admin'; }
-    function isLocked(id) { 
-        let locks = JSON.parse(localStorage.getItem('ska_locks')) || {};
-        return locks[id] === true;
-    }
+        // --- UI Logic ---
+        window.toggleAuthUI = (reg) => {
+            document.getElementById('login-fields').style.display = reg ? 'none' : 'block';
+            document.getElementById('register-fields').style.display = reg ? 'block' : 'none';
+        };
 
-    // --- 3. LOGIN & REGISTER LOGIC ---
-
-    // Login Handler
-    document.getElementById('btn-login').addEventListener('click', () => {
-        playClick();
-        const u = document.getElementById('l-user').value.trim();
-        const p = document.getElementById('l-pass').value.trim();
-        const errBox = document.getElementById('l-error');
-
-        if(!u || !p) { errBox.innerText = "Please fill all fields"; return; }
-        errBox.innerText = "Authenticating...";
-
-        // HARDCODED ADMIN CHECK
-        if(u === ADMIN_USER && p === ADMIN_PASS) {
-            sessionStorage.setItem('ska_logged_in', 'true');
-            sessionStorage.setItem('ska_role', 'admin');
-            showDashboard();
-            return;
+        if(sessionStorage.getItem('ska_user')) {
+            document.getElementById('auth-screen').style.display = 'none';
+            document.getElementById('dashboard-screen').style.display = 'block';
+            if(sessionStorage.getItem('ska_role') === 'admin') document.getElementById('admin-tools').style.display = 'block';
+            startTyping();
+            loadLocks();
         }
 
-        // FIREBASE USER CHECK
-        // Trick: Append a fake domain to make username work like email
-        const email = u + "@ska.network";
+        // --- Tool Logic ---
+        window.openTool = (id) => {
+            document.getElementById('main-menu').style.display = 'none';
+            document.querySelectorAll('.tool-section').forEach(t => t.classList.remove('active-tool'));
+            document.getElementById(id).classList.add('active-tool');
+        };
+        window.closeTools = () => {
+            document.querySelectorAll('.tool-section').forEach(t => t.classList.remove('active-tool'));
+            document.getElementById('main-menu').style.display = 'grid';
+        };
 
-        signInWithEmailAndPassword(auth, email, p)
-            .then((userCredential) => {
-                sessionStorage.setItem('ska_logged_in', 'true');
-                sessionStorage.setItem('ska_role', 'user');
-                showDashboard();
-            })
-            .catch((error) => {
-                console.error(error);
-                if(error.code === 'auth/invalid-credential') errBox.innerText = "Wrong Username or Password";
-                else errBox.innerText = error.message;
+        // --- Ping Tool ---
+        let chart;
+        window.startPing = () => {
+            const ip = document.getElementById('pg-ip').value;
+            if(!ip) return;
+            const ctx = document.getElementById('pingChart').getContext('2d');
+            if(chart) chart.destroy();
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: { labels: [], datasets: [{ label: 'ms', data: [], borderColor: '#0ff', tension: 0.3 }] },
+                options: { scales: { x: { display: false } } }
             });
-    });
+            setInterval(async () => {
+                const start = Date.now();
+                try {
+                    await fetch(`https://api.mcsrvstat.us/2/${ip}`);
+                    const ms = Date.now() - start;
+                    document.getElementById('pg-info').innerText = `Ping: ${ms} ms`;
+                    chart.data.labels.push(""); chart.data.datasets[0].data.push(ms);
+                    if(chart.data.labels.length > 15) { chart.data.labels.shift(); chart.data.datasets[0].data.shift(); }
+                    chart.update();
+                } catch(e) {}
+            }, 3000);
+        };
 
-    // Register Handler
-    document.getElementById('btn-register').addEventListener('click', () => {
-        playClick();
-        const u = document.getElementById('r-user').value.trim();
-        const p = document.getElementById('r-pass').value.trim();
-        const errBox = document.getElementById('r-error');
+        // --- Paper Builds ---
+        const builds = {"1.21.1": 133, "1.20.4": 499, "1.19.2": 307, "1.8.8": 445}; // Short version for example
+        const pSel = document.getElementById('pp-ver');
+        Object.keys(builds).forEach(v => pSel.innerHTML += `<option value="${v}">${v}</option>`);
+        window.findPaper = () => {
+            const v = pSel.value;
+            document.getElementById('pp-res').innerText = `The paper number of ## ${v} is ${builds[v]}`;
+        };
 
-        if(!u || !p) { errBox.innerText = "Fill all fields"; return; }
-        if(p.length < 6) { errBox.innerText = "Password must be 6+ chars"; return; }
-        if(u.toLowerCase() === "skahosting") { errBox.innerText = "Username taken"; return; }
+        // --- Typing ---
+        function startTyping() {
+            const t1 = "WELCOME IN MY GAMING NETWORK";
+            const t2 = "SKA Hosting offers the best 24/7 uptime for Minecraft servers with high-speed SSDs.";
+            let i = 0, j = 0;
+            function run1() {
+                if(i < t1.length) { document.getElementById('header-typing').innerHTML += t1[i++]; setTimeout(run1, 100); }
+                else setTimeout(() => { document.getElementById('header-typing').innerHTML = ""; i=0; run1(); }, 180000);
+            }
+            function run2() {
+                if(j < t2.length) { document.getElementById('footer-typing').innerHTML += t2[j++]; setTimeout(run2, 50); }
+                else setTimeout(() => { document.getElementById('footer-typing').innerHTML = ""; j=0; run2(); }, 180000);
+            }
+            run1(); run2();
+        }
 
-        errBox.innerText = "Creating account...";
-        const email = u + "@ska.network";
+        // --- Admin Locks ---
+        window.toggleLock = (key) => {
+            let l = JSON.parse(localStorage.getItem('ska_locks') || '{}');
+            l[key] = !l[key];
+            localStorage.setItem('ska_locks', JSON.stringify(l));
+            alert("Lock updated!");
+        };
+        function loadLocks() {
+            if(sessionStorage.getItem('ska_role') === 'admin') return;
+            let l = JSON.parse(localStorage.getItem('ska_locks') || '{}');
+            if(l.status) document.getElementById('status-tool').innerHTML = "<h1>LOCKED BY ADMIN</h1>";
+            if(l.ping) document.getElementById('ping-tool').innerHTML = "<h1>LOCKED BY ADMIN</h1>";
+        }
+    </script>
+</body>
+</html>
 
-        createUserWithEmailAndPassword(auth, email, p)
-            .then((userCredential) => {
-                const u
