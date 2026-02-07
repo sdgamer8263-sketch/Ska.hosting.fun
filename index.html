@@ -59,6 +59,16 @@ canvas{width:100%;height:150px;margin-top:10px}
   <input id="luser" placeholder="Username">
   <input id="lpass" type="password" placeholder="Password">
   <button onclick="login()">Login</button>
+  <button onclick="showRegister()">Register</button>
+</div>
+
+<!-- REGISTER -->
+<div id="registerBox" class="card hidden">
+  <h2 class="center">Register</h2>
+  <input id="ruser" placeholder="Username">
+  <input id="rpass" type="password" placeholder="Password">
+  <button onclick="register()">Create Account</button>
+  <button onclick="backLogin()">Back to Login</button>
 </div>
 
 <!-- DASHBOARD -->
@@ -73,7 +83,6 @@ canvas{width:100%;height:150px;margin-top:10px}
   <!-- SERVER STATUS -->
   <div class="card">
     <h3 class="center">Server Status</h3>
-
     <input id="sip" placeholder="Server IP">
     <select id="stype">
       <option value="java">Java</option>
@@ -98,111 +107,120 @@ canvas{width:100%;height:150px;margin-top:10px}
 </div>
 
 <script>
-/* ================= ADMIN ================= */
-const ADMIN_USER = "skahosting";
-const ADMIN_PASS = "Z62BGma)qTi!Szsl";
+/* ========== ADMIN ========== */
+const ADMIN_USER="skahosting";
+const ADMIN_PASS="Z62BGma)qTi!Szsl";
 
-/* ================= SESSION ================= */
-if(sessionStorage.getItem("login")){
-  showDashboard(sessionStorage.getItem("login"));
+/* ========== AUTO LOGIN ON REFRESH ========== */
+if(sessionStorage.getItem("role")){
+  showDashboard(sessionStorage.getItem("role"));
 }
 
-/* ================= LOGIN ================= */
+/* ========== LOGIN ========== */
 function login(){
-  const u = luser.value.trim();
-  const p = lpass.value.trim();
+  const u=luser.value.trim();
+  const p=lpass.value.trim();
 
-  if(u === ADMIN_USER && p === ADMIN_PASS){
-    sessionStorage.setItem("login","admin");
+  if(u===ADMIN_USER && p===ADMIN_PASS){
+    sessionStorage.setItem("role","admin");
     showDashboard("admin");
     return;
   }
-  alert("Invalid login");
+
+  const users=JSON.parse(localStorage.getItem("users")||"{}");
+  if(users[u] && users[u]===p){
+    sessionStorage.setItem("role","user");
+    showDashboard("user");
+  }else{
+    alert("Wrong username or password");
+  }
+}
+
+/* ========== REGISTER ========== */
+function register(){
+  const u=ruser.value.trim();
+  const p=rpass.value.trim();
+  if(!u||!p) return alert("Fill all fields");
+  if(u===ADMIN_USER) return alert("Username reserved");
+
+  const users=JSON.parse(localStorage.getItem("users")||"{}");
+  if(users[u]) return alert("User already exists");
+
+  users[u]=p;
+  localStorage.setItem("users",JSON.stringify(users));
+  alert("Registration successful");
+  backLogin();
+}
+
+function showRegister(){
+  loginBox.classList.add("hidden");
+  registerBox.classList.remove("hidden");
+}
+function backLogin(){
+  registerBox.classList.add("hidden");
+  loginBox.classList.remove("hidden");
 }
 
 function showDashboard(role){
   loginBox.classList.add("hidden");
+  registerBox.classList.add("hidden");
   dashboard.classList.remove("hidden");
-  if(role === "admin"){
+  if(role==="admin"){
     adminTools.classList.remove("hidden");
   }
 }
 
-/* ================= SERVER STATUS ================= */
+/* ========== SERVER STATUS ========== */
 function checkStatus(){
-  let ip = sip.value.trim();
-  let type = stype.value;
-  let port = sport.value.trim();
-
+  let ip=sip.value.trim();
+  let type=stype.value;
+  let port=sport.value.trim();
   if(!ip) return alert("Enter IP");
 
-  if(type === "geyser") type = "java";
-  if(type === "bedrock" && !port) port = 19132;
+  if(type==="geyser") type="java";
+  if(type==="bedrock" && !port) port=19132;
 
   fetch(`https://api.mcsrvstat.us/2/${ip}${port?":"+port:""}`)
   .then(r=>r.json())
   .then(d=>{
-    const name =
-      d.motd?.clean?.join(" ") ||
-      d.hostname ||
-      "Unknown Server";
-
-    serverName.innerText = name;
-
-    serverInfo.innerHTML = d.online
-      ? `🟢 Online<br>Players: ${d.players.online}/${d.players.max}`
-      : `🔴 Offline`;
-  })
-  .catch(()=>alert("Status error"));
+    serverName.innerText=
+      d.motd?.clean?.join(" ") || d.hostname || "Unknown Server";
+    serverInfo.innerHTML=d.online
+      ?`🟢 Online<br>Players: ${d.players.online}/${d.players.max}`
+      :"🔴 Offline";
+  });
 }
 
-/* ================= PING ================= */
-let pingHistory=[];
-let minPing=null,maxPing=null;
-
+/* ========== PING ========== */
+let pingHistory=[],minPing=null,maxPing=null;
 function checkPing(){
-  const ip = sip.value.trim();
+  const ip=sip.value.trim();
   if(!ip) return alert("Enter IP");
 
   fetch(`https://ping-yies.onrender.com/ping?ip=${ip}`)
   .then(r=>r.json())
   .then(d=>{
-    const ping = d.ping;
-    const time = new Date().toLocaleTimeString();
-
-    pingHistory.push(ping);
+    const p=d.ping;
+    const t=new Date().toLocaleTimeString();
+    pingHistory.push(p);
     if(pingHistory.length>20) pingHistory.shift();
+    minPing=minPing===null?p:Math.min(minPing,p);
+    maxPing=maxPing===null?p:Math.max(maxPing,p);
 
-    minPing = minPing===null?ping:Math.min(minPing,ping);
-    maxPing = maxPing===null?ping:Math.max(maxPing,ping);
-
-    pingResult.innerHTML = `
-      📡 <b>${ping} ms</b><br>
-      ⬇ Min: ${minPing} ms |
-      ⬆ Max: ${maxPing} ms<br>
-      🕒 ${time}
-    `;
-
+    pingResult.innerHTML=
+      `📡 ${p} ms<br>⬇ ${minPing} | ⬆ ${maxPing}<br>🕒 ${t}`;
     drawPingGraph();
-  })
-  .catch(()=>alert("Ping error"));
+  });
 }
-
 function drawPingGraph(){
-  const c = pingGraph;
-  const ctx = c.getContext("2d");
-  c.width = c.offsetWidth;
-  c.height = 150;
-
+  const c=pingGraph,ctx=c.getContext("2d");
+  c.width=c.offsetWidth;c.height=150;
   ctx.clearRect(0,0,c.width,c.height);
-  ctx.strokeStyle="#0ff";
-  ctx.lineWidth=2;
-  ctx.beginPath();
-
+  ctx.strokeStyle="#0ff";ctx.beginPath();
   pingHistory.forEach((p,i)=>{
-    const x = i*(c.width/(pingHistory.length-1||1));
-    const y = c.height - Math.min(p,400)/400*c.height;
-    i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+    const x=i*(c.width/(pingHistory.length-1||1));
+    const y=c.height-(Math.min(p,400)/400)*c.height;
+    i?ctx.lineTo(x,y):ctx.moveTo(x,y);
   });
   ctx.stroke();
 }
