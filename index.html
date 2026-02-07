@@ -4,9 +4,7 @@
 <meta charset="UTF-8">
 <title>SKA HOSTING</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <link href="https://fonts.cdnfonts.com/css/minecraft-4" rel="stylesheet">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Minecraft',sans-serif}
@@ -14,8 +12,7 @@ body{background:#000;color:#0ff;overflow-x:hidden}
 
 /* BACKGROUND */
 .bg{
-  position:fixed;
-  inset:0;
+  position:fixed;inset:0;
   background:
   linear-gradient(rgba(0,0,0,.75),rgba(0,0,0,.75)),
   url("fx58j1opheu71.gif") center/cover fixed;
@@ -24,102 +21,174 @@ body{background:#000;color:#0ff;overflow-x:hidden}
 #particles{position:fixed;inset:0;z-index:-2}
 
 /* HEADER */
-header{padding:15px}
-.logo{display:flex;align-items:center;gap:15px}
-.logo img{
-  width:60px;
+header{
+  padding:15px;
+  display:flex;
+  align-items:center;
+  gap:15px;
+}
+header img{
+  width:55px;
   animation:spin 30s linear infinite;
   filter:drop-shadow(0 0 15px #0ff)
 }
 @keyframes spin{to{transform:rotate(360deg)}}
+header button{
+  margin-left:auto;
+  background:#f33;
+  color:#000;
+  padding:10px 18px;
+  border-radius:18px;
+  font-weight:bold;
+  border:none;
+  cursor:pointer;
+}
 
-/* HOME */
+/* CENTER */
 .center{text-align:center;padding:20px}
 #typing{
-  font-size:24px;
+  font-size:26px;
   margin:40px 0;
-  text-shadow:0 0 20px #0ff;
+  text-shadow:0 0 25px #0ff;
 }
-.link{cursor:pointer;margin:10px 0}
-.btn-row{display:flex;gap:15px;justify-content:center;flex-wrap:wrap}
+
+/* BUTTONS */
 .btn{
-  background:#0ff;color:#000;
-  padding:12px 18px;border-radius:14px;
-  font-weight:bold;cursor:pointer;
-  box-shadow:0 0 20px #0ff
+  background:#0ff;
+  color:#000;
+  padding:14px 22px;
+  border-radius:20px;
+  font-weight:bold;
+  cursor:pointer;
+  box-shadow:0 0 25px #0ff;
+  display:inline-block;
+  margin:10px;
+  transition:.2s;
 }
+.btn:active{transform:scale(.92)}
+
+.link{cursor:pointer}
 
 /* PAGES */
 .page{
-  display:none;max-width:520px;
-  margin:30px auto;padding:20px;
+  display:none;
+  max-width:560px;
+  margin:30px auto;
+  padding:22px;
   background:rgba(0,0,0,.55);
-  backdrop-filter:blur(14px);
-  border-radius:20px;
-  box-shadow:0 0 30px #0ff;
+  backdrop-filter:blur(16px);
+  border-radius:24px;
+  box-shadow:0 0 35px #0ff;
   position:relative;
 }
-.back{position:absolute;right:15px;top:15px;cursor:pointer}
+.back{
+  position:absolute;
+  right:15px;
+  top:15px;
+  padding:10px 20px;
+  background:rgba(0,255,255,.25);
+  border-radius:18px;
+  cursor:pointer;
+}
 
 /* FORM */
 input,select,button{
-  width:100%;padding:12px;margin:8px 0;
-  border-radius:10px;border:none
+  width:100%;
+  padding:14px;
+  margin:10px 0;
+  border-radius:12px;
+  border:none;
 }
 input,select{background:#111;color:#0ff}
 button{background:#0ff;color:#000;font-weight:bold}
 
-/* STATUS */
-.badge{
-  padding:8px 14px;border-radius:14px;
-  font-weight:bold;
-  animation:pulse 1.5s infinite
+/* LOGIN */
+#loginScreen{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.95);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
 }
-@keyframes pulse{
-  0%{box-shadow:0 0 5px}
-  50%{box-shadow:0 0 20px}
-  100%{box-shadow:0 0 5px}
+#loginBox{
+  background:rgba(0,0,0,.65);
+  padding:32px;
+  border-radius:24px;
+  box-shadow:0 0 40px #0ff;
+  width:320px;
+  text-align:center;
 }
 
-/* PING */
-.good{color:#0f0}.medium{color:#ff0}.bad{color:#f33}
-#map{height:200px;border-radius:12px;margin-top:10px}
-canvas{width:100%;height:150px}
+/* BADGES */
+.badge{font-weight:bold;padding:8px 14px;border-radius:14px}
+.good{color:#0f0}
+.bad{color:#f33}
+
+/* GRAPH */
+canvas{width:100%;height:140px;margin-top:12px}
 
 /* FOOTER */
-footer{text-align:center;padding:20px}
-.discord img{width:40px;filter:drop-shadow(0 0 10px #0ff)}
+footer{
+  margin-top:40px;
+  padding:20px;
+  text-align:center;
+  font-size:14px;
+  opacity:.9;
+}
+
+/* LOCK */
+.locked{animation:shake .3s}
+@keyframes shake{
+  0%{transform:translateX(0)}
+  25%{transform:translateX(-6px)}
+  50%{transform:translateX(6px)}
+  75%{transform:translateX(-6px)}
+  100%{transform:translateX(0)}
+}
 </style>
 </head>
 
 <body>
-
 <div class="bg"></div>
 <canvas id="particles"></canvas>
 
-<header>
-  <div class="logo">
-    <img src="file_00000000387071faa7c92db633a8f726.png">
-    <h2>SKA HOSTING</h2>
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div id="loginBox">
+    <h2>🔐 Login</h2>
+    <input id="loginUser" placeholder="Username">
+    <input id="loginPass" type="password" placeholder="Password">
+    <button onclick="login()">Login</button>
+    <div id="loginMsg" style="margin-top:10px;color:#f33"></div>
   </div>
+</div>
+
+<header>
+  <img src="file_00000000387071faa7c92db633a8f726.png">
+  <h2>SKA HOSTING</h2>
+  <button onclick="logout()">Logout</button>
 </header>
 
 <div class="center" id="home">
   <div id="typing"></div>
 
-  <div class="link" onclick="openHidden('https://dash.sgaming9107.qzz.io')">
-    Free Minecraft Server Dashboard
-  </div>
-  <div class="link" onclick="openHidden('https://dash2.sgaming9107.qzz.io')">
-    Premium Minecraft Server Dashboard
+  <div class="btn link" onclick="openHidden('https://dash.sgaming9107.qzz.io')">
+    🟢 Free Minecraft Server Dashboard
   </div>
 
-  <div class="btn-row">
-    <div class="btn" onclick="showPage('tools')">Server Tool</div>
-    <div class="btn" onclick="openHidden('https://sdgamer8263-sketch.github.io/Own-hosting-making/')">
-      Own Hosting Create Command
-    </div>
+  <div class="btn link" onclick="openHidden('https://dash2.sgaming9107.qzz.io')">
+    👑 Premium Minecraft Server Dashboard
   </div>
+
+  <br><br>
+  <label>
+    <input type="checkbox" id="premiumToggle"> Enable Premium Tools
+  </label>
+
+  <br><br>
+  <div class="btn" onclick="showPage('tools')">Server Tools</div>
 </div>
 
 <!-- TOOLS -->
@@ -127,93 +196,110 @@ footer{text-align:center;padding:20px}
   <div class="back" onclick="goHome()">⬅</div>
   <h2>SERVER TOOLS</h2>
   <button onclick="showPage('status')">Server Status</button>
-  <button onclick="showPage('ping')">Server Ping</button>
-  <button onclick="showPage('paper')">Paper Build Number</button>
+  <button onclick="premiumOnly(()=>showPage('paper'),this)">🔒 Paper Build Number</button>
 </div>
 
-<!-- SERVER STATUS -->
+<!-- STATUS -->
 <div class="page" id="status">
   <div class="back" onclick="showPage('tools')">⬅</div>
-  <h2>Server Status</h2>
-
+  <h2 style="text-align:center">Server Status</h2>
   <input id="sip" placeholder="Server IP">
-  <input id="sport" placeholder="Port (optional)">
-  <button onclick="checkStatus()">Check</button>
-
-  <div id="sbadge"></div>
-  <div id="sicon"></div>
-  <div id="smotd"></div>
-  <div id="splayers"></div>
-  <div id="sping"></div>
-</div>
-
-<!-- SERVER PING -->
-<div class="page" id="ping">
-  <div class="back" onclick="showPage('tools')">⬅</div>
-  <h2>MC PING DASHBOARD</h2>
-
-  <input id="ip" placeholder="Server IP">
-  <input id="port" value="25565">
-  <select id="type">
+  <select id="stype">
     <option value="java">Java</option>
     <option value="bedrock">Bedrock</option>
     <option value="geyser">Geyser</option>
   </select>
-  <button onclick="checkPing()">Check Ping</button>
-
-  <div id="statusp"></div>
-  <div id="pingv"></div>
-  <div id="quality"></div>
-  <canvas id="graph"></canvas>
-  <div id="map"></div>
+  <button onclick="checkStatus()">Check</button>
+  <div id="sbadge" style="text-align:center;margin-top:10px"></div>
+  <canvas id="uptimeGraph"></canvas>
+  <div id="uptimeStats" style="text-align:center;display:none">
+    24H: <b id="up24"></b> | 7D: <b id="up7"></b>
+  </div>
 </div>
 
 <!-- PAPER -->
 <div class="page" id="paper">
   <div class="back" onclick="showPage('tools')">⬅</div>
   <h2>Paper Build Number</h2>
-  <input id="ver" placeholder="Version">
+  <input id="ver" placeholder="Minecraft Version">
   <button onclick="checkBuild()">Check</button>
-  <div id="result"></div>
+  <div id="buildRes" style="margin-top:10px"></div>
 </div>
 
 <footer>
   <div id="footerText"></div>
-  <div class="discord" onclick="openHidden('https://discord.gg/C46pnM3Xz')">
-    <img src="https://cdn-icons-png.flaticon.com/512/2111/2111370.png">
-  </div>
 </footer>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
 <script>
+/* USERS */
+const USERS={admin:"ska123",user:"user123"};
+const LOGIN_EXPIRE=86400000;
+const WEBHOOK="https://discord.com/api/webhooks/1464870423165669432/e9uEiu1QlGpHHmsyVLQxPIoczsysaImBnYp_rio1PIhaxYMR4edq3eWJvMvon1yAx2Ix";
+
+/* LOGIN */
+function login(){
+  if(USERS[loginUser.value]!==loginPass.value){
+    loginMsg.innerText="Wrong login";return;
+  }
+  localStorage.setItem("auth",Date.now());
+  loginScreen.style.display="none";
+}
+function logout(){
+  localStorage.clear();location.reload();
+}
+(function(){
+  const t=localStorage.getItem("auth");
+  if(!t||Date.now()-t>LOGIN_EXPIRE) loginScreen.style.display="flex";
+})();
+
 /* NAV */
 function showPage(id){
-  document.querySelectorAll('.page').forEach(p=>p.style.display='none');
-  home.style.display='none';
-  document.getElementById(id).style.display='block';
+  document.querySelectorAll(".page").forEach(p=>p.style.display="none");
+  home.style.display="none";
+  document.getElementById(id).style.display="block";
 }
 function goHome(){
-  document.querySelectorAll('.page').forEach(p=>p.style.display='none');
-  home.style.display='block';
+  document.querySelectorAll(".page").forEach(p=>p.style.display="none");
+  home.style.display="block";
 }
-function openHidden(u){window.open(u,'_blank')}
+function openHidden(u){window.open(u,"_blank")}
 
-/* TYPING */
-const t="WELCOME IN MY GAMING NETWORK";let ti=0;
-setInterval(()=>{typing.innerText=t.slice(0,ti++);if(ti>t.length)ti=0},150);
-setInterval(()=>ti=0,30000);
+/* PREMIUM LOCK */
+function premiumOnly(fn,el){
+  if(!premiumToggle.checked){
+    el.classList.add("locked");
+    setTimeout(()=>el.classList.remove("locked"),300);
+    alert("Premium only");
+    return;
+  }
+  fn();
+}
 
-/* FOOTER */
-const ft="Our hosting is fast, secure, lag-free and perfect for Minecraft gaming networks.";
+/* WELCOME TYPING */
+const msg="WELCOME IN MY GAMING NETWORK";
+let i=0;
+function typeWelcome(){
+  typing.innerText=msg.slice(0,i++);
+  if(i<=msg.length) setTimeout(typeWelcome,120);
+}
+typeWelcome();
+setInterval(()=>{i=0;typeWelcome()},180000);
+
+/* FOOTER TYPING */
+const fmsg="Why choose SKA Hosting? Fast servers, smart monitoring, premium tools and gamer-first experience.";
 let fi=0;
-setInterval(()=>{footerText.innerText=ft.slice(0,fi++);if(fi>ft.length)fi=0},120000);
+function typeFooter(){
+  footerText.innerText=fmsg.slice(0,fi++);
+  if(fi<=fmsg.length) setTimeout(typeFooter,80);
+}
+typeFooter();
+setInterval(()=>{fi=0;typeFooter()},180000);
 
 /* PARTICLES */
-const pc=document.getElementById("particles"),pctx=pc.getContext("2d");
-let ps=[];function rs(){pc.width=innerWidth;pc.height=innerHeight}
-onresize=rs;rs();
-for(let i=0;i<90;i++)ps.push({x:Math.random()*pc.width,y:Math.random()*pc.height});
+const pc=particles,pctx=pc.getContext("2d");
+function rs(){pc.width=innerWidth;pc.height=innerHeight}
+rs();onresize=rs;
+let ps=[...Array(80)].map(()=>({x:Math.random()*pc.width,y:Math.random()*pc.height}));
 (function anim(){
   pctx.clearRect(0,0,pc.width,pc.height);
   ps.forEach(p=>{
@@ -224,61 +310,56 @@ for(let i=0;i<90;i++)ps.push({x:Math.random()*pc.width,y:Math.random()*pc.height
   requestAnimationFrame(anim);
 })();
 
-/* SERVER STATUS API */
+/* STATUS + UPTIME */
+let log=JSON.parse(localStorage.getItem("uptime"))||[];
+let last="";
 function checkStatus(){
-  fetch(`https://api.mcsrvstat.us/2/${sip.value}${sport.value?":"+sport.value:""}`)
+  fetch(`https://api.mcsrvstat.us/2/${sip.value}`)
   .then(r=>r.json()).then(d=>{
-    if(!d.online){
-      sbadge.innerHTML='<span class="badge bad">OFFLINE</span>';
-      return;
-    }
-    sbadge.innerHTML='<span class="badge good">ONLINE</span>';
-    splayers.innerText=`Players: ${d.players.online}/${d.players.max}`;
-    sping.innerText=`Ping: ${d.debug.ping||"N/A"} ms`;
-    smotd.innerText=d.motd.clean.join(" ");
-    if(d.icon)sicon.innerHTML=`<img src="${d.icon}" width="64">`;
+    const on=d.online;
+    sbadge.innerHTML=on
+      ?'<span class="badge good">ONLINE</span>'
+      :'<span class="badge bad">OFFLINE</span>';
+    log.push({t:Date.now(),o:on});
+    localStorage.setItem("uptime",JSON.stringify(log));
+    if(on&&last!=="on"){send("🟢 Server ONLINE");last="on"}
+    if(!on&&last!=="off"){send("🔴 Server OFFLINE");last="off"}
+    drawUptime();updateStats();
   });
 }
+function send(m){
+  fetch(WEBHOOK,{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({content:m})
+  });
+}
+const ug=uptimeGraph.getContext("2d");
+function drawUptime(){
+  ug.clearRect(0,0,uptimeGraph.width,uptimeGraph.height);
+  const w=uptimeGraph.width/log.length;
+  log.forEach((x,i)=>{
+    ug.fillStyle=x.o?"#0f0":"#f33";
+    ug.fillRect(i*w,0,w-1,uptimeGraph.height);
+  });
+}
+function updateStats(){
+  if(!premiumToggle.checked)return;
+  const n=Date.now();
+  const c24=log.filter(x=>x.t>n-86400000);
+  const c7=log.filter(x=>x.t>n-604800000);
+  up24.innerText=Math.round(c24.filter(x=>x.o).length/c24.length*100||0)+"%";
+  up7.innerText=Math.round(c7.filter(x=>x.o).length/c7.length*100||0)+"%";
+  uptimeStats.style.display="block";
+}
 
-/* PAPER */
-const builds={
-"1.21.11":39,"1.21.10":89,"1.21.9":59,"1.21.8":60,
-"1.20.4":499,"1.19.4":550,"1.18.2":388,"1.8.8":445
-};
+/* PAPER BUILDS */
+const builds={"1.21":130,"1.20.4":499,"1.19.4":550,"1.18.2":388};
 function checkBuild(){
-  result.innerText=builds[ver.value]
-   ?`The paper build number of ${ver.value} is ${builds[ver.value]}`
-   :"Version not found ❌";
-}
-
-/* PING API */
-const API="https://ping-yies.onrender.com/ping";
-const ctx=document.getElementById("graph").getContext("2d");
-let hist=[];
-const map=L.map('map').setView([20,0],2);
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-
-function checkPing(){
-  fetch(`${API}?ip=${ip.value}&port=${port.value}&type=${type.value}`)
-  .then(r=>r.json()).then(d=>{
-    if(!d.online){statusp.innerText="Offline ❌";return}
-    hist.push(d.ping);if(hist.length>20)hist.shift();
-    pingv.innerText=`Ping: ${d.ping} ms`;
-    quality.innerText=d.ping<120?"GOOD":d.ping<200?"MEDIUM":"BAD";
-    draw();
-  });
-}
-function draw(){
-  ctx.clearRect(0,0,graph.width,graph.height);
-  ctx.beginPath();ctx.strokeStyle="#0ff";
-  hist.forEach((p,i)=>{
-    const x=i*(graph.width/(hist.length-1||1));
-    const y=graph.height-p;
-    i?ctx.lineTo(x,y):ctx.moveTo(x,y);
-  });
-  ctx.stroke();
+  buildRes.innerText=builds[ver.value]
+    ?`## Build number is ${builds[ver.value]}`
+    :"## Build not found";
 }
 </script>
-
 </body>
 </html>
