@@ -1,348 +1,146 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SKA HOSTING | Official Dashboard</title>
-    
-    <link href="https://fonts.cdnfonts.com/css/minecraft-4" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<meta charset="UTF-8">
+<title>SKA HOSTING</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <style>
-        :root {
-            --primary: #00ffff;
-            --secondary: #9d00ff;
-            --bg-dark: rgba(0, 0, 0, 0.7);
-            --neon-shadow: 0 0 15px var(--primary);
-        }
-
-        * { box-sizing: border-box; font-family: 'Minecraft', sans-serif; }
-        
-        body {
-            margin: 0; padding: 0;
-            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.8)), 
-                        url('https://i.ibb.co/3ykS8Vz/fx58j1opheu71.gif') center/cover fixed;
-            color: white; overflow-x: hidden; min-height: 100vh;
-        }
-
-        #particles { position: fixed; top: 0; left: 0; z-index: 1; pointer-events: none; }
-
-        /* Auth Screen */
-        #auth-screen {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.9);
-            display: flex; justify-content: center; align-items: center; z-index: 1000;
-        }
-        .auth-box {
-            background: rgba(15, 15, 15, 0.9); border: 2px solid var(--primary);
-            padding: 30px; border-radius: 15px; width: 350px; text-align: center;
-            box-shadow: var(--neon-shadow);
-        }
-        .auth-input {
-            width: 100%; padding: 12px; margin: 10px 0; background: #000;
-            border: 1px solid #333; color: var(--primary); border-radius: 5px;
-        }
-        .auth-btn {
-            width: 100%; padding: 12px; background: var(--primary); color: #000;
-            font-weight: bold; border: none; cursor: pointer; transition: 0.3s;
-        }
-        .auth-btn:hover { box-shadow: 0 0 20px var(--primary); transform: scale(1.02); }
-
-        /* Dashboard */
-        #dashboard-screen { display: none; position: relative; z-index: 10; padding: 20px; }
-
-        header { text-align: center; margin-bottom: 30px; }
-        .logo-container {
-            width: 120px; height: 120px; margin: 0 auto 15px;
-            border: 3px solid var(--primary); border-radius: 50%;
-            overflow: hidden; box-shadow: var(--neon-shadow);
-            animation: rotate360 30s linear infinite;
-        }
-        .logo-container img { width: 100%; height: 100%; object-fit: cover; }
-        @keyframes rotate360 { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
-        .typing-text { min-height: 25px; color: var(--primary); font-size: 1.2rem; text-shadow: var(--neon-shadow); }
-
-        .grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px; max-width: 1100px; margin: 0 auto;
-        }
-
-        .card {
-            background: var(--bg-dark); border: 1px solid rgba(255,255,255,0.1);
-            padding: 20px; border-radius: 15px; text-align: center;
-            backdrop-filter: blur(10px); transition: 0.3s; position: relative;
-        }
-        .card:hover { border-color: var(--primary); transform: translateY(-5px); }
-
-        .locked-overlay {
-            position: absolute; inset: 0; background: rgba(0,0,0,0.8);
-            display: none; flex-direction: column; justify-content: center;
-            align-items: center; color: #ff3333; z-index: 5; border-radius: 15px;
-        }
-        .card.is-locked .locked-overlay { display: flex; }
-
-        .btn-action {
-            display: block; width: 100%; padding: 12px; margin: 10px 0;
-            background: #111; color: var(--primary); border: 1px solid var(--primary);
-            text-decoration: none; font-weight: bold; cursor: pointer;
-        }
-        .btn-action:hover { background: var(--primary); color: #000; }
-
-        /* Tool Sections */
-        .tool-section { display: none; max-width: 700px; margin: 20px auto; }
-        .active-tool { display: block; animation: slideUp 0.4s ease; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-
-        .back-btn { background: #333; color: white; border: none; padding: 5px 15px; cursor: pointer; float: right; }
-
-        /* Utils */
-        .logout-btn { position: fixed; top: 10px; right: 10px; font-size: 10px; padding: 5px; background: #ff3333; border: none; color: white; border-radius: 3px; cursor: pointer; }
-        #map { height: 200px; width: 100%; margin-top: 10px; border-radius: 8px; }
-        footer { margin-top: 50px; text-align: center; border-top: 1px solid #333; padding: 20px; background: rgba(0,0,0,0.8); }
-        .discord-icon { width: 40px; cursor: pointer; margin-top: 10px; }
-
-    </style>
+<style>
+body { background:#000; color:#0ff; font-family: monospace; }
+.auth-box { width:300px; margin:100px auto; padding:20px; border:1px solid #0ff; }
+input, button { width:100%; padding:10px; margin:5px 0; }
+#dashboard { display:none; }
+#admin-tools { display:none; border:2px solid red; padding:10px; margin:10px; }
+</style>
 </head>
+
 <body>
 
-    <canvas id="particles"></canvas>
-    <audio id="clickSound" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.m4a"></audio>
+<!-- AUTH -->
+<div id="auth">
+  <div class="auth-box">
+    <h3>LOGIN</h3>
+    <input id="user" placeholder="Username">
+    <input id="pass" type="password" placeholder="Password">
+    <button onclick="login()">LOGIN</button>
 
-    <div id="auth-screen">
-        <div class="auth-box">
-            <h2 id="auth-title">SKA LOGIN</h2>
-            <div id="login-fields">
-                <input type="text" id="user-input" class="auth-input" placeholder="Username">
-                <input type="password" id="pass-input" class="auth-input" placeholder="Password">
-                <button onclick="handleAuth('login')" class="auth-btn">LOGIN</button>
-                <p style="font-size: 12px; cursor: pointer; color: #888;" onclick="toggleAuthUI(true)">New here? Register</p>
-            </div>
-            <div id="register-fields" style="display:none;">
-                <input type="text" id="reg-user" class="auth-input" placeholder="Choose Username">
-                <input type="password" id="reg-pass" class="auth-input" placeholder="Choose Password">
-                <button onclick="handleAuth('register')" class="auth-btn" style="background:var(--secondary); color:white;">REGISTER</button>
-                <p style="font-size: 12px; cursor: pointer; color: #888;" onclick="toggleAuthUI(false)">Back to Login</p>
-            </div>
-            <p id="auth-error" style="color:red; font-size:12px; margin-top:10px;"></p>
-        </div>
-    </div>
+    <hr>
 
-    <div id="dashboard-screen">
-        <button class="logout-btn" onclick="logout()">LOGOUT</button>
-        
-        <header>
-            <div class="logo-container">
-                <img src="https://i.ibb.co/XF8gYgC/sourin.gif" alt="Logo">
-            </div>
-            <h1>SKA HOSTING</h1>
-            <div id="header-typing" class="typing-text"></div>
-        </header>
+    <h4>REGISTER (User only)</h4>
+    <input id="ruser" placeholder="Username">
+    <input id="rpass" type="password" placeholder="Password">
+    <button onclick="register()">REGISTER</button>
 
-        <div id="admin-tools" class="card" style="display:none; border: 2px solid red; margin-bottom: 20px;">
-            <h3 style="color:red;">👑 ADMIN PANEL</h3>
-            <div style="text-align: left; display: inline-block;">
-                <label><input type="checkbox" onchange="toggleLock('status')"> Lock Server Status</label><br>
-                <label><input type="checkbox" onchange="toggleLock('ping')"> Lock Server Ping</label><br>
-                <label><input type="checkbox" onchange="toggleLock('paper')"> Lock Paper Builds</label>
-            </div>
-        </div>
+    <p id="err" style="color:red;"></p>
+  </div>
+</div>
 
-        <div id="main-menu" class="grid">
-            <div class="card">
-                <h3>Free Dashboard</h3>
-                <button onclick="window.open('https://dash.sgaming9107.qzz.io','_blank')" class="btn-action">OPEN LINK</button>
-            </div>
-            <div class="card" id="premium-card">
-                <div class="locked-overlay">LOCKED</div>
-                <h3>Premium Dashboard</h3>
-                <button onclick="window.open('https://dash2.sgaming9107.qzz.io','_blank')" class="btn-action" style="color:gold; border-color:gold;">OPEN LINK</button>
-            </div>
-            <div class="card">
-                <h3>Server Tools</h3>
-                <button onclick="openTool('status-tool')" class="btn-action">Server Status</button>
-                <button onclick="openTool('ping-tool')" class="btn-action">Server Ping</button>
-                <button onclick="openTool('paper-tool')" class="btn-action">Paper Builds</button>
-            </div>
-        </div>
+<!-- DASHBOARD -->
+<div id="dashboard">
+  <h2>Welcome <span id="who"></span></h2>
+  <button onclick="logout()">LOGOUT</button>
 
-        <div id="status-tool" class="card tool-section">
-            <button class="back-btn" onclick="closeTools()">X</button>
-            <h3>Server Status</h3>
-            <input id="st-ip" class="auth-input" placeholder="play.hypixel.net">
-            <input id="st-port" class="auth-input" placeholder="25565">
-            <select id="st-type" class="auth-input">
-                <option value="java">Java</option>
-                <option value="bedrock">Bedrock</option>
-            </select>
-            <button class="auth-btn" onclick="checkServer()">CHECK</button>
-            <div id="st-res" style="margin-top:15px; text-align:left; font-size:14px;"></div>
-        </div>
+  <div id="admin-tools">
+    <h3>👑 ADMIN TOOLS</h3>
+    <p>Only admin can see this</p>
+  </div>
 
-        <div id="ping-tool" class="card tool-section">
-            <button class="back-btn" onclick="closeTools()">X</button>
-            <h3>Server Ping & Graph</h3>
-            <input id="pg-ip" class="auth-input" placeholder="IP Address">
-            <button class="auth-btn" onclick="startPing()">START PING</button>
-            <div id="pg-info" style="margin:10px 0;">Ping: -- ms</div>
-            <canvas id="pingChart" height="150"></canvas>
-            <div id="map"></div>
-        </div>
+  <div id="user-tools">
+    <h3>User Dashboard</h3>
+    <p>Normal users only</p>
+  </div>
+</div>
 
-        <div id="paper-tool" class="card tool-section">
-            <button class="back-btn" onclick="closeTools()">X</button>
-            <h3>Paper Build Finder</h3>
-            <select id="pp-ver" class="auth-input" onchange="findPaper()"></select>
-            <div id="pp-res" style="font-size:20px; margin-top:20px; color:var(--primary);">## Result</div>
-        </div>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-        <footer>
-            <div id="footer-typing" class="footer-typing" style="color:#888; font-size:12px;"></div>
-            <img src="https://cdn-icons-png.flaticon.com/512/3670/3670157.png" class="discord-icon" onclick="window.open('https://discord.gg/C46pnM3Xz')">
-            <p>© 2026 SKA HOSTING NETWORK</p>
-        </footer>
-    </div>
+const firebaseConfig = {
+  apiKey: "AIzaSyBvlOV7L3g_lBDRR7mcNincGVyM16xtd90",
+  authDomain: "ska-web-168fe.firebaseapp.com",
+  projectId: "ska-web-168fe"
+};
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyBvlOV7L3g_lBDRR7mcNincGVyM16xtd90",
-            authDomain: "ska-web-168fe.firebaseapp.com",
-            databaseURL: "https://ska-web-168fe-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "ska-web-168fe",
-            appId: "1:782823377176:web:e2f62ba16d5fe0af7f366d"
-        };
+// 🔑 ADMIN CREDENTIALS
+const ADMIN_USER = "skahosting";
+const ADMIN_PASS = "Z62BGma)qTi!Szs";
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getDatabase(app);
+// 🔐 LOGIN
+window.login = async () => {
+  const u = user.value.trim().toLowerCase();
+  const p = pass.value;
+  err.innerText = "";
 
-        const ADMIN_ID = "skahosting";
-        const ADMIN_PW = "Z62BGma)qTi!Szs";
+  // 👑 ADMIN LOGIN (NO FIREBASE)
+  if (u === ADMIN_USER && p === ADMIN_PASS) {
+    sessionStorage.setItem("role", "admin");
+    sessionStorage.setItem("user", u);
+    showDashboard();
+    return;
+  }
 
-        // --- Auth Logic ---
-        window.handleAuth = async (type) => {
-            const u = type === 'login' ? document.getElementById('user-input').value : document.getElementById('reg-user').value;
-            const p = type === 'login' ? document.getElementById('pass-input').value : document.getElementById('reg-pass').value;
-            const err = document.getElementById('auth-error');
+  // 👤 NORMAL USER LOGIN
+  const email = `${u}@ska.local`;
 
-            if(u === ADMIN_ID && p === ADMIN_PW) {
-                sessionStorage.setItem('ska_user', u);
-                sessionStorage.setItem('ska_role', 'admin');
-                location.reload(); return;
-            }
+  try {
+    await signInWithEmailAndPassword(auth, email, p);
+    sessionStorage.setItem("role", "user");
+    sessionStorage.setItem("user", u);
+    showDashboard();
+  } catch (e) {
+    err.innerText = "Login failed";
+  }
+};
 
-            const email = u.toLowerCase() + "@ska.com";
-            try {
-                if(type === 'register') {
-                    await createUserWithEmailAndPassword(auth, email, p);
-                    alert("Registered! Please login.");
-                    toggleAuthUI(false);
-                } else {
-                    await signInWithEmailAndPassword(auth, email, p);
-                    sessionStorage.setItem('ska_user', u);
-                    sessionStorage.setItem('ska_role', 'user');
-                    location.reload();
-                }
-            } catch(e) { err.innerText = e.message; }
-        };
+// 📝 REGISTER (USER ONLY)
+window.register = async () => {
+  const u = ruser.value.trim().toLowerCase();
+  const p = rpass.value;
+  err.innerText = "";
 
-        window.logout = () => { sessionStorage.clear(); location.reload(); };
+  if (!/^[a-z0-9]{3,15}$/.test(u)) {
+    err.innerText = "Invalid username";
+    return;
+  }
 
-        // --- UI Logic ---
-        window.toggleAuthUI = (reg) => {
-            document.getElementById('login-fields').style.display = reg ? 'none' : 'block';
-            document.getElementById('register-fields').style.display = reg ? 'block' : 'none';
-        };
+  if (p.length < 6) {
+    err.innerText = "Password min 6 char";
+    return;
+  }
 
-        if(sessionStorage.getItem('ska_user')) {
-            document.getElementById('auth-screen').style.display = 'none';
-            document.getElementById('dashboard-screen').style.display = 'block';
-            if(sessionStorage.getItem('ska_role') === 'admin') document.getElementById('admin-tools').style.display = 'block';
-            startTyping();
-            loadLocks();
-        }
+  const email = `${u}@ska.local`;
 
-        // --- Tool Logic ---
-        window.openTool = (id) => {
-            document.getElementById('main-menu').style.display = 'none';
-            document.querySelectorAll('.tool-section').forEach(t => t.classList.remove('active-tool'));
-            document.getElementById(id).classList.add('active-tool');
-        };
-        window.closeTools = () => {
-            document.querySelectorAll('.tool-section').forEach(t => t.classList.remove('active-tool'));
-            document.getElementById('main-menu').style.display = 'grid';
-        };
+  try {
+    await createUserWithEmailAndPassword(auth, email, p);
+    alert("Registered! Login now.");
+  } catch (e) {
+    err.innerText = "User already exists";
+  }
+};
 
-        // --- Ping Tool ---
-        let chart;
-        window.startPing = () => {
-            const ip = document.getElementById('pg-ip').value;
-            if(!ip) return;
-            const ctx = document.getElementById('pingChart').getContext('2d');
-            if(chart) chart.destroy();
-            chart = new Chart(ctx, {
-                type: 'line',
-                data: { labels: [], datasets: [{ label: 'ms', data: [], borderColor: '#0ff', tension: 0.3 }] },
-                options: { scales: { x: { display: false } } }
-            });
-            setInterval(async () => {
-                const start = Date.now();
-                try {
-                    await fetch(`https://api.mcsrvstat.us/2/${ip}`);
-                    const ms = Date.now() - start;
-                    document.getElementById('pg-info').innerText = `Ping: ${ms} ms`;
-                    chart.data.labels.push(""); chart.data.datasets[0].data.push(ms);
-                    if(chart.data.labels.length > 15) { chart.data.labels.shift(); chart.data.datasets[0].data.shift(); }
-                    chart.update();
-                } catch(e) {}
-            }, 3000);
-        };
+// 🚪 LOGOUT
+window.logout = () => {
+  sessionStorage.clear();
+  location.reload();
+};
 
-        // --- Paper Builds ---
-        const builds = {"1.21.1": 133, "1.20.4": 499, "1.19.2": 307, "1.8.8": 445}; // Short version for example
-        const pSel = document.getElementById('pp-ver');
-        Object.keys(builds).forEach(v => pSel.innerHTML += `<option value="${v}">${v}</option>`);
-        window.findPaper = () => {
-            const v = pSel.value;
-            document.getElementById('pp-res').innerText = `The paper number of ## ${v} is ${builds[v]}`;
-        };
+// 🖥 SHOW DASHBOARD
+function showDashboard() {
+  auth.style.display = "none";
+  dashboard.style.display = "block";
+  who.innerText = sessionStorage.getItem("user");
 
-        // --- Typing ---
-        function startTyping() {
-            const t1 = "WELCOME IN MY GAMING NETWORK";
-            const t2 = "SKA Hosting offers the best 24/7 uptime for Minecraft servers with high-speed SSDs.";
-            let i = 0, j = 0;
-            function run1() {
-                if(i < t1.length) { document.getElementById('header-typing').innerHTML += t1[i++]; setTimeout(run1, 100); }
-                else setTimeout(() => { document.getElementById('header-typing').innerHTML = ""; i=0; run1(); }, 180000);
-            }
-            function run2() {
-                if(j < t2.length) { document.getElementById('footer-typing').innerHTML += t2[j++]; setTimeout(run2, 50); }
-                else setTimeout(() => { document.getElementById('footer-typing').innerHTML = ""; j=0; run2(); }, 180000);
-            }
-            run1(); run2();
-        }
+  if (sessionStorage.getItem("role") === "admin") {
+    admin-tools.style.display = "block";
+  }
+}
 
-        // --- Admin Locks ---
-        window.toggleLock = (key) => {
-            let l = JSON.parse(localStorage.getItem('ska_locks') || '{}');
-            l[key] = !l[key];
-            localStorage.setItem('ska_locks', JSON.stringify(l));
-            alert("Lock updated!");
-        };
-        function loadLocks() {
-            if(sessionStorage.getItem('ska_role') === 'admin') return;
-            let l = JSON.parse(localStorage.getItem('ska_locks') || '{}');
-            if(l.status) document.getElementById('status-tool').innerHTML = "<h1>LOCKED BY ADMIN</h1>";
-            if(l.ping) document.getElementById('ping-tool').innerHTML = "<h1>LOCKED BY ADMIN</h1>";
-        }
-    </script>
+// 🔄 AUTO LOGIN
+if (sessionStorage.getItem("user")) showDashboard();
+</script>
+
 </body>
 </html>
-
