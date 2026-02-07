@@ -2,248 +2,480 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>SKA HOSTING</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SKA HOSTING - Ultimate Gaming Network</title>
+<link href="https://fonts.cdnfonts.com/css/minecraft-4" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-*{box-sizing:border-box;font-family:'Segoe UI',Arial}
-body{
-  margin:0;min-height:100vh;color:#0ff;
-  background:
-   linear-gradient(rgba(0,0,0,.5),rgba(0,0,0,.5)),
-   url("fx58j1opheu71.gif") center/cover fixed;
-}
-.center{text-align:center}
-.hidden{display:none}
+    :root {
+        --primary: #00ffff;
+        --secondary: #9d00ff;
+        --dark: #050505;
+        --glass: rgba(0, 0, 0, 0.75);
+        --glass-border: 1px solid rgba(0, 255, 255, 0.3);
+    }
 
-/* ====== GAMING UI ====== */
-.card{
-  max-width:520px;margin:20px auto;
-  padding:22px;border-radius:22px;
-  background:rgba(0,0,0,.55);
-  backdrop-filter:blur(12px);
-  box-shadow:0 0 25px #00ffff55;
-  animation:fadeIn .5s ease;
-}
-@keyframes fadeIn{from{opacity:0;transform:scale(.95)}to{opacity:1}}
-input,select{
-  width:100%;padding:12px;margin:8px 0;
-  border-radius:12px;border:none;
-  background:#000;color:#0ff;
-  box-shadow:inset 0 0 10px #00ffff55;
-}
-button{
-  width:100%;padding:12px;margin:8px 0;
-  border:none;border-radius:14px;
-  background:#0ff;color:#000;
-  font-weight:bold;
-  cursor:pointer;
-  transition:.2s;
-  box-shadow:0 0 15px #0ff;
-}
-button:hover{box-shadow:0 0 25px #0ff}
-button:active{transform:scale(.93)}
+    * { box-sizing: border-box; font-family: 'Minecraft', sans-serif; user-select: none; }
+    
+    body {
+        margin: 0;
+        min-height: 100vh;
+        background: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.9)), 
+                    url('fx58j1opheu71.gif') center/cover fixed; /* Background Image */
+        color: white;
+        overflow-x: hidden;
+    }
 
-.neon{text-shadow:0 0 12px #0ff}
-canvas{width:100%;height:150px;margin-top:10px}
+    /* Particles Container */
+    #particles {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        pointer-events: none; z-index: 0;
+    }
 
-#logo{
-  width:64px;
-  animation:spin 30s linear infinite;
-}
-@keyframes spin{
-  from{transform:rotate(0)}
-  to{transform:rotate(360deg)}
-}
+    /* Container */
+    .container {
+        position: relative; z-index: 2;
+        max-width: 1200px; margin: 0 auto; padding: 20px;
+        display: flex; flex-direction: column; min-height: 100vh;
+    }
+
+    /* --- LOGIN SCREEN --- */
+    #auth-screen {
+        display: flex; flex-direction: column; justify-content: center; align-items: center;
+        height: 100vh; width: 100%; position: absolute; top:0; left:0; z-index: 100;
+        background: rgba(0,0,0,0.95); backdrop-filter: blur(10px);
+    }
+    .auth-box {
+        background: var(--glass); border: var(--glass-border);
+        padding: 40px; border-radius: 15px; width: 350px;
+        box-shadow: 0 0 30px var(--primary); text-align: center;
+    }
+    .auth-input {
+        width: 100%; padding: 12px; margin: 10px 0;
+        background: #111; border: 1px solid #333; color: var(--primary);
+        border-radius: 5px; outline: none;
+    }
+    .auth-btn {
+        width: 100%; padding: 12px; margin-top: 10px;
+        background: var(--primary); color: black; font-weight: bold;
+        border: none; cursor: pointer; transition: 0.3s;
+    }
+    .auth-btn:hover { box-shadow: 0 0 15px var(--primary); }
+    .switch-link { margin-top: 15px; font-size: 12px; cursor: pointer; color: #888; text-decoration: underline; }
+
+    /* --- MAIN DASHBOARD --- */
+    #dashboard-screen { display: none; }
+
+    /* Header */
+    header {
+        display: flex; flex-direction: column; align-items: center; margin-bottom: 40px;
+    }
+    .logo-img {
+        width: 150px; height: 150px; border-radius: 50%;
+        border: 4px solid var(--primary); box-shadow: 0 0 40px var(--primary);
+        animation: rotate360 30s linear infinite;
+        margin-bottom: 20px;
+    }
+    @keyframes rotate360 { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+    h1 { font-size: 2.5rem; text-shadow: 0 0 20px var(--secondary); margin: 0; letter-spacing: 2px; }
+    
+    .typing-container {
+        min-height: 30px; margin-top: 10px;
+        color: var(--primary); font-size: 1.2rem; text-shadow: 0 0 10px var(--primary);
+    }
+
+    /* Logout Button */
+    .logout-btn {
+        position: absolute; top: 20px; right: 20px;
+        padding: 5px 10px; background: red; color: white; border: none;
+        font-size: 10px; border-radius: 5px; cursor: pointer; opacity: 0.7;
+    }
+    .logout-btn:hover { opacity: 1; }
+
+    /* Grid Layout */
+    .grid {
+        display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px; margin-bottom: 40px;
+    }
+
+    .card {
+        background: var(--glass); border: var(--glass-border);
+        padding: 20px; border-radius: 15px; text-align: center;
+        transition: 0.3s; position: relative; overflow: hidden;
+    }
+    .card:hover { transform: translateY(-5px); box-shadow: 0 0 20px var(--secondary); }
+    
+    /* Lock Overlay */
+    .locked-overlay {
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.8); display: flex; flex-direction: column;
+        justify-content: center; align-items: center; z-index: 10;
+        color: red; font-size: 1.5rem; display: none;
+    }
+    .card.is-locked .locked-overlay { display: flex; }
+
+    .btn-link {
+        display: block; padding: 15px; margin: 10px 0;
+        background: linear-gradient(45deg, #111, #222);
+        color: var(--primary); text-decoration: none; border: 1px solid var(--primary);
+        font-weight: bold; cursor: pointer; position: relative;
+    }
+    .btn-link:hover { background: var(--primary); color: black; }
+    
+    /* Special Admin Section */
+    #admin-panel {
+        display: none; border: 2px solid red; box-shadow: 0 0 20px red;
+        margin-bottom: 40px;
+    }
+    .admin-controls label { display: block; margin: 10px 0; cursor: pointer; }
+
+    /* --- TOOLS SECTIONS (Hidden by default) --- */
+    .tool-section { display: none; width: 100%; max-width: 800px; margin: 0 auto 50px; }
+    .tool-active { display: block; animation: fadeIn 0.5s; }
+    
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Inputs & Selects */
+    input, select {
+        width: 100%; padding: 10px; background: #000; color: var(--primary);
+        border: 1px solid var(--secondary); margin-bottom: 10px;
+    }
+    button.action-btn {
+        width: 100%; padding: 12px; background: var(--secondary); color: white;
+        border: none; font-weight: bold; cursor: pointer; text-shadow: 0 0 5px black;
+    }
+    button.back-btn {
+        background: #333; margin-bottom: 20px; width: auto; padding: 8px 20px;
+    }
+
+    /* Result Boxes */
+    .result-box {
+        margin-top: 15px; padding: 15px; background: rgba(0,255,255,0.1);
+        border-radius: 10px; text-align: left;
+    }
+    .status-indicator { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 5px; }
+    .online { background: #0f0; box-shadow: 0 0 10px #0f0; }
+    .offline { background: #f00; box-shadow: 0 0 10px #f00; }
+
+    /* Canvas */
+    canvas { background: rgba(0,0,0,0.5); border-radius: 10px; margin-top: 10px; }
+    #map { height: 250px; border-radius: 10px; margin-top: 10px; z-index: 1; }
+
+    /* Footer */
+    footer {
+        margin-top: auto; padding: 20px; text-align: center;
+        border-top: 1px solid var(--secondary); background: rgba(0,0,0,0.9);
+    }
+    .footer-typing { color: #aaa; font-size: 0.9rem; min-height: 20px; margin-bottom: 10px; }
+    .discord-btn {
+        width: 50px; cursor: pointer; transition: 0.3s;
+    }
+    .discord-btn:hover { transform: scale(1.1); filter: drop-shadow(0 0 10px #7289da); }
+
 </style>
 </head>
-
 <body>
 
-<!-- HEADER -->
-<div class="center" style="padding:18px">
-  <img id="logo" src="file_00000000387071faa7c92db633a8f726.png"><br>
-  <b class="neon">SKA HOSTING</b>
+<audio id="clickSound" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.m4a"></audio>
+<audio id="alertSound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.m4a"></audio>
+
+<canvas id="particles"></canvas>
+
+<div id="auth-screen">
+    <div class="auth-box">
+        <h2 style="color:var(--primary)">SKA LOGIN</h2>
+        <div id="login-form">
+            <input type="text" id="l-user" class="auth-input" placeholder="Username">
+            <input type="password" id="l-pass" class="auth-input" placeholder="Password">
+            <button onclick="login()" class="auth-btn">ENTER NETWORK</button>
+            <div class="switch-link" onclick="toggleAuth('register')">Create Account</div>
+        </div>
+        <div id="register-form" style="display:none">
+            <input type="text" id="r-user" class="auth-input" placeholder="New Username">
+            <input type="password" id="r-pass" class="auth-input" placeholder="New Password">
+            <button onclick="register()" class="auth-btn" style="background:var(--secondary); color:white">REGISTER</button>
+            <div class="switch-link" onclick="toggleAuth('login')">Back to Login</div>
+        </div>
+    </div>
 </div>
 
-<!-- LOGIN -->
-<div id="loginBox" class="card">
-  <h2 class="center neon">Login</h2>
-  <input id="luser" placeholder="Username">
-  <input id="lpass" type="password" placeholder="Password">
-  <button onclick="login()">Login</button>
-  <button onclick="showRegister()">Register</button>
-</div>
+<div id="dashboard-screen" class="container">
+    <button onclick="logout()" class="logout-btn"><i class="fas fa-sign-out-alt"></i></button>
 
-<!-- REGISTER -->
-<div id="registerBox" class="card hidden">
-  <h2 class="center neon">Register</h2>
-  <input id="ruser" placeholder="Username">
-  <input id="rpass" type="password" placeholder="Password">
-  <button onclick="register()">Create Account</button>
-  <button onclick="backLogin()">Back</button>
-</div>
+    <header>
+        <img src="file_00000000387071faa7c92db633a8f726.png" class="logo-img" alt="SKA LOGO"> 
+        <h1>SKA HOSTING</h1>
+        <div class="typing-container" id="hero-typing"></div>
+    </header>
 
-<!-- DASHBOARD -->
-<div id="dashboard" class="hidden">
+    <div id="admin-panel" class="card">
+        <h3 style="color:red">👑 ADMIN COMMAND CENTER</h3>
+        <div class="admin-controls">
+            <label><input type="checkbox" onchange="toggleLock('server-status')"> Lock Server Status</label>
+            <label><input type="checkbox" onchange="toggleLock('server-ping')"> Lock Server Ping</label>
+            <label><input type="checkbox" onchange="toggleLock('paper-build')"> Lock Paper Build</label>
+            <label><input type="checkbox" onchange="toggleLock('premium-dash')"> Lock Premium Dashboard</label>
+            <hr>
+            <button onclick="alert('Sending Webhook Test...'); sendWebhook('Test Alert');" class="action-btn" style="background:#444">Test Discord Alert</button>
+        </div>
+        <div class="result-box">
+            <h4>Live Stats:</h4>
+            <p>Users Online: <span id="admin-user-count">1</span></p>
+            <p>System Uptime: 99.9%</p>
+        </div>
+    </div>
 
-  <!-- ADMIN TOOL -->
-  <div id="adminTools" class="card hidden">
-    <h3 class="center neon">👑 Admin Tool</h3>
-    <div class="center">Welcome Admin</div>
-  </div>
+    <div id="main-menu" class="grid">
+        <div class="card">
+            <h3>Free Minecraft Server Dashboard</h3>
+            <button onclick="openLink('http://dash.sgaming9107.qzz.io')" class="btn-link">OPEN DASHBOARD</button>
+        </div>
 
-  <!-- SERVER STATUS -->
-  <div class="card">
-    <h3 class="center neon">Server Status</h3>
-    <input id="sip" placeholder="Server IP">
-    <select id="stype">
-      <option value="java">Java</option>
-      <option value="bedrock">Bedrock</option>
-      <option value="geyser">Geyser</option>
-    </select>
-    <input id="sport" placeholder="Port (auto)">
-    <button onclick="checkStatus()">Check Status</button>
+        <div class="card" id="card-premium-dash">
+            <div class="locked-overlay"><i class="fas fa-lock"></i> LOCKED</div>
+            <h3>Premium Minecraft Server Dashboard</h3>
+            <button onclick="openLink('http://dash2.sgaming9107.qzz.io')" class="btn-link" style="border-color:gold; color:gold">OPEN PREMIUM</button>
+        </div>
 
-    <div id="serverName" class="center neon"></div>
-    <div id="serverInfo" class="center"></div>
-  </div>
+        <div class="card">
+            <h3>Server Tools</h3>
+            <button onclick="showTool('tool-status')" class="btn-link">Server Status</button>
+            <button onclick="showTool('tool-ping')" class="btn-link">Server Ping & Graph</button>
+            <button onclick="showTool('tool-paper')" class="btn-link">Paper Build ##</button>
+        </div>
 
-  <!-- SERVER PING -->
-  <div class="card">
-    <h3 class="center neon">Server Ping</h3>
-    <button onclick="checkPing()">Ping Server</button>
-    <div id="pingResult" class="center"></div>
-    <canvas id="pingGraph"></canvas>
-  </div>
+        <div class="card">
+            <h3>Own Hosting Create</h3>
+            <button onclick="openLink('https://sdgamer8263-sketch.github.io/Own-hosting-making/')" class="btn-link">START CREATION</button>
+        </div>
+    </div>
 
+    <div id="tool-status" class="card tool-section" id="card-server-status">
+        <div class="locked-overlay"><i class="fas fa-lock"></i> LOCKED</div>
+        <div style="display:flex; justify-content:space-between">
+            <h2>📊 Server Status</h2>
+            <button onclick="showMain()" class="back-btn">Back</button>
+        </div>
+        
+        <input id="st-ip" placeholder="Server Address (e.g., play.hypixel.net)">
+        <div style="display:flex; gap:10px">
+            <input id="st-port" placeholder="Port (Default: 25565)" style="width:30%">
+            <select id="st-type">
+                <option value="java">Java Edition</option>
+                <option value="bedrock">Bedrock/Geyser</option>
+            </select>
+        </div>
+        <button onclick="checkStatus()" class="action-btn">CHECK STATUS</button>
+
+        <div id="st-result" class="result-box" style="display:none">
+            <h3 id="st-name">Server Name</h3>
+            <p><span id="st-online" class="status-indicator"></span> <span id="st-text">Checking...</span></p>
+            <p>👥 Players: <span id="st-players">0/0</span></p>
+            <p>🔧 Version: <span id="st-version">?</span></p>
+            <p>🌍 MOTD: <br><span id="st-motd" style="color:#aaa; font-style:italic"></span></p>
+            <hr>
+            <button onclick="alert('Feature locked for Premium')" style="background:#333; border:none; color:#555">Enable Auto-Monitor (Premium)</button>
+        </div>
+    </div>
+
+    <div id="tool-ping" class="card tool-section" id="card-server-ping">
+        <div class="locked-overlay"><i class="fas fa-lock"></i> LOCKED</div>
+        <div style="display:flex; justify-content:space-between">
+            <h2>📡 Advanced Ping Tool</h2>
+            <button onclick="showMain()" class="back-btn">Back</button>
+        </div>
+
+        <input id="pi-ip" placeholder="IP Address">
+        <input id="pi-port" placeholder="Port" value="25565">
+        <select id="pi-type">
+            <option value="java">Java</option>
+            <option value="bedrock">Bedrock/Geyser</option>
+        </select>
+        <button onclick="startPing()" class="action-btn">START TRACKING</button>
+
+        <div class="result-box">
+            <div style="display:flex; justify-content:space-between; margin-bottom:10px">
+                <span>Current: <b id="pi-val">0 ms</b></span>
+                <span>Quality: <b id="pi-qual">-</b></span>
+            </div>
+            <div style="font-size:12px; color:#aaa; margin-bottom:5px">
+                Min: <span id="pi-min">-</span> | Max: <span id="pi-max">-</span> | Time: <span id="pi-time">-</span>
+            </div>
+            
+            <canvas id="pingChart" height="150"></canvas>
+            
+            <div id="loc-info" style="margin-top:10px">Location: <span id="pi-loc">Unknown</span></div>
+            <div id="map"></div>
+        </div>
+    </div>
+
+    <div id="tool-paper" class="card tool-section" id="card-paper-build">
+        <div class="locked-overlay"><i class="fas fa-lock"></i> LOCKED</div>
+        <div style="display:flex; justify-content:space-between">
+            <h2>📜 Paper Build Finder</h2>
+            <button onclick="showMain()" class="back-btn">Back</button>
+        </div>
+        
+        <p>Select Version to find stable build:</p>
+        <select id="pb-ver" onchange="findBuild()">
+            <option>Select Version</option>
+            </select>
+        <div id="pb-result" class="result-box" style="text-align:center; font-size:1.5rem">
+            Build: <span style="color:var(--primary)">---</span>
+        </div>
+    </div>
+
+    <footer>
+        <div class="typing-container footer-typing" id="footer-typing"></div>
+        
+        <div style="margin-top:20px">
+            <img src="https://assets-global.website-files.com/6257adef93867e56f84d3092/636e0a6a49cf127bf92de1e2_icon_clyde_blurple_RGB.png" 
+                 class="discord-btn" 
+                 onclick="openLink('https://discord.gg/C46pnM3Xz')" 
+                 alt="Discord">
+        </div>
+        <p style="font-size:10px; color:#555; margin-top:20px">SKA HOSTING © 2026. All rights reserved.</p>
+    </footer>
 </div>
 
 <script>
-/* ===== ADMIN ===== */
+/* ================= CONFIG & DATA ================= */
 const ADMIN_USER = "skahosting";
 const ADMIN_PASS = "Z62BGma)qTi!Szs";
+const WEBHOOK_URL = "https://discord.com/api/webhooks/1464870423165669432/e9uEiu1QlGpHHmsyVLQxPIoczsysaImBnYp_rio1PIhaxYMR4edq3eWJvMvon1yAx2Ix";
 
-/* ===== AUTO LOGIN ===== */
-if(sessionStorage.getItem("role")){
-  showDashboard(sessionStorage.getItem("role"));
+const paperBuilds = {
+    "1.21.11":39, "1.21.10":89, "1.21.9":59, "1.21.8":60, "1.21.7":32,
+    "1.21.6":48, "1.21.5":114, "1.21.4":232, "1.21.3":83, "1.21.1":133,
+    "1.21":130, "1.20.6":151, "1.20.5":22, "1.20.4":499, "1.20.2":318,
+    "1.20.1":196, "1.20":17, "1.19.4":550, "1.19.3":448, "1.19.2":307,
+    "1.19.1":111, "1.19":81, "1.18.2":388, "1.18.1":216, "1.18":66,
+    "1.17.1":411, "1.17":79, "1.16.5":794, "1.16.4":416, "1.16.3":253,
+    "1.16.2":189, "1.16.1":138, "1.15.2":393, "1.15.1":62, "1.15":21,
+    "1.14.4":245, "1.14.3":134, "1.14.2":107, "1.14.1":50, "1.14":17
+};
+
+/* ================= AUTH SYSTEM ================= */
+function playClick() { document.getElementById('clickSound').play().catch(()=>{}); }
+
+// Initialize
+window.onload = function() {
+    initParticles();
+    
+    // Check Session (Tab Close Logic)
+    if(sessionStorage.getItem('ska_logged_in') === 'true') {
+        showDashboard();
+    } else {
+        document.getElementById('auth-screen').style.display = 'flex';
+    }
+
+    // Populate Paper Dropdown
+    const sel = document.getElementById('pb-ver');
+    for(let ver in paperBuilds) {
+        let opt = document.createElement('option');
+        opt.value = ver; opt.text = ver; sel.add(opt);
+    }
+    
+    // Start Typers
+    typeLooper("WELCOME IN MY GAMING NETWORK", "hero-typing", 3); // 3 min loop
+    typeLooper("Why Choose SKA Hosting? Best Performance, 24/7 Uptime, Low Latency, Anti-DDoS.", "footer-typing", 3);
+};
+
+function toggleAuth(mode) {
+    playClick();
+    if(mode === 'register') {
+        document.getElementById('login-form').style.display = 'none';
+        document.getElementById('register-form').style.display = 'block';
+    } else {
+        document.getElementById('login-form').style.display = 'block';
+        document.getElementById('register-form').style.display = 'none';
+    }
 }
 
-/* ===== LOGIN ===== */
-function login(){
-  const u = luser.value.trim();
-  const p = lpass.value.trim();
-
-  // ADMIN
-  if(u === ADMIN_USER && p === ADMIN_PASS){
-    sessionStorage.setItem("role","admin");
-    showDashboard("admin");
-    return;
-  }
-
-  // NORMAL USER
-  const users = JSON.parse(localStorage.getItem("users")||"{}");
-  if(users[u] && users[u] === p){
-    sessionStorage.setItem("role","user");
-    showDashboard("user");
-    return;
-  }
-
-  alert("Wrong username or password");
+function register() {
+    const u = document.getElementById('r-user').value;
+    const p = document.getElementById('r-pass').value;
+    if(!u || !p) return alert("Fill all fields");
+    localStorage.setItem('user_'+u, p);
+    alert("Registration Successful! Please Login.");
+    toggleAuth('login');
 }
 
-/* ===== REGISTER ===== */
-function register(){
-  const u=ruser.value.trim();
-  const p=rpass.value.trim();
-  if(!u||!p) return alert("Fill all fields");
-  if(u===ADMIN_USER) return alert("Username reserved");
+function login() {
+    playClick();
+    const u = document.getElementById('l-user').value;
+    const p = document.getElementById('l-pass').value;
 
-  const users=JSON.parse(localStorage.getItem("users")||"{}");
-  if(users[u]) return alert("User already exists");
+    if(u === ADMIN_USER && p === ADMIN_PASS) {
+        sessionStorage.setItem('ska_logged_in', 'true');
+        sessionStorage.setItem('ska_role', 'admin');
+        showDashboard();
+        return;
+    }
 
-  users[u]=p;
-  localStorage.setItem("users",JSON.stringify(users));
-  alert("Registered successfully");
-  backLogin();
+    const savedPass = localStorage.getItem('user_'+u);
+    if(savedPass && savedPass === p) {
+        sessionStorage.setItem('ska_logged_in', 'true');
+        sessionStorage.setItem('ska_role', 'user');
+        showDashboard();
+    } else {
+        alert("Invalid Username or Password");
+        document.getElementById('l-user').style.border = "1px solid red";
+    }
 }
 
-function showRegister(){
-  loginBox.classList.add("hidden");
-  registerBox.classList.remove("hidden");
-}
-function backLogin(){
-  registerBox.classList.add("hidden");
-  loginBox.classList.remove("hidden");
+function logout() {
+    sessionStorage.clear();
+    location.reload();
 }
 
-function showDashboard(role){
-  loginBox.classList.add("hidden");
-  registerBox.classList.add("hidden");
-  dashboard.classList.remove("hidden");
-
-  if(role==="admin"){
-    adminTools.classList.remove("hidden");
-  }else{
-    adminTools.classList.add("hidden");
-  }
+function showDashboard() {
+    document.getElementById('auth-screen').style.display = 'none';
+    document.getElementById('dashboard-screen').style.display = 'flex';
+    
+    // Check Admin
+    if(sessionStorage.getItem('ska_role') === 'admin') {
+        document.getElementById('admin-panel').style.display = 'block';
+    } else {
+        // Apply Locks for normal users
+        applyLocks();
+    }
 }
 
-/* ===== SERVER STATUS ===== */
-function checkStatus(){
-  let ip=sip.value.trim();
-  let type=stype.value;
-  let port=sport.value.trim();
-  if(!ip) return alert("Enter IP");
+/* ================= ADMIN LOGIC ================= */
+let locks = JSON.parse(localStorage.getItem('ska_locks')) || {};
 
-  if(type==="geyser") type="java";
-  if(type==="bedrock" && !port) port=19132;
-
-  fetch(`https://api.mcsrvstat.us/2/${ip}${port?":"+port:""}`)
-  .then(r=>r.json())
-  .then(d=>{
-    serverName.innerText =
-      d.motd?.clean?.join(" ") || d.hostname || "Unknown Server";
-    serverInfo.innerHTML = d.online
-      ? `🟢 Online<br>Players: ${d.players.online}/${d.players.max}`
-      : `🔴 Offline`;
-  });
+function toggleLock(id) {
+    if(sessionStorage.getItem('ska_role') !== 'admin') return;
+    locks[id] = !locks[id];
+    localStorage.setItem('ska_locks', JSON.stringify(locks));
+    // Visual feedback for admin
+    alert(locks[id] ? "Locked " + id : "Unlocked " + id);
 }
 
-/* ===== PING ===== */
-let pingHistory=[],minPing=null,maxPing=null;
-function checkPing(){
-  const ip=sip.value.trim();
-  if(!ip) return alert("Enter IP");
-
-  fetch(`https://ping-yies.onrender.com/ping?ip=${ip}`)
-  .then(r=>r.json())
-  .then(d=>{
-    const p=d.ping;
-    const t=new Date().toLocaleTimeString();
-    pingHistory.push(p);
-    if(pingHistory.length>20) pingHistory.shift();
-    minPing=minPing===null?p:Math.min(minPing,p);
-    maxPing=maxPing===null?p:Math.max(maxPing,p);
-
-    pingResult.innerHTML=
-      `📡 ${p} ms<br>⬇ ${minPing} | ⬆ ${maxPing}<br>🕒 ${t}`;
-    drawPingGraph();
-  });
+function applyLocks() {
+    // Apply visual locks based on state
+    for (const [id, isLocked] of Object.entries(locks)) {
+        if(isLocked) {
+            // Find card container
+            let el;
+            if(id === 'server-status') el = document.getElementById('tool-status'); // logic handled in showTool
+            // Simplification: We lock entrance buttons or divs
+            if(id === 'premium-dash') document.getElementById('card-premium-dash').classList.add('is-locked');
+            if(id === 'server-status') document.getElementById('tool-status').classList.add('is-locked'); 
+            if(id === 'server-ping') document.getElementById('tool-ping').classList.add('is-locked');
+            if(id === 'paper-build') document.getElementById('tool-paper').classList.add('is-locked');
+        }
+    }
 }
-function drawPingGraph(){
-  const c=pingGraph,ctx=c.getContext("2d");
-  c.width=c.offsetWidth;c.height=150;
-  ctx.clearRect(0,0,c.width,c.height);
-  ctx.strokeStyle="#0ff";ctx.lineWidth=2;ctx.beginPath();
-  pingHistory.forEach((p,i)=>{
-    const x=i*(c.width/(pingHistory.length-1||1));
-    const y=c.height-(Math.min(p,400)/400)*c.height;
-    i?ctx.lineTo(x,y):ctx.moveTo(x,y);
-  });
-  ctx.stroke();
-}
-</script>
 
-</body>
-</html>
+function sendWebhook(msg) {
+    fetch(WEBHOOK_URL, {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ content: `🔔 SKA SYSTEM ALERT: ${msg}` })
+    }
