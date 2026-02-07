@@ -12,11 +12,13 @@
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Minecraft',sans-serif}
 body{background:#000;color:#0ff;overflow-x:hidden}
 
-/* BG */
+/* BACKGROUND */
 .bg{
-  position:fixed;inset:0;
-  background:linear-gradient(rgba(0,0,0,.7),rgba(0,0,0,.7)),
-  url("arij.gif") center/cover fixed;
+  position:fixed;
+  inset:0;
+  background:
+  linear-gradient(rgba(0,0,0,.75),rgba(0,0,0,.75)),
+  url("fx58j1opheu71.gif") center/cover fixed;
   z-index:-3;
 }
 #particles{position:fixed;inset:0;z-index:-2}
@@ -24,12 +26,20 @@ body{background:#000;color:#0ff;overflow-x:hidden}
 /* HEADER */
 header{padding:15px}
 .logo{display:flex;align-items:center;gap:15px}
-.logo img{width:55px;animation:spin 30s linear infinite}
+.logo img{
+  width:60px;
+  animation:spin 30s linear infinite;
+  filter:drop-shadow(0 0 15px #0ff)
+}
 @keyframes spin{to{transform:rotate(360deg)}}
 
 /* HOME */
 .center{text-align:center;padding:20px}
-#typing{font-size:24px;margin:40px 0;text-shadow:0 0 20px #0ff}
+#typing{
+  font-size:24px;
+  margin:40px 0;
+  text-shadow:0 0 20px #0ff;
+}
 .link{cursor:pointer;margin:10px 0}
 .btn-row{display:flex;gap:15px;justify-content:center;flex-wrap:wrap}
 .btn{
@@ -43,7 +53,7 @@ header{padding:15px}
 .page{
   display:none;max-width:520px;
   margin:30px auto;padding:20px;
-  background:rgba(0,0,0,.5);
+  background:rgba(0,0,0,.55);
   backdrop-filter:blur(14px);
   border-radius:20px;
   box-shadow:0 0 30px #0ff;
@@ -61,7 +71,8 @@ button{background:#0ff;color:#000;font-weight:bold}
 
 /* STATUS */
 .badge{
-  padding:8px;border-radius:12px;
+  padding:8px 14px;border-radius:14px;
+  font-weight:bold;
   animation:pulse 1.5s infinite
 }
 @keyframes pulse{
@@ -82,12 +93,13 @@ footer{text-align:center;padding:20px}
 </head>
 
 <body>
+
 <div class="bg"></div>
 <canvas id="particles"></canvas>
 
 <header>
   <div class="logo">
-    <img src="sourin.gif">
+    <img src="file_00000000387071faa7c92db633a8f726.png">
     <h2>SKA HOSTING</h2>
   </div>
 </header>
@@ -123,6 +135,7 @@ footer{text-align:center;padding:20px}
 <div class="page" id="status">
   <div class="back" onclick="showPage('tools')">⬅</div>
   <h2>Server Status</h2>
+
   <input id="sip" placeholder="Server IP">
   <input id="sport" placeholder="Port (optional)">
   <button onclick="checkStatus()">Check</button>
@@ -134,10 +147,11 @@ footer{text-align:center;padding:20px}
   <div id="sping"></div>
 </div>
 
-<!-- PING (EXACT API) -->
+<!-- SERVER PING -->
 <div class="page" id="ping">
   <div class="back" onclick="showPage('tools')">⬅</div>
-  <h2>MC Ping</h2>
+  <h2>MC PING DASHBOARD</h2>
+
   <input id="ip" placeholder="Server IP">
   <input id="port" value="25565">
   <select id="type">
@@ -157,7 +171,7 @@ footer{text-align:center;padding:20px}
 <!-- PAPER -->
 <div class="page" id="paper">
   <div class="back" onclick="showPage('tools')">⬅</div>
-  <h2>Paper Build</h2>
+  <h2>Paper Build Number</h2>
   <input id="ver" placeholder="Version">
   <button onclick="checkBuild()">Check</button>
   <div id="result"></div>
@@ -188,22 +202,26 @@ function openHidden(u){window.open(u,'_blank')}
 /* TYPING */
 const t="WELCOME IN MY GAMING NETWORK";let ti=0;
 setInterval(()=>{typing.innerText=t.slice(0,ti++);if(ti>t.length)ti=0},150);
+setInterval(()=>ti=0,30000);
 
 /* FOOTER */
-const ft="Our hosting is fast, secure and lag-free for gaming networks.";
+const ft="Our hosting is fast, secure, lag-free and perfect for Minecraft gaming networks.";
 let fi=0;
-setInterval(()=>{footerText.innerText=ft.slice(0,fi++);if(fi>ft.length)fi=0},120);
+setInterval(()=>{footerText.innerText=ft.slice(0,fi++);if(fi>ft.length)fi=0},120000);
 
 /* PARTICLES */
-const pc=document.getElementById("particles"),ctxp=pc.getContext("2d");
+const pc=document.getElementById("particles"),pctx=pc.getContext("2d");
 let ps=[];function rs(){pc.width=innerWidth;pc.height=innerHeight}
 onresize=rs;rs();
-for(let i=0;i<80;i++)ps.push({x:Math.random()*pc.width,y:Math.random()*pc.height});
-(function a(){
-  ctxp.clearRect(0,0,pc.width,pc.height);
-  ps.forEach(p=>{p.y+=.5;if(p.y>pc.height)p.y=0;
-    ctxp.fillStyle="#0ff";ctxp.fillRect(p.x,p.y,2,2)});
-  requestAnimationFrame(a);
+for(let i=0;i<90;i++)ps.push({x:Math.random()*pc.width,y:Math.random()*pc.height});
+(function anim(){
+  pctx.clearRect(0,0,pc.width,pc.height);
+  ps.forEach(p=>{
+    p.y+=.6;if(p.y>pc.height)p.y=0;
+    pctx.fillStyle="#0ff";
+    pctx.fillRect(p.x,p.y,2,2);
+  });
+  requestAnimationFrame(anim);
 })();
 
 /* SERVER STATUS API */
@@ -211,18 +229,22 @@ function checkStatus(){
   fetch(`https://api.mcsrvstat.us/2/${sip.value}${sport.value?":"+sport.value:""}`)
   .then(r=>r.json()).then(d=>{
     if(!d.online){
-      sbadge.innerHTML='<span class="badge bad">OFFLINE</span>';return;
+      sbadge.innerHTML='<span class="badge bad">OFFLINE</span>';
+      return;
     }
     sbadge.innerHTML='<span class="badge good">ONLINE</span>';
     splayers.innerText=`Players: ${d.players.online}/${d.players.max}`;
-    sping.innerText=`Ping: ${d.debug.ping||'N/A'} ms`;
+    sping.innerText=`Ping: ${d.debug.ping||"N/A"} ms`;
     smotd.innerText=d.motd.clean.join(" ");
     if(d.icon)sicon.innerHTML=`<img src="${d.icon}" width="64">`;
   });
 }
 
 /* PAPER */
-const builds={"1.20.4":499,"1.19.4":550,"1.18.2":388};
+const builds={
+"1.21.11":39,"1.21.10":89,"1.21.9":59,"1.21.8":60,
+"1.20.4":499,"1.19.4":550,"1.18.2":388,"1.8.8":445
+};
 function checkBuild(){
   result.innerText=builds[ver.value]
    ?`The paper build number of ${ver.value} is ${builds[ver.value]}`
@@ -257,5 +279,6 @@ function draw(){
   ctx.stroke();
 }
 </script>
+
 </body>
 </html>
