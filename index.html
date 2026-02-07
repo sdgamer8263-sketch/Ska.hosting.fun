@@ -6,52 +6,111 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <link href="https://fonts.cdnfonts.com/css/minecraft-4" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
 <style>
-*{
-  box-sizing:border-box;
-  font-family:'Minecraft',sans-serif;
+:root{
+  --neon:#0ff;
+  --bg-dark:rgba(0,0,0,.45);
 }
+body.red{--neon:#f33}
+body.purple{--neon:#b44cff}
+
+*{box-sizing:border-box;font-family:'Minecraft',sans-serif}
+
 body{
-  margin:0;
-  min-height:100vh;
+  margin:0;min-height:100vh;
   background:
    linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.45)),
-   url("fx58j1opheu71.gif") center/cover no-repeat fixed;
-  color:#0ff;
+   url("fx58j1opheu71.gif") center/cover fixed no-repeat;
+  color:var(--neon);
+  overflow-x:hidden;
 }
+
+/* PARTICLES */
+canvas#particles{
+  position:fixed;
+  inset:0;
+  z-index:-1;
+}
+
+/* COMMON */
+.hidden{display:none}
 .center{
+  min-height:100vh;
   display:flex;
   flex-direction:column;
   align-items:center;
   justify-content:center;
   text-align:center;
-  min-height:100vh;
 }
+button{
+  background:var(--neon);
+  color:#000;
+  border:none;
+  border-radius:14px;
+  padding:14px 24px;
+  margin:8px;
+  font-size:15px;
+  cursor:pointer;
+  transition:.25s;
+}
+button:hover{
+  transform:scale(1.05);
+  box-shadow:0 0 18px var(--neon);
+}
+.card{
+  width:95%;max-width:520px;
+  background:var(--bg-dark);
+  backdrop-filter:blur(14px);
+  border-radius:22px;
+  padding:20px;
+  box-shadow:0 0 30px var(--neon);
+}
+input,select{
+  width:100%;padding:12px;margin:6px 0;
+  border-radius:10px;border:none;
+  background:#111;color:var(--neon);
+}
+.back{padding:6px 16px;font-size:12px}
+.typing{font-size:22px;min-height:40px}
+
+/* LOGO */
 .logo{
-  position:absolute;
-  top:15px;
-  left:15px;
-  display:flex;
-  align-items:center;
-  gap:10px;
+  position:fixed;top:15px;left:15px;
+  display:flex;align-items:center;gap:10px;
 }
 .logo img{
-  width:45px;
-  height:45px;
+  width:45px;height:45px;
   animation:spin 30s linear infinite;
 }
-@keyframes spin{
-  to{transform:rotate(360deg)}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* FOOTER */
+footer{
+  background:rgba(0,0,0,.6);
+  text-align:center;
+  padding:18px;
 }
-#welcome{
-  font-size:22px;
-  min-height:40px;
+footer img{
+  width:34px;
+  margin-top:10px;
+  cursor:pointer;
+}
+footer .typing{font-size:14px}
+
+/* THEME SWITCH */
+.theme{
+  position:fixed;
+  top:15px;
+  right:15px;
 }
 </style>
 </head>
 
-<body>
+<body class="neon">
+
+<canvas id="particles"></canvas>
 
 <!-- LOGO -->
 <div class="logo">
@@ -59,29 +118,106 @@ body{
   <b>SKA HOSTING</b>
 </div>
 
-<!-- CENTER -->
-<div class="center">
-  <div id="welcome"></div>
+<!-- THEME SWITCH -->
+<div class="theme">
+  <button onclick="setTheme('neon')">Neon</button>
+  <button onclick="setTheme('red')">Red</button>
+  <button onclick="setTheme('purple')">Purple</button>
 </div>
 
+<!-- LANDING -->
+<section id="landing" class="center">
+  <div id="welcome" class="typing"></div>
+
+  <button onclick="openLink('https://dash.sgaming9107.qzz.io')">
+    Free Minecraft Server Dashboard
+  </button>
+  <button onclick="openLink('https://dash2.sgaming9107.qzz.io')">
+    Premium Minecraft Server Dashboard
+  </button>
+  <button onclick="alert('Server Tool demo')">Server Tool</button>
+  <button onclick="openLink('https://sdgamer8263-sketch.github.io/Own-hosting-making/')">
+    Own Hosting Create Command
+  </button>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div id="footerText" class="typing"></div>
+  <img src="https://cdn-icons-png.flaticon.com/512/2111/2111370.png"
+       onclick="openLink('https://discord.gg/C46pnM3Xz')">
+</footer>
+
 <script>
-/* WELCOME TYPING */
-const text="WELCOME IN MY GAMING NETWORK";
-let i=0;
-function typeText(){
-  if(i<=text.length){
-    welcome.innerText=text.slice(0,i++);
-    setTimeout(typeText,80);
+/* ---------- LINKS ---------- */
+function openLink(u){window.open(u,"_blank")}
+
+/* ---------- WELCOME TYPING ---------- */
+const wmsg="WELCOME IN MY GAMING NETWORK";
+let wi=0;
+function typeWelcome(){
+  if(wi<=wmsg.length){
+    welcome.innerText=wmsg.slice(0,wi++);
+    setTimeout(typeWelcome,80);
   }
 }
-typeText();
-
-/* retype after 3 minutes */
+typeWelcome();
 setInterval(()=>{
-  i=0;
-  welcome.innerText="";
-  typeText();
+  wi=0;welcome.innerText="";typeWelcome();
 },180000);
+
+/* ---------- FOOTER TYPING ---------- */
+const fmsg="Why choose SKA Hosting? Ultra fast Minecraft servers, gaming-grade stability, and community-first support.";
+let fi=0;
+function typeFooter(){
+  if(fi<=fmsg.length){
+    footerText.innerText=fmsg.slice(0,fi++);
+    setTimeout(typeFooter,60);
+  }
+}
+typeFooter();
+setInterval(()=>{
+  fi=0;footerText.innerText="";typeFooter();
+},180000);
+
+/* ---------- THEME SWITCH ---------- */
+function setTheme(t){
+  document.body.className=t;
+}
+
+/* ---------- PARTICLES ---------- */
+const canvas=document.getElementById("particles");
+const ctx=canvas.getContext("2d");
+let w,h,particles=[];
+function resize(){
+  w=canvas.width=window.innerWidth;
+  h=canvas.height=window.innerHeight;
+}
+window.onresize=resize;resize();
+
+for(let i=0;i<70;i++){
+  particles.push({
+    x:Math.random()*w,
+    y:Math.random()*h,
+    r:Math.random()*2+1,
+    vx:(Math.random()-.5)*.6,
+    vy:(Math.random()-.5)*.6
+  });
+}
+function draw(){
+  ctx.clearRect(0,0,w,h);
+  ctx.fillStyle=getComputedStyle(document.body).getPropertyValue('--neon');
+  particles.forEach(p=>{
+    p.x+=p.vx;p.y+=p.vy;
+    if(p.x<0||p.x>w)p.vx*=-1;
+    if(p.y<0||p.y>h)p.vy*=-1;
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fill();
+  });
+  requestAnimationFrame(draw);
+}
+draw();
 </script>
 
 </body>
