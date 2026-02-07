@@ -3,133 +3,239 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SKA HOSTING</title>
+<title>SKA Hosting Minecraft Dashboard</title>
 <link href="https://fonts.cdnfonts.com/css/minecraft-4" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <style>
-*{box-sizing:border-box;font-family:'Minecraft',sans-serif;margin:0;padding:0;}
-body{min-height:100vh;overflow-x:hidden;background:#000;color:#0ff;position:relative;}
-canvas#particles{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;}
-header{display:flex;align-items:center;gap:12px;padding:12px 16px;}
-.logo{width:48px;height:48px;animation:spin 30s linear infinite;}
-@keyframes spin{to{transform:rotate(360deg)}}
-.brand{font-size:22px;text-shadow:0 0 12px #0ff}
-.page{display:none}
-.page.active{display:block}
-main{text-align:center;padding:50px 12px;}
-#welcome{font-size:26px;min-height:40px;text-shadow:0 0 18px #0ff;animation:rainbow 6s linear infinite;}
-@keyframes rainbow{0%{color:red}16%{color:orange}32%{color:yellow}48%{color:green}64%{color:blue}80%{color:indigo}100%{color:violet}}
-.btn{margin:10px;padding:12px 18px;border:1px solid #0ff;background:none;color:#0ff;border-radius:10px;cursor:pointer;transition:.3s;animation:rainbow 6s linear infinite;}
-.btn:hover{background:#0ff;color:#000}
-.back{position:fixed;top:14px;right:14px;padding:8px 12px;border-radius:8px;border:1px solid #0ff;background:none;color:#0ff;}
-.card{max-width:500px;margin:30px auto;padding:20px;background:rgba(0,0,0,.45);border-radius:16px;box-shadow:0 0 20px #0ff;}
-input,select{width:100%;padding:12px;margin:8px 0;border-radius:10px;border:none;background:#111;color:#0ff;}
+*{box-sizing:border-box;font-family:'Minecraft',sans-serif}
+body{
+  margin:0;min-height:100vh;
+  background: linear-gradient(rgba(0,0,0,.75),rgba(0,0,0,.75)),
+  url("fx58j1opheu71.gif") center/cover no-repeat fixed;
+  display:flex;flex-direction:column;align-items:center;color:#0ff;
+}
+.logo{
+  position:fixed;top:20px;left:20px;width:80px;height:80px;
+  animation:rotate360 30s linear infinite;
+}
+@keyframes rotate360{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+.welcome-msg{text-align:center;margin-top:120px;font-size:28px;}
+.card{
+  width:95%;max-width:500px;padding:20px;
+  background:rgba(0,0,0,.45);backdrop-filter:blur(16px);
+  border-radius:20px;box-shadow:0 0 30px #0ff;margin-top:20px
+}
+h1{text-align:center;margin:0 0 10px}
+input,select,button{
+  width:100%;padding:12px;margin:8px 0;border-radius:10px;border:none
+}
+input,select{background:#111;color:#0ff}
+button{background:#0ff;color:#000;font-weight:bold}
+button:active{transform:scale(.97)}
 .result{text-align:center;margin-top:6px}
 .good{color:#0f0}.medium{color:#ff0}.bad{color:#f33}
-canvas{width:100%;height:150px;margin-top:10px;border-radius:10px;box-shadow:0 0 15px #0ff;}
-#map{height:200px;margin-top:10px;border-radius:12px;box-shadow:0 0 15px #0ff;}
-footer{position:fixed;bottom:0;width:100%;background:rgba(0,0,0,.6);text-align:center;padding:10px;color:#0ff;}
-#footerText{font-size:13px;min-height:16px;text-shadow:0 0 8px #0ff;animation:rainbow 6s linear infinite;}
+canvas{margin-top:10px;width:100%;height:150px;border-radius:10px;box-shadow:0 0 15px #0ff}
+#map{height:200px;width:100%;margin-top:10px;border-radius:12px;box-shadow:0 0 15px #0ff}
+.small{text-align:center;font-size:12px;opacity:.8}
+#server-info{margin-top:20px;background:rgba(0,0,0,0.5);padding:15px;border-radius:12px;color:#0ff;width:90%;max-width:500px;}
 </style>
 </head>
 <body>
-<canvas id="particles"></canvas>
-<header>
-<img src="sourin.gif" class="logo">
-<div class="brand">SKA HOSTING</div>
-</header>
 
-<!-- Pages -->
-<div id="loginPage" class="page active">
- <main>
-  <h2>Admin Login</h2>
-  <input id="username" placeholder="Username">
-  <input id="password" type="password" placeholder="Password">
-  <button class="btn" onclick="loginAdmin()">Login</button>
-  <div class="result" id="loginMsg"></div>
- </main>
+<!-- Logo -->
+<img src="file_00000000387071faa7c92db633a8f726.png" class="logo" alt="Logo">
+
+<!-- Welcome message -->
+<div class="welcome-msg" id="welcome-msg">WELCOME IN MY GAMING NETWORK</div>
+
+<!-- Dashboard buttons -->
+<div class="card">
+<h1>MC PING DASHBOARD</h1>
+<input id="ip" placeholder="Server IP (play.hypixel.net)">
+<input id="port" value="25565">
+<select id="type">
+  <option value="java">Java</option>
+  <option value="bedrock">Bedrock</option>
+  <option value="geyser">Geyser</option>
+  <option value="other">Other</option>
+</select>
+<button onclick="checkPing()">Check Ping</button>
+<div class="result" id="status">Ready</div>
+<div class="result" id="ping"></div>
+<div class="result" id="quality"></div>
+<div class="result" id="minmax"></div>
+<div class="result" id="timeinfo"></div>
+<div class="result" id="location"></div>
+<canvas id="graph"></canvas>
+<div id="map"></div>
+<div class="small">Tip: First click may wake server</div>
 </div>
 
-<div id="home" class="page">
- <main>
-  <div id="welcome"></div>
-  <button class="btn" onclick="openLink('https://dash.sgaming9107.qzz.io')">Free Minecraft Server Dashboard</button>
-  <button class="btn" onclick="openLink('https://dash2.sgaming9107.qzz.io')">Premium Minecraft Server Dashboard</button>
-  <button class="btn" onclick="show('tool')">Server Tool</button>
-  <button class="btn" id="adminToggle" style="display:none;" onclick="togglePremium()">🔒 Lock/Unlock Tools</button>
- </main>
+<!-- Live Player List, TPS/MSPT, Version & Plugins -->
+<div id="server-info">
+  <h3>🧩 Server Info</h3>
+  <ul id="live-players"></ul>
+  <div id="server-tps"></div>
+  <div id="server-mspt"></div>
+  <div id="server-version"></div>
+  <ul id="server-plugins"></ul>
 </div>
 
-<footer>
-<div id="footerText"></div>
-</footer>
-
+<audio id="alertSound" src="sounds/alert.mp3"></audio>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
 <script>
-/* --- Page Navigation --- */
-function show(id){
- document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
- document.getElementById(id).classList.add('active');
-}
-function openLink(u){window.open(u,'_blank')}
+// ----------------- PING DASHBOARD -----------------
+const API="https://ping-yies.onrender.com/ping";    
+const canvas=document.getElementById("graph"),ctx=canvas.getContext("2d");    
+let hist=[],times=[],minPing=null,maxPing=null,waking=false,marker=null;    
+let autoPingInterval=null;  
 
-/* --- Typing Animation --- */
-function type(el,text){
- el.innerHTML="";let i=0;
- const t=setInterval(()=>{el.innerHTML+=text[i++];if(i>=text.length)clearInterval(t)},60);
-}
-const wtxt="WELCOME IN MY GAMING NETWORK";
-type(welcome,wtxt);
-setInterval(()=>type(welcome,wtxt),30000); // 30 sec retype
+const map=L.map('map').setView([20,0],2);  
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19, attribution:'© OpenStreetMap'}).addTo(map);
 
-const ftxt="Why choose SKA Hosting? Fast, stable and gamer-first servers.";
-type(footerText,ftxt);
-setInterval(()=>type(footerText,ftxt),180000); // 3 min retype
+function checkPing(){
+const ip=document.getElementById("ip").value.trim();
+const port=document.getElementById("port").value.trim()||"25565";
+const type=document.getElementById("type").value;
+if(!ip){set("Enter server IP ❌");return}
 
-/* --- Admin Login --- */
-let isAdmin=false;
-function loginAdmin(){
- const u=document.getElementById("username").value.trim();
- const p=document.getElementById("password").value.trim();
- if(u==="skahosting" && p==="Z62BGma)qTi!Szs"){
-  isAdmin=true;
-  loginMsg.innerText="✅ Logged in!";
-  show('home');
-  document.getElementById("adminToggle").style.display="inline-block";
- }else loginMsg.innerText="❌ Invalid credentials";
+fetchPing(ip,port,type);
+if(autoPingInterval) clearInterval(autoPingInterval);
+autoPingInterval = setInterval(()=>fetchPing(ip,port,type),5000);
 }
 
-/* --- Admin Premium Toggle --- */
-let toolsLocked=false;
-function togglePremium(){
- toolsLocked=!toolsLocked;
- if(toolsLocked) alert("Tools Locked for non-admin users");
- else alert("Tools Unlocked for non-admin users");
+function fetchPing(ip,port,type){
+set("Checking...");
+document.getElementById("ping").innerText="";
+document.getElementById("quality").innerText="";
+
+fetch(`${API}?ip=${ip}&port=${port}&type=${type}`)
+.then(r=>r.json())
+.then(d=>{
+if(!d.online){set("Server Offline ❌");return}
+waking=false;
+
+const p=d.ping;
+
+// Min / Max
+minPing=minPing===null?p:Math.min(minPing,p);
+maxPing=maxPing===null?p:Math.max(maxPing,p);
+document.getElementById("minmax").innerText=`Min: ${minPing} ms | Max: ${maxPing} ms`;
+
+// Last check
+const now=new Date().toLocaleTimeString();
+times.push(now); if(times.length>20) times.shift();
+document.getElementById("timeinfo").innerText=`Last check: ${now}`;
+
+// Current ping
+hist.push(p); if(hist.length>20) hist.shift();
+document.getElementById("ping").innerText=`Ping: ${p} ms`;
+
+// Quality
+let t="GOOD",cls="good";
+if(p>200){t="BAD";cls="bad";playSound()}
+else if(p>120){t="MEDIUM";cls="medium"}
+document.getElementById("quality").innerHTML=`<span class="${cls}">${t}</span>`;
+
+// Location + map
+fetchLocation(ip);
+
+set("Server Online ✅");
+drawGraph();
+})
+.catch(()=>{if(!waking){waking=true;set("Waking server… tap again ⏳");}});
 }
 
-/* --- Neon Particles --- */
-const c=document.getElementById("particles");
-const ctx2=c.getContext("2d");
-let w=c.width=window.innerWidth,h=c.height=window.innerHeight;
-let particles=[];
-for(let i=0;i<100;i++){
- particles.push({x:Math.random()*w,y:Math.random()*h,r:Math.random()*2+1,d:Math.random()*2});
+function fetchLocation(ip){
+fetch(`https://ipapi.co/${ip}/json/`)
+.then(r=>r.json())
+.then(data=>{
+if(data && data.latitude && data.longitude){
+document.getElementById("location").innerText=`Server location: ${data.city || 'Unknown'}, ${data.country_name || 'Unknown'}`;
+if(marker) marker.remove();
+marker=L.marker([data.latitude,data.longitude]).addTo(map)
+.bindPopup(`Server: ${ip}<br>${data.city || 'Unknown'}, ${data.country_name || 'Unknown'}`)
+.openPopup();
+map.setView([data.latitude,data.longitude],4);
+}else{
+document.getElementById("location").innerText="Server location: Unknown";
 }
-function anim(){
- ctx2.clearRect(0,0,w,h);
- particles.forEach(p=>{
-  ctx2.beginPath();
-  ctx2.arc(p.x,p.y,p.r,0,Math.PI*2);
-  ctx2.fillStyle="rgba(0,255,255,0.7)";
-  ctx2.fill();
-  p.y+=Math.sin(p.d)+1;
-  p.x+=Math.cos(p.d);
-  if(p.x>w)p.x=0;if(p.y>h)p.y=0;
- });
- requestAnimationFrame(anim);
+})
+.catch(()=>document.getElementById("location").innerText="Server location: Unknown");
 }
-anim();
-window.onresize=()=>{w=c.width=window.innerWidth;h=c.height=window.innerHeight;}
+
+function drawGraph(){
+canvas.width=canvas.offsetWidth;
+canvas.height=150;
+ctx.clearRect(0,0,canvas.width,canvas.height);
+if(hist.length<1) return;
+
+ctx.beginPath();
+ctx.strokeStyle="#0ff";
+ctx.lineWidth=2;
+const scale = 400;
+hist.forEach((p,i)=>{
+const x = i*(canvas.width/(hist.length-1||1));
+const y = canvas.height - Math.min(p,scale)/scale*canvas.height;
+i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+});
+ctx.stroke();
+
+// optional dots
+ctx.fillStyle="#0ff";
+hist.forEach((p,i)=>{
+const x = i*(canvas.width/(hist.length-1||1));
+const y = canvas.height - Math.min(p,scale)/scale*canvas.height;
+ctx.beginPath(); ctx.arc(x,y,3,0,Math.PI*2); ctx.fill();
+});
+}
+
+function playSound(){const a=document.getElementById("alertSound");a.currentTime=0;a.play()}
+function set(s){document.getElementById("status").innerText=s}
+
+// ----------------- LIVE PLAYER LIST & SERVER INFO -----------------
+let serverData = {
+  players: ["Steve", "Alex", "Herobrine"],
+  tps: 19.8,
+  mspt: 48,
+  version: "1.21.11",
+  plugins: ["EssentialsX", "WorldEdit", "LuckPerms"]
+};
+
+function refreshServerData() {
+  const playerListEl = document.getElementById('live-players');
+  if(playerListEl) playerListEl.innerHTML = serverData.players.map(p => `<li>${p}</li>`).join('');
+
+  const tpsEl = document.getElementById('server-tps');
+  const msptEl = document.getElementById('server-mspt');
+  if(tpsEl) tpsEl.innerText = `TPS: ${serverData.tps}`;
+  if(msptEl) msptEl.innerText = `MSPT: ${serverData.mspt} ms`;
+
+  const versionEl = document.getElementById('server-version');
+  const pluginsEl = document.getElementById('server-plugins');
+  if(versionEl) versionEl.innerText = `Version: ${serverData.version}`;
+  if(pluginsEl) pluginsEl.innerHTML = serverData.plugins.map(p => `<li>${p}</li>`).join('');
+}
+
+setInterval(refreshServerData,15000);
+refreshServerData();
+
+// ----------------- WELCOME MESSAGE TYPING ANIMATION -----------------
+const welcomeEl = document.getElementById("welcome-msg");
+const welcomeText = "WELCOME IN MY GAMING NETWORK";
+let welcomeIndex=0;
+function typeWelcome(){
+  welcomeEl.innerText = "";
+  welcomeIndex=0;
+  const interval = setInterval(()=>{
+    welcomeEl.innerText += welcomeText[welcomeIndex];
+    welcomeIndex++;
+    if(welcomeIndex>=welcomeText.length) clearInterval(interval);
+  }, 100);
+}
+typeWelcome();
+setInterval(typeWelcome,180000); // 3 minutes
 </script>
 </body>
 </html>
