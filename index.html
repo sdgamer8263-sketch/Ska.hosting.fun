@@ -6,36 +6,49 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-*{box-sizing:border-box;font-family:Arial}
+*{box-sizing:border-box;font-family:'Segoe UI',Arial}
 body{
   margin:0;min-height:100vh;color:#0ff;
   background:
-   linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),
+   linear-gradient(rgba(0,0,0,.5),rgba(0,0,0,.5)),
    url("fx58j1opheu71.gif") center/cover fixed;
 }
 .center{text-align:center}
 .hidden{display:none}
+
+/* ====== GAMING UI ====== */
 .card{
   max-width:520px;margin:20px auto;
-  padding:20px;border-radius:18px;
-  background:rgba(0,0,0,.5);
-  backdrop-filter:blur(10px);
-  box-shadow:0 0 20px #0ff;
+  padding:22px;border-radius:22px;
+  background:rgba(0,0,0,.55);
+  backdrop-filter:blur(12px);
+  box-shadow:0 0 25px #00ffff55;
+  animation:fadeIn .5s ease;
 }
-input,select,button{
-  width:100%;padding:10px;margin:6px 0;
-  border-radius:8px;border:none;
+@keyframes fadeIn{from{opacity:0;transform:scale(.95)}to{opacity:1}}
+input,select{
+  width:100%;padding:12px;margin:8px 0;
+  border-radius:12px;border:none;
+  background:#000;color:#0ff;
+  box-shadow:inset 0 0 10px #00ffff55;
 }
 button{
+  width:100%;padding:12px;margin:8px 0;
+  border:none;border-radius:14px;
   background:#0ff;color:#000;
-  cursor:pointer;transition:.2s;
+  font-weight:bold;
+  cursor:pointer;
+  transition:.2s;
+  box-shadow:0 0 15px #0ff;
 }
-button:active{transform:scale(.95)}
+button:hover{box-shadow:0 0 25px #0ff}
+button:active{transform:scale(.93)}
+
+.neon{text-shadow:0 0 12px #0ff}
 canvas{width:100%;height:150px;margin-top:10px}
-.neon{text-shadow:0 0 10px #0ff}
 
 #logo{
-  width:60px;
+  width:64px;
   animation:spin 30s linear infinite;
 }
 @keyframes spin{
@@ -48,14 +61,14 @@ canvas{width:100%;height:150px;margin-top:10px}
 <body>
 
 <!-- HEADER -->
-<div class="center" style="padding:15px">
+<div class="center" style="padding:18px">
   <img id="logo" src="file_00000000387071faa7c92db633a8f726.png"><br>
   <b class="neon">SKA HOSTING</b>
 </div>
 
 <!-- LOGIN -->
 <div id="loginBox" class="card">
-  <h2 class="center">Login</h2>
+  <h2 class="center neon">Login</h2>
   <input id="luser" placeholder="Username">
   <input id="lpass" type="password" placeholder="Password">
   <button onclick="login()">Login</button>
@@ -64,11 +77,11 @@ canvas{width:100%;height:150px;margin-top:10px}
 
 <!-- REGISTER -->
 <div id="registerBox" class="card hidden">
-  <h2 class="center">Register</h2>
+  <h2 class="center neon">Register</h2>
   <input id="ruser" placeholder="Username">
   <input id="rpass" type="password" placeholder="Password">
   <button onclick="register()">Create Account</button>
-  <button onclick="backLogin()">Back to Login</button>
+  <button onclick="backLogin()">Back</button>
 </div>
 
 <!-- DASHBOARD -->
@@ -76,13 +89,13 @@ canvas{width:100%;height:150px;margin-top:10px}
 
   <!-- ADMIN TOOL -->
   <div id="adminTools" class="card hidden">
-    <h3 class="center">Admin Tool</h3>
-    <div class="center neon">Admin access enabled</div>
+    <h3 class="center neon">👑 Admin Tool</h3>
+    <div class="center">Welcome Admin</div>
   </div>
 
   <!-- SERVER STATUS -->
   <div class="card">
-    <h3 class="center">Server Status</h3>
+    <h3 class="center neon">Server Status</h3>
     <input id="sip" placeholder="Server IP">
     <select id="stype">
       <option value="java">Java</option>
@@ -98,7 +111,7 @@ canvas{width:100%;height:150px;margin-top:10px}
 
   <!-- SERVER PING -->
   <div class="card">
-    <h3 class="center">Server Ping</h3>
+    <h3 class="center neon">Server Ping</h3>
     <button onclick="checkPing()">Ping Server</button>
     <div id="pingResult" class="center"></div>
     <canvas id="pingGraph"></canvas>
@@ -107,36 +120,39 @@ canvas{width:100%;height:150px;margin-top:10px}
 </div>
 
 <script>
-/* ========== ADMIN ========== */
-const ADMIN_USER="skahosting";
-const ADMIN_PASS="Z62BGma)qTi!Szsl";
+/* ===== ADMIN ===== */
+const ADMIN_USER = "skahosting";
+const ADMIN_PASS = "Z62BGma)qTi!Szs";
 
-/* ========== AUTO LOGIN ON REFRESH ========== */
+/* ===== AUTO LOGIN ===== */
 if(sessionStorage.getItem("role")){
   showDashboard(sessionStorage.getItem("role"));
 }
 
-/* ========== LOGIN ========== */
+/* ===== LOGIN ===== */
 function login(){
-  const u=luser.value.trim();
-  const p=lpass.value.trim();
+  const u = luser.value.trim();
+  const p = lpass.value.trim();
 
-  if(u===ADMIN_USER && p===ADMIN_PASS){
+  // ADMIN
+  if(u === ADMIN_USER && p === ADMIN_PASS){
     sessionStorage.setItem("role","admin");
     showDashboard("admin");
     return;
   }
 
-  const users=JSON.parse(localStorage.getItem("users")||"{}");
-  if(users[u] && users[u]===p){
+  // NORMAL USER
+  const users = JSON.parse(localStorage.getItem("users")||"{}");
+  if(users[u] && users[u] === p){
     sessionStorage.setItem("role","user");
     showDashboard("user");
-  }else{
-    alert("Wrong username or password");
+    return;
   }
+
+  alert("Wrong username or password");
 }
 
-/* ========== REGISTER ========== */
+/* ===== REGISTER ===== */
 function register(){
   const u=ruser.value.trim();
   const p=rpass.value.trim();
@@ -148,7 +164,7 @@ function register(){
 
   users[u]=p;
   localStorage.setItem("users",JSON.stringify(users));
-  alert("Registration successful");
+  alert("Registered successfully");
   backLogin();
 }
 
@@ -165,12 +181,15 @@ function showDashboard(role){
   loginBox.classList.add("hidden");
   registerBox.classList.add("hidden");
   dashboard.classList.remove("hidden");
+
   if(role==="admin"){
     adminTools.classList.remove("hidden");
+  }else{
+    adminTools.classList.add("hidden");
   }
 }
 
-/* ========== SERVER STATUS ========== */
+/* ===== SERVER STATUS ===== */
 function checkStatus(){
   let ip=sip.value.trim();
   let type=stype.value;
@@ -183,15 +202,15 @@ function checkStatus(){
   fetch(`https://api.mcsrvstat.us/2/${ip}${port?":"+port:""}`)
   .then(r=>r.json())
   .then(d=>{
-    serverName.innerText=
+    serverName.innerText =
       d.motd?.clean?.join(" ") || d.hostname || "Unknown Server";
-    serverInfo.innerHTML=d.online
-      ?`🟢 Online<br>Players: ${d.players.online}/${d.players.max}`
-      :"🔴 Offline";
+    serverInfo.innerHTML = d.online
+      ? `🟢 Online<br>Players: ${d.players.online}/${d.players.max}`
+      : `🔴 Offline`;
   });
 }
 
-/* ========== PING ========== */
+/* ===== PING ===== */
 let pingHistory=[],minPing=null,maxPing=null;
 function checkPing(){
   const ip=sip.value.trim();
@@ -216,7 +235,7 @@ function drawPingGraph(){
   const c=pingGraph,ctx=c.getContext("2d");
   c.width=c.offsetWidth;c.height=150;
   ctx.clearRect(0,0,c.width,c.height);
-  ctx.strokeStyle="#0ff";ctx.beginPath();
+  ctx.strokeStyle="#0ff";ctx.lineWidth=2;ctx.beginPath();
   pingHistory.forEach((p,i)=>{
     const x=i*(c.width/(pingHistory.length-1||1));
     const y=c.height-(Math.min(p,400)/400)*c.height;
