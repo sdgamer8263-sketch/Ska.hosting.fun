@@ -6,291 +6,193 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
-body{background:#000;color:#0ff}
-
-/* BACKGROUND */
-.bg{
- position:fixed;inset:0;
- background:
- linear-gradient(rgba(0,0,0,.85),rgba(0,0,0,.85)),
- url("fx58j1opheu71.gif") center/cover fixed;
- z-index:-1;
+*{box-sizing:border-box;font-family:Arial,Helvetica,sans-serif}
+body{
+  margin:0;min-height:100vh;color:#0ff;
+  background:
+   linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),
+   url("fx58j1opheu71.gif") center/cover fixed;
 }
-
-/* CLICK */
-.click{transition:.2s}
-.click:active{transform:scale(.9)}
-
-/* HEADER */
-header{
- display:flex;align-items:center;
- gap:10px;padding:10px
+.center{text-align:center}
+.hidden{display:none}
+.neon{ text-shadow:0 0 10px #0ff }
+button{
+  padding:10px 18px;
+  border:none;border-radius:10px;
+  background:#0ff;color:#000;
+  cursor:pointer;
+  transition:.2s;
 }
-header h2{flex:1}
-
-/* LOGO ROTATE */
-.logo{
- width:42px;
- animation:spin 6s linear infinite
+button:active{transform:scale(.95)}
+input,select{
+  width:100%;padding:10px;margin:6px 0;
+  border-radius:8px;border:none;
 }
-@keyframes spin{
- from{transform:rotate(0deg)}
- to{transform:rotate(360deg)}
+.card{
+  background:rgba(0,0,0,.5);
+  backdrop-filter:blur(10px);
+  padding:20px;border-radius:20px;
+  max-width:500px;margin:20px auto;
+  box-shadow:0 0 20px #0ff;
 }
-
-/* SMALL LOGOUT */
-#logoutBtn{
- font-size:9px;
- padding:3px 6px;
- border-radius:8px;
- background:rgba(0,255,255,.2);
- border:none;
- cursor:pointer
+canvas{width:100%;height:150px;margin-top:10px}
+#logo{
+  width:60px;
+  animation:spin 30s linear infinite;
 }
-
-/* CENTER */
-.center{text-align:center;padding:20px}
-#typing{font-size:24px;margin:25px}
-
-/* BUTTON */
-.btn{
- background:#0ff;color:#000;
- padding:14px 24px;
- border-radius:22px;
- display:inline-block;
- margin:10px;
- font-weight:bold;
- cursor:pointer
-}
-
-/* PAGE */
-.page{
- display:none;
- max-width:720px;
- margin:30px auto;
- padding:30px;
- background:rgba(0,0,0,.65);
- border-radius:30px;
- box-shadow:0 0 40px #0ff;
- position:relative
-}
-.back{
- position:absolute;
- top:15px;right:15px;
- padding:10px 18px;
- border-radius:20px;
- background:rgba(0,255,255,.25);
- cursor:pointer
-}
-
-/* FORM */
-input,select,button{
- width:100%;
- padding:14px;
- margin:10px 0;
- border:none;border-radius:16px
-}
-input,select{background:#111;color:#0ff}
-button{background:#0ff;color:#000;font-weight:bold}
-
-/* RESULT */
-.statusBox{
- margin-top:20px;
- padding:26px;
- border-radius:26px;
- background:rgba(0,0,0,.6);
- text-align:center
-}
-.good{color:#0f0;font-weight:bold}
-.bad{color:#f33;font-weight:bold}
-
-/* LOGIN */
-#loginScreen{
- position:fixed;inset:0;
- background:#000;
- display:flex;
- align-items:center;
- justify-content:center;
- z-index:999
-}
-#loginBox{
- width:320px;
- padding:28px;
- background:rgba(0,0,0,.7);
- border-radius:26px;
- box-shadow:0 0 40px #0ff;
- text-align:center
-}
-.switch{font-size:13px;margin-top:10px;cursor:pointer}
-
-/* FOOTER */
-footer{
- text-align:center;
- padding:30px;
- margin-top:40px;
- background:rgba(0,0,0,.6)
-}
+@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
 </style>
 </head>
 
 <body>
-<div class="bg"></div>
+
+<!-- HEADER -->
+<div class="center" style="padding:20px">
+  <img id="logo" src="file_00000000387071faa7c92db633a8f726.png"><br>
+  <b class="neon">SKA HOSTING</b>
+</div>
 
 <!-- LOGIN -->
-<div id="loginScreen">
- <div id="loginBox">
-  <h3 id="authTitle">Login</h3>
-  <input id="authUser" placeholder="Username">
-  <input id="authPass" type="password" placeholder="Password">
-  <button class="click" onclick="auth()">Login</button>
-  <div id="msg"></div>
- </div>
+<div id="loginBox" class="card">
+  <h2 class="center">Login</h2>
+  <input id="luser" placeholder="Username">
+  <input id="lpass" type="password" placeholder="Password">
+  <button onclick="login()">Login</button>
+  <button onclick="showRegister()">Register</button>
 </div>
 
-<header>
- <img src="file_00000000387071faa7c92db633a8f726.png" class="logo">
- <h2>SKA HOSTING</h2>
- <button id="logoutBtn" onclick="logout()">⎋</button>
-</header>
-
-<div class="center" id="home">
- <div id="typing"></div>
-
- <div class="btn click" onclick="openHidden('https://dash.sgaming9107.qzz.io')">
-  🟢 Free Dashboard
- </div>
-
- <div class="btn click" onclick="openHidden('https://dash2.sgaming9107.qzz.io')">
-  👑 Premium Dashboard
- </div>
-
- <div class="btn click" onclick="showPage('tools')">
-  🧰 Server Tool
- </div>
-
- <div id="adminBtn" class="btn click" style="display:none" onclick="showPage('admin')">
-  👑 Admin Panel
- </div>
+<!-- REGISTER -->
+<div id="registerBox" class="card hidden">
+  <h2 class="center">Register</h2>
+  <input id="ruser" placeholder="Username">
+  <input id="rpass" type="password" placeholder="Password">
+  <button onclick="register()">Create</button>
+  <button onclick="backLogin()">Back</button>
 </div>
 
-<!-- SERVER TOOLS -->
-<div class="page" id="tools">
- <div class="back click" onclick="goHome()">⬅</div>
- <h2 style="text-align:center">Server Tool</h2>
- <div class="btn click" onclick="showPage('status')">🌐 Server Status</div>
- <div class="btn click" onclick="showPage('ping')">📡 Server Ping</div>
- <div class="btn click" onclick="showPage('paper')">📄 Paper Build Number</div>
-</div>
+<!-- DASHBOARD -->
+<div id="dashboard" class="hidden">
 
-<!-- SERVER STATUS -->
-<div class="page" id="status">
- <div class="back click" onclick="showPage('tools')">⬅</div>
- <h2 style="text-align:center">Server Status</h2>
- <input id="sip" placeholder="IP">
- <input id="sport" placeholder="Port">
- <select><option>Java</option><option>Bedrock</option><option>Geyser</option></select>
- <button class="click" onclick="checkStatus()">Check</button>
- <div class="statusBox" id="statusResult"></div>
-</div>
+  <!-- SERVER STATUS -->
+  <div class="card">
+    <h3 class="center">Server Status</h3>
+    <input id="sip" placeholder="Server IP">
+    <select id="stype">
+      <option value="java">Java</option>
+      <option value="bedrock">Bedrock</option>
+      <option value="geyser">Geyser</option>
+    </select>
+    <input id="sport" placeholder="Port (auto)">
+    <button onclick="checkStatus()">Check</button>
 
-<!-- SERVER PING -->
-<div class="page" id="ping">
- <div class="back click" onclick="showPage('tools')">⬅</div>
- <h2 style="text-align:center">Server Ping</h2>
- <input id="pip" placeholder="IP">
- <input id="pport" placeholder="Port">
- <select><option>Java</option><option>Bedrock</option><option>Geyser</option></select>
- <button class="click" onclick="checkPing()">Check</button>
- <div class="statusBox" id="pingResult"></div>
-</div>
+    <div id="sname" class="center neon"></div>
+    <div id="sinfo" class="center"></div>
+  </div>
 
-<!-- PAPER -->
-<div class="page" id="paper">
- <div class="back click" onclick="showPage('tools')">⬅</div>
- <h2 style="text-align:center">Paper Build</h2>
- <input id="ver" placeholder="Version">
- <button class="click" onclick="paper()">Check</button>
- <div class="statusBox" id="paperResult"></div>
-</div>
+  <!-- SERVER PING -->
+  <div class="card">
+    <h3 class="center">Server Ping</h3>
+    <button onclick="checkPing()">Ping</button>
+    <div id="pingInfo" class="center"></div>
+    <canvas id="pingGraph"></canvas>
+  </div>
 
-<!-- ADMIN -->
-<div class="page" id="admin">
- <div class="back click" onclick="goHome()">⬅</div>
- <h2 style="text-align:center">Admin Lock Panel</h2>
- <label><input type="checkbox" onchange="lockAll(this.checked)"> Lock All Tools</label>
 </div>
-
-<footer>
- <div id="footerText"></div>
-</footer>
 
 <script>
+/* ADMIN */
 const ADMIN_USER="skahosting";
 const ADMIN_PASS="Z62BGma)qTi!Szsl";
 
-function auth(){
- if(authUser.value===ADMIN_USER && authPass.value===ADMIN_PASS){
-  sessionStorage.setItem("admin","1");
-  loginScreen.style.display="none";
-  adminBtn.style.display="inline-block";
- }else{
-  loginScreen.style.display="none";
- }
-}
-function logout(){sessionStorage.clear();location.reload()}
-window.onload=()=>{if(!sessionStorage.getItem("admin"))loginScreen.style.display="flex"}
-
-function showPage(p){
- home.style.display="none";
- document.querySelectorAll(".page").forEach(e=>e.style.display="none");
- document.getElementById(p).style.display="block";
-}
-function goHome(){
- document.querySelectorAll(".page").forEach(e=>e.style.display="none");
- home.style.display="block";
-}
-function openHidden(u){window.open(u,"_blank")}
-
-function lockAll(v){
- if(v){sessionStorage.clear();location.reload()}
+/* SESSION */
+if(sessionStorage.getItem("login")){
+  showDashboard();
 }
 
-/* FOOTER TYPING */
-const ft=`Why choose SKA Hosting?
-✔ 24/7 Uptime
-✔ No Lag
-✔ Auto Monitoring
-✔ Secure System`;
-function footerType(){
- let i=0;
- footerText.innerText="";
- let t=setInterval(()=>{
-  footerText.innerText=ft.slice(0,i++);
-  if(i>ft.length)clearInterval(t);
- },50);
+/* LOGIN */
+function login(){
+  const u=luser.value,p=lpass.value;
+  if(u===ADMIN_USER && p===ADMIN_PASS){
+    sessionStorage.setItem("login","admin");
+    showDashboard();
+    return;
+  }
+  let users=JSON.parse(localStorage.getItem("users")||"{}");
+  if(users[u] && users[u].p===p){
+    sessionStorage.setItem("login","user");
+    showDashboard();
+  }else alert("Wrong login");
 }
-footerType();
-setInterval(footerType,180000);
+
+/* REGISTER */
+function register(){
+  let u=ruser.value,p=rpass.value;
+  if(!u||!p)return alert("Fill all");
+  if(u===ADMIN_USER)return alert("Reserved");
+  let users=JSON.parse(localStorage.getItem("users")||"{}");
+  users[u]={p};
+  localStorage.setItem("users",JSON.stringify(users));
+  alert("Registered");
+  backLogin();
+}
+function showRegister(){
+  loginBox.classList.add("hidden");
+  registerBox.classList.remove("hidden");
+}
+function backLogin(){
+  registerBox.classList.add("hidden");
+  loginBox.classList.remove("hidden");
+}
+function showDashboard(){
+  loginBox.classList.add("hidden");
+  registerBox.classList.add("hidden");
+  dashboard.classList.remove("hidden");
+}
 
 /* STATUS */
 function checkStatus(){
- fetch(`https://api.mcsrvstat.us/2/${sip.value}:${sport.value||25565}`)
- .then(r=>r.json()).then(d=>{
-  statusResult.innerHTML=d.online?
-  "<div class='good'>ONLINE</div><br>Players: "+d.players.online+"/"+d.players.max:
-  "<div class='bad'>OFFLINE</div>";
- });
+  let ip=sip.value,type=stype.value,port=sport.value;
+  if(type!=="java" && !port) port=19132;
+  fetch(`https://api.mcsrvstat.us/2/${ip}:${port}`)
+  .then(r=>r.json())
+  .then(d=>{
+    sname.innerText=d.motd?.clean?.[0]||"Unknown Server";
+    sinfo.innerHTML=
+      d.online
+      ?`🟢 Online<br>Players: ${d.players.online}/${d.players.max}`
+      :"🔴 Offline";
+  });
 }
 
 /* PING */
+let hist=[],min=null,max=null;
 function checkPing(){
- pingResult.innerText="Checking...";
+  let ip=sip.value;
+  fetch(`https://ping-yies.onrender.com/ping?ip=${ip}`)
+  .then(r=>r.json())
+  .then(d=>{
+    let p=d.ping,t=new Date().toLocaleTimeString();
+    hist.push(p); if(hist.length>20)hist.shift();
+    min=min===null?p:Math.min(min,p);
+    max=max===null?p:Math.max(max,p);
+    pingInfo.innerHTML=
+      `Ping: ${p} ms<br>Min: ${min} | Max: ${max}<br>${t}`;
+    draw();
+  });
 }
-const paperMap={"1.20.4":499,"1.19.4":550};
-function paper(){
- paperResult.innerText=paperMap[ver.value]?"## "+paperMap[ver.value]:"Not found";
+function draw(){
+  let c=pingGraph,ctx=c.getContext("2d");
+  c.width=c.offsetWidth;c.height=150;
+  ctx.clearRect(0,0,c.width,c.height);
+  ctx.strokeStyle="#0ff";ctx.beginPath();
+  hist.forEach((p,i)=>{
+    let x=i*(c.width/(hist.length-1||1));
+    let y=c.height-(p/400)*c.height;
+    i?ctx.lineTo(x,y):ctx.moveTo(x,y);
+  });
+  ctx.stroke();
 }
 </script>
+
 </body>
 </html>
