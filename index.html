@@ -11,116 +11,127 @@ body{background:#000;color:#0ff}
 
 /* BACKGROUND */
 .bg{
-  position:fixed;inset:0;
-  background:
-    linear-gradient(rgba(0,0,0,.82),rgba(0,0,0,.82)),
-    url("fx58j1opheu71.gif") center/cover fixed;
-  z-index:-1;
+ position:fixed;inset:0;
+ background:
+ linear-gradient(rgba(0,0,0,.85),rgba(0,0,0,.85)),
+ url("fx58j1opheu71.gif") center/cover fixed;
+ z-index:-1;
 }
+
+/* CLICK */
+.click{transition:.2s}
+.click:active{transform:scale(.9)}
 
 /* HEADER */
 header{
-  display:flex;align-items:center;
-  gap:12px;padding:14px
+ display:flex;align-items:center;
+ gap:12px;padding:12px
 }
 header img{width:45px}
 header h2{flex:1}
 header button{
-  padding:6px 12px;
-  font-size:12px;
-  border:none;border-radius:14px;
-  background:#0ff;color:#000;
-  cursor:pointer
+ padding:6px 12px;font-size:12px;
+ border:none;border-radius:14px;
+ cursor:pointer
 }
-
-/* BUTTON */
-.btn{
-  background:#0ff;color:#000;
-  padding:14px 22px;
-  border-radius:22px;
-  display:inline-block;
-  margin:10px;
-  cursor:pointer;
-  font-weight:bold;
-  transition:.15s;
-}
-.btn:active{transform:scale(.92);box-shadow:0 0 25px #0ff}
 
 /* CENTER */
 .center{text-align:center;padding:20px}
-#typing{font-size:24px;margin:30px}
+#typing{font-size:26px;margin:30px}
+
+/* BUTTON */
+.btn{
+ background:#0ff;color:#000;
+ padding:14px 24px;
+ border-radius:22px;
+ display:inline-block;
+ margin:10px;
+ font-weight:bold;
+ cursor:pointer
+}
 
 /* PAGE */
 .page{
-  display:none;
-  max-width:720px;
-  margin:30px auto;
-  padding:30px;
-  background:rgba(0,0,0,.7);
-  border-radius:28px;
-  box-shadow:0 0 40px #0ff;
-  position:relative
+ display:none;
+ max-width:700px;
+ margin:30px auto;
+ padding:30px;
+ background:rgba(0,0,0,.65);
+ border-radius:30px;
+ box-shadow:0 0 40px #0ff;
+ position:relative
 }
 .back{
-  position:absolute;
-  top:15px;right:15px;
-  padding:12px 20px;
-  border-radius:20px;
-  background:rgba(0,255,255,.25);
-  cursor:pointer
+ position:absolute;
+ top:15px;right:15px;
+ padding:10px 18px;
+ border-radius:20px;
+ background:rgba(0,255,255,.25);
+ cursor:pointer
 }
 
-/* INPUT */
+/* FORM */
 input,select,button{
-  width:100%;padding:14px;
-  margin:10px 0;
-  border:none;border-radius:16px
+ width:100%;
+ padding:14px;
+ margin:10px 0;
+ border:none;border-radius:16px
 }
 input,select{background:#111;color:#0ff}
 button{background:#0ff;color:#000;font-weight:bold}
 
-/* STATUS BOX */
+/* RESULT */
 .statusBox{
-  margin-top:18px;
-  padding:22px;
-  border-radius:22px;
-  background:rgba(0,0,0,.6);
-  text-align:center
+ margin-top:20px;
+ padding:25px;
+ border-radius:24px;
+ background:rgba(0,0,0,.6);
+ text-align:center
 }
-.badge{padding:6px 16px;border-radius:16px;font-weight:bold}
-.good{color:#0f0}
-.bad{color:#f33}
+.good{color:#0f0;font-weight:bold}
+.bad{color:#f33;font-weight:bold}
 
 /* GRAPH */
-canvas{
-  width:100%;
-  height:160px;
-  margin-top:15px;
-  background:#000;
-  border-radius:18px;
-  box-shadow:0 0 15px #0ff
+#pingGraph{
+ width:100%;
+ height:140px;
+ margin-top:20px;
+ border-radius:20px;
+ background:rgba(0,0,0,.4);
+ box-shadow:0 0 20px #0ff;
 }
 
 /* LOGIN */
 #loginScreen{
-  position:fixed;inset:0;
-  background:#000;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  z-index:999
+ position:fixed;inset:0;
+ background:#000;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ z-index:999
 }
 #loginBox{
-  width:320px;
-  padding:30px;
-  background:rgba(0,0,0,.7);
-  border-radius:26px;
-  box-shadow:0 0 40px #0ff;
-  text-align:center
+ width:320px;
+ padding:28px;
+ background:rgba(0,0,0,.7);
+ border-radius:26px;
+ box-shadow:0 0 40px #0ff;
+ text-align:center
 }
+.switch{font-size:13px;margin-top:10px;cursor:pointer}
+
+/* WHY */
+.why{
+ margin:30px auto;
+ max-width:700px;
+ background:rgba(0,0,0,.6);
+ padding:30px;
+ border-radius:30px
+}
+.why div{margin:12px 0}
 
 /* FOOTER */
-footer{text-align:center;padding:22px;margin-top:40px}
+footer{text-align:center;padding:20px;margin-top:40px}
 </style>
 </head>
 
@@ -129,145 +140,198 @@ footer{text-align:center;padding:22px;margin-top:40px}
 
 <!-- LOGIN -->
 <div id="loginScreen">
-  <div id="loginBox">
-    <h3>Admin Login</h3>
-    <input id="authUser" placeholder="Username">
-    <input id="authPass" type="password" placeholder="Password">
-    <button onclick="login()">Login</button>
-    <div id="msg"></div>
-  </div>
+ <div id="loginBox">
+  <h3 id="authTitle">Login</h3>
+  <input id="authUser" placeholder="Username">
+  <input id="authPass" type="password" placeholder="Password">
+  <button class="click" onclick="auth()">Login</button>
+  <div id="msg"></div>
+  <div class="switch" onclick="toggle()">New user? Register</div>
+ </div>
 </div>
 
 <header>
-  <img src="file_00000000387071faa7c92db633a8f726.png">
-  <h2>SKA HOSTING</h2>
-  <button onclick="logout()">Logout</button>
+ <img src="file_00000000387071faa7c92db633a8f726.png">
+ <h2>SKA HOSTING</h2>
+ <button onclick="logout()">Logout</button>
 </header>
 
 <div class="center" id="home">
-  <div id="typing"></div>
+ <div id="typing"></div>
 
-  <div class="btn" onclick="openHidden('https://dash.sgaming9107.qzz.io')">
-    🟢 Free Dashboard
-  </div>
+ <div class="btn click" onclick="openHidden('https://dash.sgaming9107.qzz.io')">
+  🟢 Free Dashboard
+ </div>
 
-  <div class="btn" onclick="openHidden('https://dash2.sgaming9107.qzz.io')">
-    👑 Premium Dashboard
-  </div>
+ <div class="btn click" onclick="openHidden('https://dash2.sgaming9107.qzz.io')">
+  👑 Premium Dashboard
+ </div>
 
-  <div class="btn" onclick="showPage('ping')">
-    Server Ping & Monitor
-  </div>
+ <div class="btn click" onclick="showPage('status')">
+  🌐 Server Status / Ping
+ </div>
+
+ <div id="adminBtn" class="btn click" style="display:none" onclick="showPage('admin')">
+  👑 Admin Panel
+ </div>
 </div>
 
-<!-- PING PAGE -->
-<div class="page" id="ping">
-  <div class="back" onclick="goHome()">⬅ Back</div>
-  <h2 style="text-align:center">Server Ping Monitor</h2>
+<!-- WHY -->
+<div class="why">
+ <h2>Why Choose SKA Hosting?</h2>
+ <div>✔ 24/7 Uptime Guarantee</div>
+ <div>✔ No Lag – Ultra Low Latency</div>
+ <div>✔ Real-Time Server Ping</div>
+ <div>✔ Auto Monitoring System</div>
+ <div>✔ Secure Admin Controls</div>
+</div>
 
-  <input id="ip" placeholder="Server IP">
-  <input id="port" placeholder="Port (25565 / 19132)">
-  <input id="location" placeholder="Your Location (City / ISP)">
-  <button onclick="checkPing()">Check Ping</button>
+<!-- STATUS -->
+<div class="page" id="status">
+ <div class="back click" onclick="goHome()">⬅</div>
+ <h2 style="text-align:center">Server Status & Ping</h2>
 
-  <div class="statusBox" id="pingResult"></div>
-  <canvas id="pingGraph"></canvas>
+ <input id="ip" placeholder="Server IP">
+ <input id="port" placeholder="Port (25565 / 19132)">
+ <select id="type">
+  <option>Java</option>
+  <option>Bedrock</option>
+ </select>
+
+ <button class="click" onclick="check()">Check Server</button>
+ <div class="statusBox" id="result"></div>
+ <canvas id="pingGraph"></canvas>
+</div>
+
+<!-- ADMIN -->
+<div class="page" id="admin">
+ <div class="back click" onclick="goHome()">⬅</div>
+ <h2 style="text-align:center">Admin Panel</h2>
+ <p>✔ Auto Monitoring Enabled</p>
+ <p>✔ Live Ping Tracking</p>
 </div>
 
 <footer>
-  <div id="footerText"></div>
+ <div id="footerText"></div>
 </footer>
 
 <script>
-/* ADMIN LOGIN – SESSION BASED */
+/* ADMIN */
 const ADMIN_USER="skahosting";
 const ADMIN_PASS="Z62BGma)qTi!Szs";
 
-function login(){
-  if(authUser.value===ADMIN_USER && authPass.value===ADMIN_PASS){
-    sessionStorage.setItem("login","yes");
-    loginScreen.style.display="none";
-  }else{
-    msg.innerText="Wrong credentials";
-  }
+/* LOGIN */
+let users=JSON.parse(localStorage.getItem("users"))||{};
+let reg=false;
+
+function toggle(){
+ reg=!reg;
+ authTitle.innerText=reg?"Register":"Login";
 }
-function logout(){
-  sessionStorage.clear();
-  location.reload();
-}
-if(sessionStorage.getItem("login")==="yes"){
+
+function auth(){
+ let u=authUser.value.trim(),p=authPass.value;
+ if(reg){
+  if(users[u]){msg.innerText="User exists";return}
+  users[u]={pass:p};
+  localStorage.setItem("users",JSON.stringify(users));
+  msg.innerText="Registered! Login now";
+  toggle();return;
+ }
+ if(u===ADMIN_USER && p===ADMIN_PASS){
+  sessionStorage.setItem("login","admin");
   loginScreen.style.display="none";
+  adminBtn.style.display="inline-block";
+  return;
+ }
+ if(!users[u]||users[u].pass!==p){msg.innerText="Wrong login";return}
+ sessionStorage.setItem("login","user");
+ loginScreen.style.display="none";
+}
+
+function logout(){sessionStorage.clear();location.reload()}
+window.onload=()=>{
+ let r=sessionStorage.getItem("login");
+ if(!r)loginScreen.style.display="flex";
+ else if(r==="admin")adminBtn.style.display="inline-block";
 }
 
 /* NAV */
-function showPage(id){
-  home.style.display="none";
-  document.getElementById(id).style.display="block";
+function showPage(p){
+ home.style.display="none";
+ document.getElementById(p).style.display="block";
 }
 function goHome(){
-  document.querySelectorAll(".page").forEach(p=>p.style.display="none");
-  home.style.display="block";
+ status.style.display=admin.style.display="none";
+ home.style.display="block";
 }
 function openHidden(u){window.open(u,"_blank")}
 
 /* TYPING */
 let t="WELCOME TO SKA HOSTING",i=0;
 (function type(){
-  typing.innerText=t.slice(0,i++);
-  if(i<=t.length)setTimeout(type,120);
+ typing.innerText=t.slice(0,i++);
+ if(i<=t.length)setTimeout(type,120);
 })();
-let ft="Real-time Monitoring • Stable Network • Low Latency";
-let fi=0;
+let ft="Fast • Secure • No Lag • 24/7 Uptime",fi=0;
 (function foot(){
-  footerText.innerText=ft.slice(0,fi++);
-  if(fi<=ft.length)setTimeout(foot,90);
+ footerText.innerText=ft.slice(0,fi++);
+ if(fi<=ft.length)setTimeout(foot,80);
 })();
 
-/* PING LOGIC */
-let pingHistory=[],minPing=null,maxPing=null;
+/* REAL PING GRAPH */
+let pingData=[],timer=null;
 
-function checkPing(){
-  const host=ip.value;
-  const port=port.value||25565;
-  const loc=location.value||"Unknown location";
-  const start=performance.now();
-
-  fetch(`https://api.mcsrvstat.us/2/${host}:${port}`)
-  .then(r=>r.json())
-  .then(d=>{
-    const delay=Math.floor(performance.now()-start)+Math.floor(Math.random()*20);
-    minPing=minPing===null?delay:Math.min(minPing,delay);
-    maxPing=maxPing===null?delay:Math.max(maxPing,delay);
-
-    pingHistory.push(delay);
-    if(pingHistory.length>20)pingHistory.shift();
-
-    pingResult.innerHTML=`
-      <div class="badge ${d.online?"good":"bad"}">
-        ${d.online?"ONLINE":"OFFLINE"}
-      </div><br><br>
-      📍 Location: ${loc}<br>
-      📶 Ping: ${delay} ms<br>
-      ⬇ Min: ${minPing} ms<br>
-      ⬆ Max: ${maxPing} ms<br>
-      ⏰ Time: ${new Date().toLocaleTimeString()}
-    `;
-    drawPing();
-  });
+function check(){
+ let host=ip.value, p=port.value||25565;
+ fetch(`https://api.mcsrvstat.us/2/${host}:${p}`)
+ .then(r=>r.json()).then(d=>{
+  if(!d.online){
+   result.innerHTML='<div class="bad">SERVER OFFLINE</div>';
+   return;
+  }
+  result.innerHTML=`
+   <div class="good">SERVER ONLINE</div><br>
+   <b>Name:</b> ${d.hostname||"Unknown"}<br>
+   <b>Players:</b> ${d.players.online}/${d.players.max}
+  `;
+  startPing(host,p);
+ });
 }
 
-/* PING GRAPH */
-function drawPing(){
-  const c=document.getElementById("pingGraph");
-  const ctx=c.getContext("2d");
-  c.width=c.offsetWidth;
-  c.height=160;
-  ctx.clearRect(0,0,c.width,c.height);
+function startPing(ip,port){
+ clearInterval(timer);
+ pingData=[];
+ timer=setInterval(()=>{
+  const t0=performance.now();
+  fetch(`https://api.mcsrvstat.us/2/${ip}:${port}`)
+   .then(r=>r.json())
+   .then(d=>{
+    if(!d.online) return;
+    const ping=Math.round(performance.now()-t0);
+    pingData.push(ping);
+    if(pingData.length>20) pingData.shift();
+    drawPing();
+   });
+ },5000);
+}
 
-  pingHistory.forEach((p,i)=>{
-    ctx.fillStyle="#0ff";
-    ctx.fillRect(i*(c.width/20),c.height-p/3,8,p/3);
-  });
+function drawPing(){
+ const c=document.getElementById("pingGraph");
+ const ctx=c.getContext("2d");
+ c.width=c.offsetWidth;
+ ctx.clearRect(0,0,c.width,c.height);
+ if(pingData.length<2) return;
+ const max=Math.max(...pingData);
+ ctx.beginPath();
+ ctx.strokeStyle="#0ff";
+ ctx.lineWidth=2;
+ pingData.forEach((p,i)=>{
+  const x=i*(c.width/(pingData.length-1));
+  const y=c.height-(p/max)*c.height;
+  i?ctx.lineTo(x,y):ctx.moveTo(x,y);
+ });
+ ctx.stroke();
 }
 </script>
 </body>
