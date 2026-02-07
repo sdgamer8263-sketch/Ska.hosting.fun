@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SKA HOSTING - Ultimate Gaming Network</title>
+
 <link href="https://fonts.cdnfonts.com/css/minecraft-4" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -15,7 +16,7 @@
         --primary: #00ffff;
         --secondary: #9d00ff;
         --dark: #050505;
-        --glass: rgba(0, 0, 0, 0.75);
+        --glass: rgba(0, 0, 0, 0.85);
         --glass-border: 1px solid rgba(0, 255, 255, 0.3);
     }
 
@@ -24,8 +25,9 @@
     body {
         margin: 0;
         min-height: 100vh;
-        background: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.9)), 
-                    url('fx58j1opheu71.gif') center/cover fixed; /* Background Image */
+        /* BACKGROUND IMAGE FIX: Using a high-quality online GIF */
+        background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.9)), 
+                    url('https://i.pinimg.com/originals/2a/36/45/2a3645391c5e917d2d3a3399086f6d0f.gif') center/cover fixed;
         color: white;
         overflow-x: hidden;
     }
@@ -51,21 +53,25 @@
     }
     .auth-box {
         background: var(--glass); border: var(--glass-border);
-        padding: 40px; border-radius: 15px; width: 350px;
+        padding: 40px; border-radius: 15px; width: 90%; max-width: 400px;
         box-shadow: 0 0 30px var(--primary); text-align: center;
     }
     .auth-input {
         width: 100%; padding: 12px; margin: 10px 0;
         background: #111; border: 1px solid #333; color: var(--primary);
-        border-radius: 5px; outline: none;
+        border-radius: 5px; outline: none; text-align: center;
     }
     .auth-btn {
         width: 100%; padding: 12px; margin-top: 10px;
         background: var(--primary); color: black; font-weight: bold;
         border: none; cursor: pointer; transition: 0.3s;
+        text-transform: uppercase; letter-spacing: 1px;
     }
-    .auth-btn:hover { box-shadow: 0 0 15px var(--primary); }
+    .auth-btn:hover { box-shadow: 0 0 15px var(--primary); transform: scale(1.02); }
+    .auth-btn:disabled { background: #555; cursor: not-allowed; }
+    
     .switch-link { margin-top: 15px; font-size: 12px; cursor: pointer; color: #888; text-decoration: underline; }
+    .error-msg { color: #ff3333; font-size: 12px; margin-top: 5px; min-height: 15px; }
 
     /* --- MAIN DASHBOARD --- */
     #dashboard-screen { display: none; }
@@ -76,16 +82,19 @@
     }
     .logo-img {
         width: 150px; height: 150px; border-radius: 50%;
+        /* LOGO FIX: Using a placeholder if yours is missing */
+        /* If you have 'sourin.gif', just change the src back to 'sourin.gif' */
         border: 4px solid var(--primary); box-shadow: 0 0 40px var(--primary);
         animation: rotate360 30s linear infinite;
         margin-bottom: 20px;
+        object-fit: cover;
     }
     @keyframes rotate360 { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-    h1 { font-size: 2.5rem; text-shadow: 0 0 20px var(--secondary); margin: 0; letter-spacing: 2px; }
+    h1 { font-size: 2.5rem; text-shadow: 0 0 20px var(--secondary); margin: 0; letter-spacing: 2px; text-align: center; }
     
     .typing-container {
-        min-height: 30px; margin-top: 10px;
+        min-height: 30px; margin-top: 10px; text-align: center;
         color: var(--primary); font-size: 1.2rem; text-shadow: 0 0 10px var(--primary);
     }
 
@@ -93,7 +102,7 @@
     .logout-btn {
         position: absolute; top: 20px; right: 20px;
         padding: 5px 10px; background: red; color: white; border: none;
-        font-size: 10px; border-radius: 5px; cursor: pointer; opacity: 0.7;
+        font-size: 10px; border-radius: 5px; cursor: pointer; opacity: 0.7; z-index: 10;
     }
     .logout-btn:hover { opacity: 1; }
 
@@ -113,9 +122,9 @@
     /* Lock Overlay */
     .locked-overlay {
         position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(0,0,0,0.8); display: flex; flex-direction: column;
+        background: rgba(0,0,0,0.85); display: flex; flex-direction: column;
         justify-content: center; align-items: center; z-index: 10;
-        color: red; font-size: 1.5rem; display: none;
+        color: red; font-size: 1.5rem; display: none; backdrop-filter: blur(5px);
     }
     .card.is-locked .locked-overlay { display: flex; }
 
@@ -132,7 +141,7 @@
         display: none; border: 2px solid red; box-shadow: 0 0 20px red;
         margin-bottom: 40px;
     }
-    .admin-controls label { display: block; margin: 10px 0; cursor: pointer; }
+    .admin-controls label { display: block; margin: 10px 0; cursor: pointer; text-align: left; padding-left: 20px;}
 
     /* --- TOOLS SECTIONS (Hidden by default) --- */
     .tool-section { display: none; width: 100%; max-width: 800px; margin: 0 auto 50px; }
@@ -150,12 +159,12 @@
         border: none; font-weight: bold; cursor: pointer; text-shadow: 0 0 5px black;
     }
     button.back-btn {
-        background: #333; margin-bottom: 20px; width: auto; padding: 8px 20px;
+        background: #333; margin-bottom: 20px; width: auto; padding: 8px 20px; color: white; border: none; cursor: pointer;
     }
 
     /* Result Boxes */
     .result-box {
-        margin-top: 15px; padding: 15px; background: rgba(0,255,255,0.1);
+        margin-top: 15px; padding: 15px; background: rgba(0,255,255,0.05);
         border-radius: 10px; text-align: left;
     }
     .status-indicator { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 5px; }
@@ -163,8 +172,8 @@
     .offline { background: #f00; box-shadow: 0 0 10px #f00; }
 
     /* Canvas */
-    canvas { background: rgba(0,0,0,0.5); border-radius: 10px; margin-top: 10px; }
-    #map { height: 250px; border-radius: 10px; margin-top: 10px; z-index: 1; }
+    canvas { background: rgba(0,0,0,0.5); border-radius: 10px; margin-top: 10px; width: 100%; }
+    #map { height: 250px; border-radius: 10px; margin-top: 10px; z-index: 1; width: 100%; }
 
     /* Footer */
     footer {
@@ -188,45 +197,45 @@
 
 <div id="auth-screen">
     <div class="auth-box">
-        <h2 style="color:var(--primary)">SKA LOGIN</h2>
+        <h2 style="color:var(--primary)">SKA SECURE LOGIN</h2>
+        
         <div id="login-form">
-            <input type="text" id="l-user" class="auth-input" placeholder="Username">
+            <input type="text" id="l-user" class="auth-input" placeholder="Username (e.g. Gamer123)">
             <input type="password" id="l-pass" class="auth-input" placeholder="Password">
-            <button onclick="login()" class="auth-btn">ENTER NETWORK</button>
-            <div class="switch-link" onclick="toggleAuth('register')">Create Account</div>
+            <div id="l-error" class="error-msg"></div>
+            <button id="btn-login" class="auth-btn">ENTER NETWORK</button>
+            <div class="switch-link" onclick="toggleAuth('register')">New? Create Account</div>
         </div>
+
         <div id="register-form" style="display:none">
-            <input type="text" id="r-user" class="auth-input" placeholder="New Username">
-            <input type="password" id="r-pass" class="auth-input" placeholder="New Password">
-            <button onclick="register()" class="auth-btn" style="background:var(--secondary); color:white">REGISTER</button>
+            <input type="text" id="r-user" class="auth-input" placeholder="Choose Username">
+            <input type="password" id="r-pass" class="auth-input" placeholder="Choose Password (min 6 chars)">
+            <div id="r-error" class="error-msg"></div>
+            <button id="btn-register" class="auth-btn" style="background:var(--secondary); color:white">REGISTER</button>
             <div class="switch-link" onclick="toggleAuth('login')">Back to Login</div>
         </div>
     </div>
 </div>
 
 <div id="dashboard-screen" class="container">
-    <button onclick="logout()" class="logout-btn"><i class="fas fa-sign-out-alt"></i></button>
+    <button id="btn-logout" class="logout-btn"><i class="fas fa-sign-out-alt"></i> LOGOUT</button>
 
     <header>
-        <img src="file_00000000387071faa7c92db633a8f726.png" class="logo-img" alt="SKA LOGO"> 
+        <img src="https://media.tenor.com/XF8gYgC0kGQAAAAi/minecraft-block.gif" class="logo-img" alt="SKA LOGO"> 
         <h1>SKA HOSTING</h1>
         <div class="typing-container" id="hero-typing"></div>
     </header>
 
     <div id="admin-panel" class="card">
         <h3 style="color:red">👑 ADMIN COMMAND CENTER</h3>
+        <p>Welcome, Master SKA.</p>
         <div class="admin-controls">
             <label><input type="checkbox" onchange="toggleLock('server-status')"> Lock Server Status</label>
             <label><input type="checkbox" onchange="toggleLock('server-ping')"> Lock Server Ping</label>
             <label><input type="checkbox" onchange="toggleLock('paper-build')"> Lock Paper Build</label>
             <label><input type="checkbox" onchange="toggleLock('premium-dash')"> Lock Premium Dashboard</label>
             <hr>
-            <button onclick="alert('Sending Webhook Test...'); sendWebhook('Test Alert');" class="action-btn" style="background:#444">Test Discord Alert</button>
-        </div>
-        <div class="result-box">
-            <h4>Live Stats:</h4>
-            <p>Users Online: <span id="admin-user-count">1</span></p>
-            <p>System Uptime: 99.9%</p>
+            <button onclick="sendWebhook('Admin Test Alert')" class="action-btn" style="background:#444">Test Discord Alert</button>
         </div>
     </div>
 
@@ -278,8 +287,6 @@
             <p>👥 Players: <span id="st-players">0/0</span></p>
             <p>🔧 Version: <span id="st-version">?</span></p>
             <p>🌍 MOTD: <br><span id="st-motd" style="color:#aaa; font-style:italic"></span></p>
-            <hr>
-            <button onclick="alert('Feature locked for Premium')" style="background:#333; border:none; color:#555">Enable Auto-Monitor (Premium)</button>
         </div>
     </div>
 
@@ -343,139 +350,112 @@
     </footer>
 </div>
 
-<script>
-/* ================= CONFIG & DATA ================= */
-const ADMIN_USER = "skahosting";
-const ADMIN_PASS = "Z62BGma)qTi!Szs";
-const WEBHOOK_URL = "https://discord.com/api/webhooks/1464870423165669432/e9uEiu1QlGpHHmsyVLQxPIoczsysaImBnYp_rio1PIhaxYMR4edq3eWJvMvon1yAx2Ix";
+<script type="module">
+    // --- 1. FIREBASE SETUP ---
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-const paperBuilds = {
-    "1.21.11":39, "1.21.10":89, "1.21.9":59, "1.21.8":60, "1.21.7":32,
-    "1.21.6":48, "1.21.5":114, "1.21.4":232, "1.21.3":83, "1.21.1":133,
-    "1.21":130, "1.20.6":151, "1.20.5":22, "1.20.4":499, "1.20.2":318,
-    "1.20.1":196, "1.20":17, "1.19.4":550, "1.19.3":448, "1.19.2":307,
-    "1.19.1":111, "1.19":81, "1.18.2":388, "1.18.1":216, "1.18":66,
-    "1.17.1":411, "1.17":79, "1.16.5":794, "1.16.4":416, "1.16.3":253,
-    "1.16.2":189, "1.16.1":138, "1.15.2":393, "1.15.1":62, "1.15":21,
-    "1.14.4":245, "1.14.3":134, "1.14.2":107, "1.14.1":50, "1.14":17
-};
+    // YOUR API KEYS
+    const firebaseConfig = {
+      apiKey: "AIzaSyBvlOV7L3g_lBDRR7mcNincGVyM16xtd90",
+      authDomain: "ska-web-168fe.firebaseapp.com",
+      databaseURL: "https://ska-web-168fe-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "ska-web-168fe",
+      appId: "1:782823377176:web:e2f62ba16d5fe0af7f366d"
+    };
 
-/* ================= AUTH SYSTEM ================= */
-function playClick() { document.getElementById('clickSound').play().catch(()=>{}); }
+    // INIT FIREBASE
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
 
-// Initialize
-window.onload = function() {
-    initParticles();
+    // --- 2. GLOBAL VARIABLES & UTILS ---
+    const ADMIN_USER = "skahosting";
+    const ADMIN_PASS = "Z62BGma)qTi!Szs";
     
-    // Check Session (Tab Close Logic)
-    if(sessionStorage.getItem('ska_logged_in') === 'true') {
-        showDashboard();
-    } else {
-        document.getElementById('auth-screen').style.display = 'flex';
-    }
-
-    // Populate Paper Dropdown
-    const sel = document.getElementById('pb-ver');
-    for(let ver in paperBuilds) {
-        let opt = document.createElement('option');
-        opt.value = ver; opt.text = ver; sel.add(opt);
-    }
-    
-    // Start Typers
-    typeLooper("WELCOME IN MY GAMING NETWORK", "hero-typing", 3); // 3 min loop
-    typeLooper("Why Choose SKA Hosting? Best Performance, 24/7 Uptime, Low Latency, Anti-DDoS.", "footer-typing", 3);
-};
-
-function toggleAuth(mode) {
-    playClick();
-    if(mode === 'register') {
-        document.getElementById('login-form').style.display = 'none';
-        document.getElementById('register-form').style.display = 'block';
-    } else {
-        document.getElementById('login-form').style.display = 'block';
-        document.getElementById('register-form').style.display = 'none';
-    }
-}
-
-function register() {
-    const u = document.getElementById('r-user').value;
-    const p = document.getElementById('r-pass').value;
-    if(!u || !p) return alert("Fill all fields");
-    localStorage.setItem('user_'+u, p);
-    alert("Registration Successful! Please Login.");
-    toggleAuth('login');
-}
-
-function login() {
-    playClick();
-    const u = document.getElementById('l-user').value;
-    const p = document.getElementById('l-pass').value;
-
-    if(u === ADMIN_USER && p === ADMIN_PASS) {
-        sessionStorage.setItem('ska_logged_in', 'true');
-        sessionStorage.setItem('ska_role', 'admin');
-        showDashboard();
-        return;
-    }
-
-    const savedPass = localStorage.getItem('user_'+u);
-    if(savedPass && savedPass === p) {
-        sessionStorage.setItem('ska_logged_in', 'true');
-        sessionStorage.setItem('ska_role', 'user');
-        showDashboard();
-    } else {
-        alert("Invalid Username or Password");
-        document.getElementById('l-user').style.border = "1px solid red";
-    }
-}
-
-function logout() {
-    sessionStorage.clear();
-    location.reload();
-}
-
-function showDashboard() {
-    document.getElementById('auth-screen').style.display = 'none';
-    document.getElementById('dashboard-screen').style.display = 'flex';
-    
-    // Check Admin
-    if(sessionStorage.getItem('ska_role') === 'admin') {
-        document.getElementById('admin-panel').style.display = 'block';
-    } else {
-        // Apply Locks for normal users
-        applyLocks();
-    }
-}
-
-/* ================= ADMIN LOGIC ================= */
-let locks = JSON.parse(localStorage.getItem('ska_locks')) || {};
-
-function toggleLock(id) {
-    if(sessionStorage.getItem('ska_role') !== 'admin') return;
-    locks[id] = !locks[id];
-    localStorage.setItem('ska_locks', JSON.stringify(locks));
-    // Visual feedback for admin
-    alert(locks[id] ? "Locked " + id : "Unlocked " + id);
-}
-
-function applyLocks() {
-    // Apply visual locks based on state
-    for (const [id, isLocked] of Object.entries(locks)) {
-        if(isLocked) {
-            // Find card container
-            let el;
-            if(id === 'server-status') el = document.getElementById('tool-status'); // logic handled in showTool
-            // Simplification: We lock entrance buttons or divs
-            if(id === 'premium-dash') document.getElementById('card-premium-dash').classList.add('is-locked');
-            if(id === 'server-status') document.getElementById('tool-status').classList.add('is-locked'); 
-            if(id === 'server-ping') document.getElementById('tool-ping').classList.add('is-locked');
-            if(id === 'paper-build') document.getElementById('tool-paper').classList.add('is-locked');
+    // Attach functions to window because type="module" has local scope
+    window.openLink = (url) => {
+        playClick();
+        if(url.includes('dash2') && isLocked('premium-dash') && !isAdmin()) {
+            document.getElementById('alertSound').play();
+            return alert("🔒 This feature is currently LOCKED by Admin.");
         }
-    }
-}
+        window.open(url, '_blank');
+    };
 
-function sendWebhook(msg) {
-    fetch(WEBHOOK_URL, {
-        method: 'POST', headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ content: `🔔 SKA SYSTEM ALERT: ${msg}` })
+    window.toggleAuth = (mode) => {
+        playClick();
+        document.getElementById('l-error').innerText = "";
+        document.getElementById('r-error').innerText = "";
+        if(mode === 'register') {
+            document.getElementById('login-form').style.display = 'none';
+            document.getElementById('register-form').style.display = 'block';
+        } else {
+            document.getElementById('login-form').style.display = 'block';
+            document.getElementById('register-form').style.display = 'none';
+        }
+    };
+
+    window.playClick = () => document.getElementById('clickSound').play().catch(()=>{});
+
+    function isAdmin() { return sessionStorage.getItem('ska_role') === 'admin'; }
+    function isLocked(id) { 
+        let locks = JSON.parse(localStorage.getItem('ska_locks')) || {};
+        return locks[id] === true;
     }
+
+    // --- 3. LOGIN & REGISTER LOGIC ---
+
+    // Login Handler
+    document.getElementById('btn-login').addEventListener('click', () => {
+        playClick();
+        const u = document.getElementById('l-user').value.trim();
+        const p = document.getElementById('l-pass').value.trim();
+        const errBox = document.getElementById('l-error');
+
+        if(!u || !p) { errBox.innerText = "Please fill all fields"; return; }
+        errBox.innerText = "Authenticating...";
+
+        // HARDCODED ADMIN CHECK
+        if(u === ADMIN_USER && p === ADMIN_PASS) {
+            sessionStorage.setItem('ska_logged_in', 'true');
+            sessionStorage.setItem('ska_role', 'admin');
+            showDashboard();
+            return;
+        }
+
+        // FIREBASE USER CHECK
+        // Trick: Append a fake domain to make username work like email
+        const email = u + "@ska.network";
+
+        signInWithEmailAndPassword(auth, email, p)
+            .then((userCredential) => {
+                sessionStorage.setItem('ska_logged_in', 'true');
+                sessionStorage.setItem('ska_role', 'user');
+                showDashboard();
+            })
+            .catch((error) => {
+                console.error(error);
+                if(error.code === 'auth/invalid-credential') errBox.innerText = "Wrong Username or Password";
+                else errBox.innerText = error.message;
+            });
+    });
+
+    // Register Handler
+    document.getElementById('btn-register').addEventListener('click', () => {
+        playClick();
+        const u = document.getElementById('r-user').value.trim();
+        const p = document.getElementById('r-pass').value.trim();
+        const errBox = document.getElementById('r-error');
+
+        if(!u || !p) { errBox.innerText = "Fill all fields"; return; }
+        if(p.length < 6) { errBox.innerText = "Password must be 6+ chars"; return; }
+        if(u.toLowerCase() === "skahosting") { errBox.innerText = "Username taken"; return; }
+
+        errBox.innerText = "Creating account...";
+        const email = u + "@ska.network";
+
+        createUserWithEmailAndPassword(auth, email, p)
+            .then((userCredential) => {
+                const u
