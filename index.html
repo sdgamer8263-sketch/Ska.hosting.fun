@@ -2,240 +2,51 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<title>SKA HOSTING</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SKA Hosting Minecraft Dashboard</title>
+
 <link href="https://fonts.cdnfonts.com/css/minecraft-4" rel="stylesheet">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<style>
-*{box-sizing:border-box;font-family:'Minecraft',sans-serif}
-body{
-  margin:0;min-height:100vh;
-  background: linear-gradient(rgba(0,0,0,.75),rgba(0,0,0,.75)),
-  url("fx58j1opheu71.gif") center/cover no-repeat fixed;
-  display:flex;flex-direction:column;align-items:center;color:#0ff;
-}
-.logo{
-  position:fixed;top:20px;left:20px;width:80px;height:80px;
-  animation:rotate360 30s linear infinite;
-}
-@keyframes rotate360{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
-.welcome-msg{text-align:center;margin-top:120px;font-size:28px;}
-.card{
-  width:95%;max-width:500px;padding:20px;
-  background:rgba(0,0,0,.45);backdrop-filter:blur(16px);
-  border-radius:20px;box-shadow:0 0 30px #0ff;margin-top:20px
-}
-h1{text-align:center;margin:0 0 10px}
-input,select,button{
-  width:100%;padding:12px;margin:8px 0;border-radius:10px;border:none
-}
-input,select{background:#111;color:#0ff}
-button{background:#0ff;color:#000;font-weight:bold}
-button:active{transform:scale(.97)}
-.result{text-align:center;margin-top:6px}
-.good{color:#0f0}.medium{color:#ff0}.bad{color:#f33}
-canvas{margin-top:10px;width:100%;height:150px;border-radius:10px;box-shadow:0 0 15px #0ff}
-#map{height:200px;width:100%;margin-top:10px;border-radius:12px;box-shadow:0 0 15px #0ff}
-.small{text-align:center;font-size:12px;opacity:.8}
-#server-info{margin-top:20px;background:rgba(0,0,0,0.5);padding:15px;border-radius:12px;color:#0ff;width:90%;max-width:500px;}
-</style>
+<link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-<!-- Logo -->
-<img src="file_00000000387071faa7c92db633a8f726.png" class="logo" alt="Logo">
+<!-- LOGIN / REGISTER -->
+<div id="authBox">
+  <h2>LOGIN / REGISTER</h2>
+  <input id="authUser" placeholder="Username">
+  <input id="authPass" type="password" placeholder="Password">
 
-<!-- Welcome message -->
-<div class="welcome-msg" id="welcome-msg">WELCOME IN MY GAMING NETWORK</div>
-
-<!-- Dashboard buttons -->
-<div class="card">
-<h1>MC PING DASHBOARD</h1>
-<input id="ip" placeholder="Server IP (play.hypixel.net)">
-<input id="port" value="25565">
-<select id="type">
-  <option value="java">Java</option>
-  <option value="bedrock">Bedrock</option>
-  <option value="geyser">Geyser</option>
-  <option value="other">Other</option>
-</select>
-<button onclick="checkPing()">Check Ping</button>
-<div class="result" id="status">Ready</div>
-<div class="result" id="ping"></div>
-<div class="result" id="quality"></div>
-<div class="result" id="minmax"></div>
-<div class="result" id="timeinfo"></div>
-<div class="result" id="location"></div>
-<canvas id="graph"></canvas>
-<div id="map"></div>
-<div class="small">Tip: First click may wake server</div>
+  <button class="btn" onclick="login()">Login</button>
+  <button class="btn" onclick="register()">Register</button>
 </div>
 
-<!-- Live Player List, TPS/MSPT, Version & Plugins -->
-<div id="server-info">
-  <h3>🧩 Server Info</h3>
-  <ul id="live-players"></ul>
-  <div id="server-tps"></div>
-  <div id="server-mspt"></div>
-  <div id="server-version"></div>
-  <ul id="server-plugins"></ul>
+<!-- USER BAR -->
+<div id="userBar">
+  Logged in as: <span id="who"></span>
+  <button class="btn" onclick="logout()">Logout</button>
 </div>
 
-<audio id="alertSound" src="sounds/alert.mp3"></audio>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<!-- ===== MAIN CONTENT ===== -->
+<div id="mainContent" style="display:none">
 
-<script>
-// ----------------- PING DASHBOARD -----------------
-const API="https://ping-yies.onrender.com/ping";    
-const canvas=document.getElementById("graph"),ctx=canvas.getContext("2d");    
-let hist=[],times=[],minPing=null,maxPing=null,waking=false,marker=null;    
-let autoPingInterval=null;  
+  <!-- SERVER TOOL -->
+  <button class="btn premium">Server Status</button>
+  <button class="btn premium">Server Ping</button>
+  <button class="btn premium">Build Number</button>
+  <button class="btn premium" onclick="openHidden('dash2.sgaming9107.qzz.io')">
+    Premium Dashboard
+  </button>
 
-const map=L.map('map').setView([20,0],2);  
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19, attribution:'© OpenStreetMap'}).addTo(map);
+  <!-- ADMIN ONLY LOCK -->
+  <div id="adminLockBox">
+    <button class="btn" onclick="togglePremiumLock()">
+      🔐 Premium Tool Lock (ON / OFF)
+    </button>
+  </div>
 
-function checkPing(){
-const ip=document.getElementById("ip").value.trim();
-const port=document.getElementById("port").value.trim()||"25565";
-const type=document.getElementById("type").value;
-if(!ip){set("Enter server IP ❌");return}
+</div>
 
-fetchPing(ip,port,type);
-if(autoPingInterval) clearInterval(autoPingInterval);
-autoPingInterval = setInterval(()=>fetchPing(ip,port,type),5000);
-}
-
-function fetchPing(ip,port,type){
-set("Checking...");
-document.getElementById("ping").innerText="";
-document.getElementById("quality").innerText="";
-
-fetch(`${API}?ip=${ip}&port=${port}&type=${type}`)
-.then(r=>r.json())
-.then(d=>{
-if(!d.online){set("Server Offline ❌");return}
-waking=false;
-
-const p=d.ping;
-
-// Min / Max
-minPing=minPing===null?p:Math.min(minPing,p);
-maxPing=maxPing===null?p:Math.max(maxPing,p);
-document.getElementById("minmax").innerText=`Min: ${minPing} ms | Max: ${maxPing} ms`;
-
-// Last check
-const now=new Date().toLocaleTimeString();
-times.push(now); if(times.length>20) times.shift();
-document.getElementById("timeinfo").innerText=`Last check: ${now}`;
-
-// Current ping
-hist.push(p); if(hist.length>20) hist.shift();
-document.getElementById("ping").innerText=`Ping: ${p} ms`;
-
-// Quality
-let t="GOOD",cls="good";
-if(p>200){t="BAD";cls="bad";playSound()}
-else if(p>120){t="MEDIUM";cls="medium"}
-document.getElementById("quality").innerHTML=`<span class="${cls}">${t}</span>`;
-
-// Location + map
-fetchLocation(ip);
-
-set("Server Online ✅");
-drawGraph();
-})
-.catch(()=>{if(!waking){waking=true;set("Waking server… tap again ⏳");}});
-}
-
-function fetchLocation(ip){
-fetch(`https://ipapi.co/${ip}/json/`)
-.then(r=>r.json())
-.then(data=>{
-if(data && data.latitude && data.longitude){
-document.getElementById("location").innerText=`Server location: ${data.city || 'Unknown'}, ${data.country_name || 'Unknown'}`;
-if(marker) marker.remove();
-marker=L.marker([data.latitude,data.longitude]).addTo(map)
-.bindPopup(`Server: ${ip}<br>${data.city || 'Unknown'}, ${data.country_name || 'Unknown'}`)
-.openPopup();
-map.setView([data.latitude,data.longitude],4);
-}else{
-document.getElementById("location").innerText="Server location: Unknown";
-}
-})
-.catch(()=>document.getElementById("location").innerText="Server location: Unknown");
-}
-
-function drawGraph(){
-canvas.width=canvas.offsetWidth;
-canvas.height=150;
-ctx.clearRect(0,0,canvas.width,canvas.height);
-if(hist.length<1) return;
-
-ctx.beginPath();
-ctx.strokeStyle="#0ff";
-ctx.lineWidth=2;
-const scale = 400;
-hist.forEach((p,i)=>{
-const x = i*(canvas.width/(hist.length-1||1));
-const y = canvas.height - Math.min(p,scale)/scale*canvas.height;
-i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
-});
-ctx.stroke();
-
-// optional dots
-ctx.fillStyle="#0ff";
-hist.forEach((p,i)=>{
-const x = i*(canvas.width/(hist.length-1||1));
-const y = canvas.height - Math.min(p,scale)/scale*canvas.height;
-ctx.beginPath(); ctx.arc(x,y,3,0,Math.PI*2); ctx.fill();
-});
-}
-
-function playSound(){const a=document.getElementById("alertSound");a.currentTime=0;a.play()}
-function set(s){document.getElementById("status").innerText=s}
-
-// ----------------- LIVE PLAYER LIST & SERVER INFO -----------------
-let serverData = {
-  players: ["Steve", "Alex", "Herobrine"],
-  tps: 19.8,
-  mspt: 48,
-  version: "1.21.11",
-  plugins: ["EssentialsX", "WorldEdit", "LuckPerms"]
-};
-
-function refreshServerData() {
-  const playerListEl = document.getElementById('live-players');
-  if(playerListEl) playerListEl.innerHTML = serverData.players.map(p => `<li>${p}</li>`).join('');
-
-  const tpsEl = document.getElementById('server-tps');
-  const msptEl = document.getElementById('server-mspt');
-  if(tpsEl) tpsEl.innerText = `TPS: ${serverData.tps}`;
-  if(msptEl) msptEl.innerText = `MSPT: ${serverData.mspt} ms`;
-
-  const versionEl = document.getElementById('server-version');
-  const pluginsEl = document.getElementById('server-plugins');
-  if(versionEl) versionEl.innerText = `Version: ${serverData.version}`;
-  if(pluginsEl) pluginsEl.innerHTML = serverData.plugins.map(p => `<li>${p}</li>`).join('');
-}
-
-setInterval(refreshServerData,15000);
-refreshServerData();
-
-// ----------------- WELCOME MESSAGE TYPING ANIMATION -----------------
-const welcomeEl = document.getElementById("welcome-msg");
-const welcomeText = "WELCOME IN MY GAMING NETWORK";
-let welcomeIndex=0;
-function typeWelcome(){
-  welcomeEl.innerText = "";
-  welcomeIndex=0;
-  const interval = setInterval(()=>{
-    welcomeEl.innerText += welcomeText[welcomeIndex];
-    welcomeIndex++;
-    if(welcomeIndex>=welcomeText.length) clearInterval(interval);
-  }, 100);
-}
-typeWelcome();
-setInterval(typeWelcome,180000); // 3 minutes
-</script>
+<script src="auth.js"></script>
 </body>
 </html>
