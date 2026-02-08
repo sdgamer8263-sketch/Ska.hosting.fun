@@ -5,106 +5,215 @@
 <title>SKA HOSTING</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link href="https://fonts.cdnfonts.com/css/minecraft-4" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Minecraft',sans-serif}
-body{background:#000;color:#0ff}
+body{background:#000;color:#0ff;overflow-x:hidden}
+
+/* BACKGROUND */
+.bg{
+  position:fixed;inset:0;
+  background:
+  linear-gradient(rgba(0,0,0,.75),rgba(0,0,0,.75)),
+  url("fx58j1opheu71.gif") center/cover fixed;
+  z-index:-3;
+}
+#particles{position:fixed;inset:0;z-index:-2}
+
+/* HEADER */
+header{padding:15px}
+.logo{display:flex;align-items:center;gap:15px}
+.logo img{width:60px;animation:spin 30s linear infinite;filter:drop-shadow(0 0 15px #0ff)}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* HOME */
 .center{text-align:center;padding:20px}
-input,button{width:100%;padding:12px;margin:6px 0;border-radius:10px;border:none}
-input{background:#111;color:#0ff}
-button{background:#0ff;color:#000;font-weight:bold;cursor:pointer}
-.link{margin:10px 0;cursor:pointer}
-.adminOnly,.premiumOnly{display:none}
+#typing{font-size:24px;margin:40px 0;text-shadow:0 0 20px #0ff}
+.link{
+  cursor:pointer;
+  margin:12px auto;
+  padding:14px;
+  max-width:420px;
+  border-radius:14px;
+  background:rgba(0,255,255,.15);
+  box-shadow:0 0 15px #0ff;
+}
+.btn-row{display:flex;gap:15px;justify-content:center;flex-wrap:wrap}
+.btn{
+  background:#0ff;color:#000;
+  padding:12px 18px;border-radius:14px;
+  font-weight:bold;cursor:pointer;
+  box-shadow:0 0 20px #0ff
+}
+
+/* PAGES */
+.page{
+  display:none;max-width:520px;
+  margin:30px auto;padding:20px;
+  background:rgba(0,0,0,.55);
+  backdrop-filter:blur(14px);
+  border-radius:20px;
+  box-shadow:0 0 30px #0ff;
+  position:relative;
+}
+.back{
+  position:absolute;right:15px;top:15px;
+  cursor:pointer;
+}
+
+/* THEME BUTTONS */
+.themeBtn{
+  padding:14px;margin:10px 0;
+  border-radius:14px;
+  background:rgba(0,255,255,.2);
+  cursor:pointer;
+  box-shadow:0 0 15px #0ff;
+}
+
+/* FOOTER */
+footer{text-align:center;padding:20px}
+footer div{margin:6px 0}
 </style>
 </head>
 
 <body>
 
-<div class="center">
-  <h2>SKA HOSTING</h2>
+<div class="bg"></div>
+<canvas id="particles"></canvas>
 
-  <!-- LOGIN / REGISTER -->
-  <input id="username" placeholder="Username">
-  <input id="password" type="password" placeholder="Password">
-  <button onclick="register()">Register</button>
-  <button onclick="login()">Login</button>
-  <button onclick="logout()">Logout</button>
+<header>
+  <div class="logo">
+    <img src="file_00000000387071faa7c92db633a8f726.png">
+    <h2>SKA HOSTING</h2>
+  </div>
+</header>
 
-  <hr><br>
+<div class="center" id="home">
+  <div id="typing"></div>
 
-  <div class="link" onclick="window.open('https://dash.sgaming9107.qzz.io')">
-    Free Minecraft Server Dashboard
+  <div class="link" onclick="openHidden('https://dash.sgaming9107.qzz.io')">
+    🟢 Free Minecraft Server Dashboard
   </div>
 
-  <div class="link premiumOnly" onclick="window.open('https://dash2.sgaming9107.qzz.io')">
-    Premium Minecraft Server Dashboard
+  <div class="link" onclick="openHidden('https://dash2.sgaming9107.qzz.io')">
+    🔥 Premium Minecraft Server Dashboard
   </div>
 
-  <div class="adminOnly">
-    🤖 AI ADMIN TOOL
+  <div class="btn-row">
+    <div class="btn" onclick="showPage('tools')">Server Tool</div>
   </div>
 </div>
 
-<footer class="center">
-⚡ Fast Servers<br>
-🛡️ Anti DDoS Protection<br>
-📶 24/7 Uptime<br>
-🚀 Lag Free Performance<br>
-🎮 Minecraft Optimized
+<!-- TOOLS -->
+<div class="page" id="tools">
+  <div class="back" onclick="goHome()">⬅</div>
+  <h2>SERVER TOOLS</h2>
+  <button onclick="showPage('status')">Server Status</button>
+  <button onclick="showPage('ping')">Server Ping</button>
+  <button onclick="showPage('paper')">Paper Build</button>
+  <button onclick="showPage('themes')">🎨 Page Theme</button>
+</div>
+
+<!-- THEME PAGE -->
+<div class="page" id="themes">
+  <div class="back" onclick="showPage('tools')">⬅</div>
+  <h2>PAGE THEMES</h2>
+
+  <div class="themeBtn" onclick="setTheme(0)">Default Neon</div>
+  <div class="themeBtn" onclick="setTheme(1)">Rainbow Glow</div>
+
+  <!-- 20 THEMES -->
+  <div class="themeBtn" onclick="setTheme(2)">Blue Neon</div>
+  <div class="themeBtn" onclick="setTheme(3)">Purple Cyber</div>
+  <div class="themeBtn" onclick="setTheme(4)">Green Matrix</div>
+  <div class="themeBtn" onclick="setTheme(5)">Red Inferno</div>
+  <div class="themeBtn" onclick="setTheme(6)">Aqua Wave</div>
+  <div class="themeBtn" onclick="setTheme(7)">Gold Shine</div>
+  <div class="themeBtn" onclick="setTheme(8)">Pink Neon</div>
+  <div class="themeBtn" onclick="setTheme(9)">Ice Frost</div>
+  <div class="themeBtn" onclick="setTheme(10)">Dark Cyber</div>
+  <div class="themeBtn" onclick="setTheme(11)">Solar Fire</div>
+  <div class="themeBtn" onclick="setTheme(12)">Galaxy</div>
+  <div class="themeBtn" onclick="setTheme(13)">Emerald</div>
+  <div class="themeBtn" onclick="setTheme(14)">Ocean Deep</div>
+  <div class="themeBtn" onclick="setTheme(15)">Lime Tech</div>
+  <div class="themeBtn" onclick="setTheme(16)">Violet Storm</div>
+  <div class="themeBtn" onclick="setTheme(17)">Ruby Core</div>
+  <div class="themeBtn" onclick="setTheme(18)">Sky Neon</div>
+  <div class="themeBtn" onclick="setTheme(19)">Ultra Glow</div>
+</div>
+
+<footer>
+  <div>⚡ Ultra Fast NVMe SSD Servers</div>
+  <div>🛡️ Advanced Anti-DDoS Protection</div>
+  <div>📶 99.99% Network Uptime (24/7)</div>
+  <div>🚀 Lag-Free Minecraft Performance</div>
+  <div>🌍 Global Low-Latency Network</div>
+  <div>🔄 Automatic Backups</div>
+  <div>🎮 Optimized for Gaming Networks</div>
 </footer>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut }
-from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+<script>
+/* NAV */
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.style.display='none');
+  home.style.display='none';
+  document.getElementById(id).style.display='block';
+}
+function goHome(){
+  document.querySelectorAll('.page').forEach(p=>p.style.display='none');
+  home.style.display='block';
+}
+function openHidden(u){window.open(u,'_blank')}
 
-const firebaseConfig = {
-  apiKey: "AIzaSyBvlOV7L3g_lBDRR7mcNincGVyM16xtd90",
-  authDomain: "ska-web-168fe.firebaseapp.com",
-  projectId: "ska-web-168fe",
-  appId: "1:782823377176:web:e2f62ba16d5fe0af7f366d"
-};
+/* TYPING */
+const t="WELCOME IN MY GAMING NETWORK";
+let ti=0;
+(function type(){
+  typing.innerText=t.slice(0,ti++);
+  if(ti<=t.length)setTimeout(type,120);
+})();
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+/* THEMES (NO BG CHANGE) */
+const themes=[
+  "none",
+  "hue-rotate(180deg)",
+  "hue-rotate(220deg)",
+  "hue-rotate(260deg)",
+  "hue-rotate(90deg)",
+  "hue-rotate(20deg)",
+  "hue-rotate(140deg)",
+  "sepia(1)",
+  "hue-rotate(300deg)",
+  "brightness(1.3)",
+  "contrast(1.4)",
+  "saturate(2)",
+  "hue-rotate(200deg)",
+  "hue-rotate(100deg)",
+  "hue-rotate(160deg)",
+  "hue-rotate(60deg)",
+  "hue-rotate(280deg)",
+  "hue-rotate(10deg)",
+  "hue-rotate(190deg)",
+  "hue-rotate(330deg)"
+];
+function setTheme(i){
+  document.body.style.filter=themes[i];
+}
 
-const ADMIN_USER = "skahosting";
-const ADMIN_PASS = "Z62BGma)qTi!Szs";
-
-window.register = async ()=>{
-  const u = username.value;
-  const p = password.value;
-  const fakeEmail = u + "@ska.local";
-
-  await createUserWithEmailAndPassword(auth,fakeEmail,p);
-  alert("Registered Successfully");
-};
-
-window.login = async ()=>{
-  const u = username.value;
-  const p = password.value;
-
-  // ADMIN LOGIN
-  if(u === ADMIN_USER && p === ADMIN_PASS){
-    document.querySelector(".adminOnly").style.display="block";
-    document.querySelector(".premiumOnly").style.display="block";
-    alert("Admin Logged In");
-    return;
-  }
-
-  // NORMAL USER LOGIN
-  const fakeEmail = u + "@ska.local";
-  await signInWithEmailAndPassword(auth,fakeEmail,p);
-  document.querySelector(".premiumOnly").style.display="block";
-  alert("User Logged In");
-};
-
-window.logout = ()=>{
-  signOut(auth);
-  document.querySelector(".adminOnly").style.display="none";
-  document.querySelector(".premiumOnly").style.display="none";
-  alert("Logged Out");
-};
+/* PARTICLES */
+const pc=document.getElementById("particles"),c=pc.getContext("2d");
+pc.width=innerWidth;pc.height=innerHeight;
+let p=Array.from({length:80},()=>({x:Math.random()*pc.width,y:Math.random()*pc.height}));
+(function anim(){
+  c.clearRect(0,0,pc.width,pc.height);
+  p.forEach(a=>{
+    a.y+=.6;if(a.y>pc.height)a.y=0;
+    c.fillStyle="#0ff";c.fillRect(a.x,a.y,2,2);
+  });
+  requestAnimationFrame(anim);
+})();
 </script>
 
 </body>
