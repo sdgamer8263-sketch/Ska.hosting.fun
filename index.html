@@ -6,95 +6,82 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&display=swap" rel="stylesheet">
 <link href="https://fonts.cdnfonts.com/css/minecraft-4" rel="stylesheet">
 
 <!-- Leaflet -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Minecraft',sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
 body{
+  font-family:'Orbitron',sans-serif;
   min-height:100vh;
   background:url("arij.gif") center/cover fixed;
   color:#0ff;
-  overflow-x:hidden;
 }
-
-/* Neon */
-.neon{ text-shadow:0 0 10px #0ff,0 0 20px #0ff }
-.btn{
-  padding:12px 18px;
-  border-radius:14px;
-  background:#0ff;
-  color:#000;
-  font-weight:bold;
-  margin:8px;
-  cursor:pointer;
-  transition:.2s;
-}
-.btn:hover{box-shadow:0 0 20px #0ff}
-.btn:active{transform:scale(.95)}
 
 .hidden{display:none}
+.neon{text-shadow:0 0 10px #0ff,0 0 20px #0ff}
 
-/* Header */
 header{
   display:flex;
   align-items:center;
   padding:15px;
 }
 header img{
-  width:60px;
+  width:55px;
   animation:spin 30s linear infinite;
 }
 @keyframes spin{to{transform:rotate(360deg)}}
-header h1{margin-left:15px}
+header h1{margin-left:12px}
 
-/* Center */
-.center{
-  text-align:center;
-  padding:20px;
-}
+.center{text-align:center;padding:20px}
 
-/* Cards */
 .card{
   max-width:420px;
   margin:20px auto;
   padding:20px;
-  background:rgba(0,0,0,.5);
-  border-radius:20px;
+  background:rgba(0,0,0,.55);
+  border-radius:18px;
   box-shadow:0 0 30px #0ff;
 }
 
-/* Inputs */
-input,select{
+input,select,button{
   width:100%;
   padding:12px;
   margin:6px 0;
   border-radius:10px;
   border:none;
-  background:#111;
-  color:#0ff;
+  font-family:'Orbitron',sans-serif;
 }
-
-/* Footer */
-footer{
-  margin-top:40px;
-  padding:20px;
-  background:rgba(0,0,0,.6);
-  text-align:center;
+input,select{background:#111;color:#0ff}
+button{
+  background:#0ff;
+  color:#000;
+  font-weight:600;
+  cursor:pointer;
+  transition:.2s;
 }
+button:hover{box-shadow:0 0 20px #0ff}
+button:active{transform:scale(.95)}
 
-/* Canvas */
-canvas{width:100%;height:150px}
-
-/* Back button */
 .back{
   position:absolute;
   right:15px;
   top:15px;
-  font-size:20px;
   cursor:pointer;
+  font-size:20px;
+}
+
+canvas{width:100%;height:150px;margin-top:10px}
+#map{height:200px;border-radius:12px;margin-top:10px}
+
+footer{
+  background:rgba(0,0,0,.65);
+  margin-top:40px;
+  padding:20px;
+  text-align:center;
 }
 </style>
 </head>
@@ -111,62 +98,58 @@ canvas{width:100%;height:150px}
   <h2 class="center neon">LOGIN</h2>
   <input id="luser" placeholder="Username">
   <input id="lpass" type="password" placeholder="Password">
-  <button class="btn" onclick="login()">Login</button>
-  <p class="center">No account? <span onclick="show('register')" style="cursor:pointer">Register</span></p>
+  <button onclick="login()">Login</button>
+  <p class="center" onclick="show('register')" style="cursor:pointer">Register</p>
 </div>
 
 <!-- REGISTER -->
 <div id="register" class="card hidden">
+  <div class="back" onclick="show('login')">⬅</div>
   <h2 class="center neon">REGISTER</h2>
   <input id="ruser" placeholder="Username">
   <input id="rpass" type="password" placeholder="Password">
-  <button class="btn" onclick="register()">Create</button>
-  <div class="center back" onclick="show('login')">⬅</div>
+  <button onclick="register()">Create</button>
 </div>
 
 <!-- HOME -->
 <div id="home" class="hidden center">
   <h2 id="welcome" class="neon"></h2>
 
-  <button class="btn" onclick="openLink('dash.sgaming9107.qzz.io')">
+  <button onclick="openLink('dash.sgaming9107.qzz.io')">
     Free Minecraft Server Dashboard
   </button>
 
-  <button id="premiumDash" class="btn hidden"
+  <button id="premiumDash" class="hidden"
     onclick="openLink('dash2.sgaming9107.qzz.io')">
     Premium Minecraft Server Dashboard
   </button>
 
-  <div>
-    <button class="btn" onclick="show('tools')">Server Tool</button>
-    <button id="premiumTool" class="btn hidden" onclick="toggleLock()">
-      🔒 Premium Tool Lock
-    </button>
-  </div>
+  <button onclick="show('tools')">Server Tool</button>
 
-  <button class="btn"
-    onclick="openLink('https://sdgamer8263-sketch.github.io/Own-hosting-making/')">
+  <button id="premiumTool" class="hidden" onclick="toggleLock()">
+    🔒 Premium Tool Lock
+  </button>
+
+  <button onclick="openLink('https://sdgamer8263-sketch.github.io/Own-hosting-making/')">
     Own Hosting Create Command
   </button>
 
-  <button class="btn" onclick="logout()">Logout</button>
+  <button onclick="logout()">Logout</button>
 </div>
 
 <!-- TOOLS -->
 <div id="tools" class="hidden center">
   <div class="back" onclick="show('home')">⬅</div>
   <h2 class="neon">SERVER TOOLS</h2>
-
-  <button class="btn" onclick="show('status')">Server Status</button>
-  <button class="btn" onclick="show('ping')">Server Ping</button>
-  <button class="btn" onclick="show('build')">Paper Build Number</button>
+  <button onclick="show('status')">Server Status</button>
+  <button onclick="show('ping')">Server Ping</button>
+  <button onclick="show('build')">Paper Build Number</button>
 </div>
 
 <!-- SERVER STATUS -->
 <div id="status" class="card hidden">
   <div class="back" onclick="show('tools')">⬅</div>
   <h3 class="center neon">SERVER STATUS</h3>
-
   <input id="sip" placeholder="Server IP">
   <input id="sport" placeholder="Port (optional)">
   <select id="stype">
@@ -174,17 +157,30 @@ canvas{width:100%;height:150px}
     <option>Bedrock</option>
     <option>Geyser</option>
   </select>
-
-  <button class="btn" onclick="checkStatus()">Check</button>
+  <button onclick="checkStatus()">Check</button>
   <p id="sresult" class="center"></p>
 </div>
 
-<!-- SERVER PING (merged minimal wrapper) -->
-<div id="ping" class="hidden">
+<!-- SERVER PING -->
+<div id="ping" class="card hidden">
   <div class="back" onclick="show('tools')">⬅</div>
-  <!-- PLACE YOUR FULL PING CODE HERE -->
-  <iframe srcdoc="PUT_YOUR_FULL_PING_HTML_HERE"
-    style="width:100%;height:100vh;border:none"></iframe>
+  <h3 class="center neon">MC PING DASHBOARD</h3>
+
+  <input id="ip" placeholder="Server IP">
+  <input id="port" value="25565">
+  <select id="type">
+    <option value="java">Java</option>
+    <option value="bedrock">Bedrock</option>
+    <option value="geyser">Geyser</option>
+  </select>
+
+  <button onclick="checkPing()">Check Ping</button>
+  <div class="center" id="statusPing">Ready</div>
+  <div class="center" id="pingVal"></div>
+  <div class="center" id="quality"></div>
+
+  <canvas id="graph"></canvas>
+  <div id="map"></div>
 </div>
 
 <!-- BUILD -->
@@ -192,107 +188,134 @@ canvas{width:100%;height:150px}
   <div class="back" onclick="show('tools')">⬅</div>
   <h3 class="center neon">PAPER BUILD</h3>
   <input id="ver" placeholder="Minecraft Version">
-  <button class="btn" onclick="findBuild()">Find</button>
+  <button onclick="findBuild()">Find</button>
   <p id="bresult" class="center"></p>
 </div>
 
 <footer id="footer" class="hidden">
-  <p id="foottext"></p>
-  <img src="logo.png" width="40"
+  <p id="foottext"></p><br>
+  <img src="file_00000000387071faa7c92db633a8f726.png" width="40"
     onclick="openLink('https://discord.gg/C46pnM3Xz')">
 </footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
 /* SPA */
 function show(id){
-  document.querySelectorAll('body > div').forEach(d=>d.classList.add('hidden'));
-  document.getElementById(id).classList.remove('hidden');
-}
-
-/* Auth */
-let admin=false;
-function login(){
-  const u=luser.value,p=lpass.value;
-  if(u==="skahosting" && p==="Z62BGma)qTi!Szs"){
-    admin=true;
-    localStorage.setItem("admin","1");
-  }else{
-    localStorage.setItem("user",u);
-  }
-  init();
-}
-function register(){
-  localStorage.setItem("user",ruser.value);
-  show('login');
-}
-function logout(){
-  admin=false;
-  localStorage.removeItem("admin");
-  show('login');
-}
-
-/* Init */
-function init(){
-  show('home');
-  typing("WELCOME IN MY  GAMING NETWORK","welcome",180000);
-  if(admin){
-    premiumTool.classList.remove("hidden");
-    premiumDash.classList.remove("hidden");
-  }
-  setTimeout(()=>{
-    footer.classList.remove("hidden");
-    typing("Why our hosting is best? Because speed, security and support matter.","foottext",180000);
-  },0);
-}
-
-/* Typing */
-function typing(text,id,delay){
-  const el=document.getElementById(id);
-  let i=0;
-  function run(){
-    el.innerHTML="";
-    i=0;
-    const t=setInterval(()=>{
-      el.innerHTML+=text[i++];
-      if(i>=text.length) clearInterval(t);
-    },80);
-  }
-  run();
-  setInterval(run,delay);
+ document.querySelectorAll("body>div").forEach(d=>d.classList.add("hidden"));
+ document.getElementById(id).classList.remove("hidden");
 }
 
 /* Links */
 function openLink(l){
-  const a=document.createElement("a");
-  a.href=l;a.target="_blank";a.rel="noreferrer";a.click();
+ const a=document.createElement("a");
+ a.href=l;a.target="_blank";a.rel="noreferrer";a.click();
+}
+
+/* Auth */
+const ADMIN_USER="skahosting";
+const ADMIN_PASS="Z62BGma)qTi!Szs";
+let isAdmin=false;
+
+function login(){
+ const u=luser.value,p=lpass.value;
+ if(u===ADMIN_USER && p===ADMIN_PASS){
+   isAdmin=true;
+   localStorage.setItem("admin","1");
+ }
+ init();
+}
+function register(){show('login')}
+function logout(){
+ localStorage.clear();
+ isAdmin=false;
+ show('login');
+}
+
+/* Init */
+function init(){
+ show('home');
+ typing("WELCOME IN MY  GAMING NETWORK","welcome",180000);
+ if(isAdmin){
+   premiumTool.classList.remove("hidden");
+   premiumDash.classList.remove("hidden");
+ }
+ footer.classList.remove("hidden");
+ typing(
+"✔ 99.99% Uptime – 24/7 Online Servers\n✔ Lag-Free High Performance\n✔ DDoS Protected Network\n✔ Fast SSD & NVMe Storage\n✔ Friendly Support Anytime",
+"foottext",180000);
+}
+
+/* Typing */
+function typing(text,id,delay){
+ const el=document.getElementById(id);
+ function run(){
+   el.innerHTML="";
+   let i=0;
+   const t=setInterval(()=>{
+     el.innerHTML+=text[i]==="\n"?"<br>":text[i];
+     i++;
+     if(i>=text.length) clearInterval(t);
+   },60);
+ }
+ run();
+ setInterval(run,delay);
 }
 
 /* Server Status */
 function checkStatus(){
-  fetch(`https://api.mcsrvstat.us/2/${sip.value}`)
-  .then(r=>r.json())
-  .then(d=>{
-    sresult.innerHTML=d.online
-      ? `Online ✅<br>Players: ${d.players.online}/${d.players.max}`
-      : "Offline ❌";
-  });
+ const ip=sip.value.trim();
+ const port=sport.value.trim();
+ let url=`https://api.mcsrvstat.us/2/${ip}`;
+ if(port) url+=`:${port}`;
+ fetch(url).then(r=>r.json()).then(d=>{
+   sresult.innerHTML=d.online
+   ?`Online ✅<br>Players: ${d.players.online}/${d.players.max}`
+   :"Offline ❌";
+ });
+}
+
+/* Ping */
+const API="https://ping-yies.onrender.com/ping";
+const ctx=graph.getContext("2d");
+let hist=[];
+const map=L.map('map').setView([20,0],2);
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+function checkPing(){
+ fetch(`${API}?ip=${ip.value}&port=${port.value}&type=${type.value}`)
+ .then(r=>r.json()).then(d=>{
+   if(!d.online){statusPing.innerText="Offline ❌";return}
+   statusPing.innerText="Online ✅";
+   pingVal.innerText="Ping: "+d.ping+" ms";
+   hist.push(d.ping);if(hist.length>20)hist.shift();
+   drawGraph();
+ });
+}
+
+function drawGraph(){
+ graph.width=graph.offsetWidth;
+ ctx.clearRect(0,0,graph.width,150);
+ ctx.beginPath();ctx.strokeStyle="#0ff";
+ hist.forEach((p,i)=>{
+   const x=i*(graph.width/(hist.length-1||1));
+   const y=150-(p/400*150);
+   i?ctx.lineTo(x,y):ctx.moveTo(x,y);
+ });
+ ctx.stroke();
 }
 
 /* Build */
-const builds={
-"1.21.11":39,"1.21.10":89,"1.21.9":59,"1.21.8":60,"1.21.7":32,
-"1.20.4":499,"1.19.4":550,"1.18.2":388,"1.16.5":794,"1.8.8":445
-};
+const builds={"1.20.4":499,"1.19.4":550,"1.18.2":388,"1.16.5":794,"1.8.8":445};
 function findBuild(){
-  const v=ver.value.trim();
-  bresult.innerHTML=builds[v]
-    ? `## ${v} → ${builds[v]}`
-    : "Not found ❌";
+ bresult.innerHTML=builds[ver.value]
+ ?`## ${ver.value} → ${builds[ver.value]}`
+ :"Not found ❌";
 }
 
-/* Start */
-if(localStorage.getItem("admin")){admin=true;init();}
+if(localStorage.getItem("admin")){isAdmin=true;init();}
 </script>
 
 </body>
-  </html>
+</html>
