@@ -2,137 +2,419 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Free & Premium Minecraft Server Dashboard</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Minecraft Tools Dashboard</title>
+
+<!-- Fonts -->
 <link href="https://fonts.cdnfonts.com/css/minecraft-4" rel="stylesheet">
 
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Minecraft',sans-serif}
-body{
-min-height:100vh;
-background:
-linear-gradient(rgba(0,0,0,.75),rgba(0,0,0,.75)),
-url("assets/bg.gif") center/cover fixed;
-color:#0ff;
-text-align:center;
-overflow-x:hidden;
+/* ===== General Body ===== */
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: 'Minecraft', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #0ff;
+  overflow-x: hidden;
+  background: #000;
+  position: relative;
 }
 
-header{
-display:flex;
-align-items:center;
-gap:15px;
-padding:15px;
-}
-header img{
-width:55px;
-filter:drop-shadow(0 0 15px currentColor);
-}
-h1,h2,h3{
-animation:rgbText 6s linear infinite;
+/* ===== Particle Canvas ===== */
+#particles {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
 }
 
-@keyframes rgbText{
-0%{color:#ff004c}
-20%{color:#ffaa00}
-40%{color:#00ff6a}
-60%{color:#00c8ff}
-80%{color:#9b5cff}
-100%{color:#ff004c}
+/* ===== Logo ===== */
+.logo {
+  font-size: 3em;
+  font-weight: bold;
+  color: #ff00ff;
+  text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 30px #ff00ff;
+  margin: 20px 0;
+  animation: neonPulse 2s infinite alternate;
 }
 
-.glow{
-text-shadow:
-0 0 6px currentColor,
-0 0 12px currentColor,
-0 0 20px currentColor;
-animation:pulse 2s infinite alternate;
+/* ===== Cards ===== */
+.card {
+  width: 95%;
+  max-width: 500px;
+  padding: 20px;
+  background: rgba(0,0,0,.45);
+  backdrop-filter: blur(16px);
+  border-radius: 20px;
+  box-shadow: 0 0 30px #0ff;
+  margin-top: 20px;
+  position: relative;
+  z-index: 1;
 }
 
-@keyframes pulse{
-from{opacity:.7}
-to{opacity:1}
+/* ===== Inputs and Buttons ===== */
+input, select, button {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border-radius: 10px;
+  border: none;
+  font-family: 'Minecraft', sans-serif;
 }
 
-canvas{
-position:fixed;
-inset:0;
-z-index:-1;
+input, select { background:#111; color:#0ff; }
+button { background:#0ff; color:#000; font-weight:bold; }
+button:active { transform:scale(.97); }
+
+/* ===== Results & Graphs ===== */
+.result { text-align:center; margin-top:6px; }
+.good{color:#0f0} .medium{color:#ff0} .bad{color:#f33}
+canvas{margin-top:10px;width:100%;height:150px;border-radius:10px;box-shadow:0 0 15px #0ff}
+#map{height:200px;width:100%;margin-top:10px;border-radius:12px;box-shadow:0 0 15px #0ff}
+
+/* ===== Small Text ===== */
+.small{ text-align:center; font-size:12px; opacity:.8; }
+
+/* ===== Neon Animations ===== */
+@keyframes neonPulse {
+  0% { text-shadow: 0 0 5px #ff00ff, 0 0 10px #ff00ff; }
+  50% { text-shadow: 0 0 20px #ff00ff, 0 0 30px #ff00ff; }
+  100% { text-shadow: 0 0 5px #ff00ff, 0 0 10px #ff00ff; }
 }
 
-.box{
-background:rgba(0,0,0,.45);
-backdrop-filter:blur(16px);
-border-radius:20px;
-padding:25px;
-margin:20px auto;
-max-width:520px;
-box-shadow:0 0 30px currentColor;
+/* ===== Server Status Card ===== */
+.status-box {
+  background: rgba(0, 0, 0, 0.6);
+  padding: 30px 50px;
+  border-radius: 20px;
+  border: 2px solid #00ffff;
+  box-shadow: 0 0 20px #00ffff, 0 0 40px #00ffff;
+  text-align: center;
+  min-width: 300px;
+  animation: glowPulse 2s infinite alternate;
 }
 
-.btn{
-display:block;
-margin:12px 0;
-padding:14px;
-border-radius:14px;
-background:#000;
-color:inherit;
-cursor:pointer;
-box-shadow:0 0 20px currentColor;
-text-decoration:none;
+@keyframes glowPulse {
+  0% { box-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff; }
+  50% { box-shadow: 0 0 30px #ff00ff, 0 0 60px #ff00ff; }
+  100% { box-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff; }
 }
 
-.btn:active{transform:scale(.96)}
-
-footer{
-margin-top:30px;
-padding:20px;
-font-size:13px;
-opacity:.9;
+.status {
+  font-size: 1.5em;
+  margin-top: 15px;
+  padding: 10px;
+  border-radius: 10px;
+  animation: pulseStatus 1.5s infinite alternate;
 }
-footer div{margin:4px 0}
+.online { color:#00ff00; text-shadow:0 0 15px #00ff00,0 0 30px #00ff00; }
+.offline { color:#ff0000; text-shadow:0 0 15px #ff0000,0 0 30px #ff0000; }
+
+@keyframes pulseStatus {
+  0% { transform: scale(1); opacity:0.8; }
+  50% { transform: scale(1.05); opacity:1; }
+  100% { transform: scale(1); opacity:0.8; }
+}
+
+/* ===== Paper Build Finder ===== */
+.container {
+  background: rgba(0,0,0,0.6);
+  padding: 40px 50px;
+  border-radius: 20px;
+  text-align: center;
+  box-shadow: 0 0 20px #00f6ff, 0 0 40px #00f6ff, 0 0 60px #00f6ff;
+  animation: neonGlow 2s infinite alternate;
+  backdrop-filter: blur(5px);
+}
+
+@keyframes neonGlow {
+  0% { box-shadow: 0 0 20px #00f6ff, 0 0 40px #00f6ff, 0 0 60px #00f6ff; }
+  50% { box-shadow: 0 0 30px #ff00ff, 0 0 60px #ff00ff, 0 0 90px #ff00ff; }
+  100% { box-shadow: 0 0 20px #00f6ff, 0 0 40px #00f6ff, 0 0 60px #00f6ff; }
+}
+
+input, button {
+  padding: 12px 15px;
+  margin: 10px 5px;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  transition: all 0.3s;
+  background: rgba(0,0,0,0.7);
+  color: #fff;
+  text-shadow: 0 0 5px #00f6ff;
+  box-shadow: 0 0 5px #00f6ff;
+}
+
+input:focus { box-shadow: 0 0 10px #00f6ff; }
+button { background: #00f6ff; color: #000; font-weight: bold; cursor: pointer; }
+button:hover { transform: scale(1.1); box-shadow: 0 0 20px #00f6ff,0 0 40px #00f6ff; }
+
+#result { margin-top: 25px; font-weight: bold; font-size: 18px; animation: fadeIn 1s; }
+
+@keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
+
+h1 {
+  font-size: 32px;
+  color: #00f6ff;
+  text-shadow: 0 0 5px #00f6ff, 0 0 10px #00f6ff, 0 0 20px #ff00ff;
+}
+
+/* ===== Particle Style ===== */
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
 </style>
 </head>
 
 <body>
 
+<!-- Particle Canvas -->
 <canvas id="particles"></canvas>
 
-<header>
-<img src="assets/logo.png">
-<h2 class="glow">SKA HOSTING</h2>
-</header>
+<!-- Logo -->
+<div class="logo">MC Dashboard</div>
 
-<div class="box">
-<h1 class="glow">Minecraft Server Dashboard</h1>
-
-<a class="btn glow" href="ping.html" target="_blank">
-Free Minecraft Server Dashboard
-</a>
-
-<a class="btn glow" href="status.html" target="_blank">
-Premium Minecraft Server Dashboard
-</a>
-
-<a class="btn glow" href="paper.html" target="_blank">
-Server Tool – Paper Build Finder
-</a>
-
-<a class="btn glow" href="themes.html" target="_blank">
-🎨 Page Theme Selector
-</a>
+<!-- Minecraft Ping Dashboard Card -->
+<div class="card">
+  <h1>MC PING DASHBOARD</h1>
+  <input id="ip" placeholder="Server IP (play.hypixel.net)">
+  <input id="port" value="25565">
+  <select id="type">
+    <option value="java">Java</option>
+    <option value="bedrock">Bedrock</option>
+    <option value="geyser">Geyser</option>
+    <option value="other">Other</option>
+  </select>
+  <button onclick="checkPing()">Check Ping</button>
+  <div class="result" id="status">Ready</div>
+  <div class="result" id="ping"></div>
+  <div class="result" id="quality"></div>
+  <div class="result" id="minmax"></div>
+  <div class="result" id="timeinfo"></div>
+  <div class="result" id="location"></div>
+  <canvas id="graph"></canvas>
+  <div id="map"></div>
+  <div class="small">Tip: First click may wake server</div>
+  <audio id="alertSound" src="sounds/alert.mp3"></audio>
 </div>
 
-<footer class="glow">
-<div>✔ Anti-DDoS Protection</div>
-<div>✔ 99.9% Uptime (24/7)</div>
-<div>✔ Lag-Free Minecraft Network</div>
-<div>✔ Java • Bedrock • Geyser Support</div>
-<div>✔ Free & Premium Tools</div>
-<div>✔ Secure Infrastructure</div>
-<div>✔ Optimized for Gaming</div>
-</footer>
+<!-- Minecraft Server Status Card -->
+<div class="card">
+  <h1>Minecraft Server Status</h1>
+  <div class="status-box">
+      <input type="text" id="serverIP" placeholder="Enter server IP or domain">
+      <br>
+      <input type="number" id="serverPort" placeholder="Port (default 25565)">
+      <br>
+      <select id="serverType">
+          <option value="java">Java Edition</option>
+          <option value="bedrock">Bedrock Edition</option>
+          <option value="geyser">Geyser (Java+Bedrock)</option>
+      </select>
+      <div id="status" class="status">Enter IP, port, and type</div>
+      <button onclick="checkServer()">Check Server</button>
+  </div>
+</div>
 
-<script src="assets/particles.js"></script>
-</body>
-</html>
+<!-- Paper Build Finder Card -->
+<div class="card">
+  <div class="container">
+      <h1>Paper Build Finder</h1>
+      <input type="text" id="version" placeholder="Enter Java version (e.g., 1.20.1)">
+      <button onclick="findBuild()">Find Build</button>
+      <div id="result"></div>
+  </div>
+</div>
+
+<!-- ===== Scripts ===== -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+/* ===== Particle Effect ===== */
+const particleCanvas = document.getElementById('particles');
+const pCtx = particleCanvas.getContext('2d');
+let particles = [];
+
+function resizeCanvas() {
+  particleCanvas.width = window.innerWidth;
+  particleCanvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+for(let i=0;i<100;i++){
+  particles.push({
+    x: Math.random()*window.innerWidth,
+    y: Math.random()*window.innerHeight,
+    r: Math.random()*3+1,
+    dx: (Math.random()-0.5)*1,
+    dy: (Math.random()-0.5)*1,
+    color: `rgb(${Math.floor(Math.random()*255)},${Math.floor(Math.random()*255)},${Math.floor(Math.random()*255)})`
+  });
+}
+
+function animateParticles(){
+  pCtx.clearRect(0,0,particleCanvas.width,particleCanvas.height);
+  particles.forEach(p=>{
+    p.x += p.dx;
+    p.y += p.dy;
+    if(p.x<0 || p.x>window.innerWidth) p.dx*=-1;
+    if(p.y<0 || p.y>window.innerHeight) p.dy*=-1;
+    pCtx.beginPath();
+    pCtx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    pCtx.fillStyle=p.color;
+    pCtx.fill();
+  });
+  requestAnimationFrame(animateParticles);
+}
+animateParticles();
+
+/* ===== Minecraft Ping Dashboard Script ===== */
+const API="https://ping-yies.onrender.com/ping";
+const canvas=document.getElementById("graph"),ctx=canvas.getContext("2d");
+let hist=[],times=[],minPing=null,maxPing=null,waking=false,marker=null;
+let autoPingInterval=null;
+
+const map=L.map('map').setView([20,0],2);
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19, attribution:'&copy; OpenStreetMap'}).addTo(map);
+
+function checkPing(){
+  const ip=document.getElementById("ip").value.trim();
+  const port=document.getElementById("port").value.trim()||"25565";
+  const type=document.getElementById("type").value;
+  if(!ip){set("Enter server IP ❌");return}
+
+  fetchPing(ip,port,type);
+  if(autoPingInterval) clearInterval(autoPingInterval);
+  autoPingInterval = setInterval(()=>fetchPing(ip,port,type),5000);
+}
+
+function fetchPing(ip,port,type){
+  set("Checking...");
+  document.getElementById("ping").innerText="";
+  document.getElementById("quality").innerText="";
+
+  fetch(`${API}?ip=${ip}&port=${port}&type=${type}`)
+    .then(r=>r.json())
+    .then(d=>{
+      if(!d.online){set("Server Offline ❌");return}
+      waking=false;
+      const p=d.ping;
+      minPing=minPing===null?p:Math.min(minPing,p);
+      maxPing=maxPing===null?p:Math.max(maxPing,p);
+      document.getElementById("minmax").innerText=`Min: ${minPing} ms | Max: ${maxPing} ms`;
+      const now=new Date().toLocaleTimeString();
+      times.push(now); if(times.length>20) times.shift();
+      document.getElementById("timeinfo").innerText=`Last check: ${now}`;
+      hist.push(p); if(hist.length>20) hist.shift();
+      document.getElementById("ping").innerText=`Ping: ${p} ms`;
+      let t="GOOD",cls="good";
+      if(p>200){t="BAD";cls="bad";playSound()}
+      else if(p>120){t="MEDIUM";cls="medium"}
+      document.getElementById("quality").innerHTML=`<span class="${cls}">${t}</span>`;
+      fetchLocation(ip);
+      set("Server Online ✅");
+      drawGraph();
+    })
+    .catch(()=>{if(!waking){waking=true;set("Waking server… tap again ⏳");}});
+}
+
+function fetchLocation(ip){
+  fetch(`https://ipapi.co/${ip}/json/`)
+    .then(r=>r.json())
+    .then(data=>{
+      if(data && data.latitude && data.longitude){
+        document.getElementById("location").innerText=`Server location: ${data.city || 'Unknown'}, ${data.country_name || 'Unknown'}`;
+        if(marker) marker.remove();
+        marker=L.marker([data.latitude,data.longitude]).addTo(map)
+          .bindPopup(`Server: ${ip}<br>${data.city || 'Unknown'}, ${data.country_name || 'Unknown'}`)
+          .openPopup();
+        map.setView([data.latitude,data.longitude],4);
+      }else{
+        document.getElementById("location").innerText="Server location: Unknown";
+      }
+    })
+    .catch(()=>document.getElementById("location").innerText="Server location: Unknown");
+}
+
+function drawGraph(){
+  canvas.width=canvas.offsetWidth;
+  canvas.height=150;
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  if(hist.length<1) return;
+  ctx.beginPath();
+  ctx.strokeStyle="#0ff";
+  ctx.lineWidth=2;
+  const scale = 400;
+  hist.forEach((p,i)=>{
+    const x = i*(canvas.width/(hist.length-1||1));
+    const y = canvas.height - Math.min(p,scale)/scale*canvas.height;
+    i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+  });
+  ctx.stroke();
+  ctx.fillStyle="#0ff";
+  hist.forEach((p,i)=>{
+    const x = i*(canvas.width/(hist.length-1||1));
+    const y = canvas.height - Math.min(p,scale)/scale*canvas.height;
+    ctx.beginPath(); ctx.arc(x,y,3,0,Math.PI*2); ctx.fill();
+  });
+}
+
+function playSound(){const a=document.getElementById("alertSound");a.currentTime=0;a.play()}
+function set(s){document.getElementById("status").innerText=s}
+
+/* ===== Server Status Script ===== */
+async function checkServer() {
+    const statusEl = document.getElementById('status');
+    const ip = document.getElementById('serverIP').value.trim();
+    const port = document.getElementById('serverPort').value.trim() || '';
+    const type = document.getElementById('serverType').value;
+
+    if (!ip) {
+        statusEl.textContent = "Please enter a server IP!";
+        statusEl.className = "status offline";
+        return;
+    }
+
+    statusEl.textContent = "Checking...";
+    statusEl.className = "status";
+
+    try {
+        let url = "";
+        let serverString = port ? `${ip}:${port}` : ip;
+
+        if(type === "java") url = `https://api.mcsrvstat.us/2/${serverString}`;
+        else if(type === "bedrock") url = `https://api.mcsrvstat.us/bedrock/2/${serverString}`;
+        else if(type === "geyser") url = `https://api.mcsrvstat.us/2/${serverString}`;
+
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if(data.online) {
+            let playersText = data.players ? `${data.players.online}/${data.players.max} players` : '';
+            statusEl.textContent = `Online ${playersText}`;
+            statusEl.className = "status online";
+        } else {
+            statusEl.textContent = "Offline";
+            statusEl.className = "status offline";
+        }
+    } catch(err) {
+        statusEl.textContent = "Error connecting!";
+        statusEl.className = "status offline";
+        console.error(err);
+    }
+}
+
+/*
