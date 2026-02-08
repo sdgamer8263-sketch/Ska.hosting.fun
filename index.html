@@ -10,101 +10,28 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Minecraft',sans-serif}
 body{background:#000;color:#0ff;overflow-x:hidden}
-
-/* BACKGROUND */
-.bg{
-  position:fixed;inset:0;
-  background:
-  linear-gradient(rgba(0,0,0,.75),rgba(0,0,0,.75)),
-  url("fx58j1opheu71.gif") center/cover fixed;
-  z-index:-3;
-}
+.bg{position:fixed;inset:0;background:linear-gradient(rgba(0,0,0,.75),rgba(0,0,0,.75)),url("fx58j1opheu71.gif") center/cover fixed;z-index:-3}
 #particles{position:fixed;inset:0;z-index:-2}
-
-/* HEADER */
 header{padding:15px}
 .logo{display:flex;align-items:center;gap:15px}
-.logo img{
-  width:60px;
-  animation:spin 30s linear infinite;
-  filter:drop-shadow(0 0 15px #0ff)
-}
+.logo img{width:60px;animation:spin 30s linear infinite;filter:drop-shadow(0 0 15px #0ff)}
 @keyframes spin{to{transform:rotate(360deg)}}
-
-/* HOME */
 .center{text-align:center;padding:20px}
 #typing{font-size:24px;margin:40px 0;text-shadow:0 0 20px #0ff}
 .link{cursor:pointer;margin:10px 0}
 .btn-row{display:flex;gap:15px;justify-content:center;flex-wrap:wrap}
-.btn{
-  background:#0ff;color:#000;
-  padding:12px 18px;border-radius:14px;
-  font-weight:bold;cursor:pointer;
-  box-shadow:0 0 20px #0ff
-}
-
-/* CLICK ANIMATION */
-.btn,button,.link,label{
-  transition:.15s ease;
-}
-.btn:active,button:active,.link:active,label:active{
-  transform:scale(.95);
-  box-shadow:0 0 30px #0ff;
-}
-
-/* PAGES */
-.page{
-  display:none;max-width:520px;
-  margin:30px auto;padding:20px;
-  background:rgba(0,0,0,.55);
-  backdrop-filter:blur(14px);
-  border-radius:20px;
-  box-shadow:0 0 30px #0ff;
-  position:relative;
-}
-.back{
-  position:absolute;right:15px;top:15px;
-  font-size:20px;
-  padding:6px 12px;
-  border-radius:12px;
-  background:rgba(0,255,255,.2);
-  cursor:pointer;
-}
-.back:hover{box-shadow:0 0 15px #0ff}
-
-/* FORM */
-input,select,button{
-  width:100%;padding:12px;margin:8px 0;
-  border-radius:10px;border:none
-}
-input,select{background:#111;color:#0ff}
+.btn{background:#0ff;color:#000;padding:12px 18px;border-radius:14px;font-weight:bold;cursor:pointer;box-shadow:0 0 20px #0ff}
+.page{display:none;max-width:520px;margin:30px auto;padding:20px;background:rgba(0,0,0,.55);backdrop-filter:blur(14px);border-radius:20px;box-shadow:0 0 30px #0ff;position:relative}
+.back{position:absolute;right:15px;top:15px;cursor:pointer}
+input,button{width:100%;padding:12px;margin:8px 0;border-radius:10px;border:none}
+input{background:#111;color:#0ff}
 button{background:#0ff;color:#000;font-weight:bold}
-
-/* STATUS */
-.badge{
-  padding:8px 14px;border-radius:14px;
-  font-weight:bold;
-  animation:pulse 1.5s infinite
-}
-@keyframes pulse{
-  0%{box-shadow:0 0 5px}
-  50%{box-shadow:0 0 20px}
-  100%{box-shadow:0 0 5px}
-}
-.centerText{text-align:center;margin-top:6px}
-
-/* PING */
-.good{color:#0f0}.medium{color:#ff0}.bad{color:#f33}
-#map{height:200px;border-radius:12px;margin-top:10px}
-canvas{width:100%;height:150px}
-
-/* FOOTER */
 footer{text-align:center;padding:20px}
-.discord img{width:40px;filter:drop-shadow(0 0 10px #0ff)}
 </style>
 </head>
 
 <body>
+
 <div class="bg"></div>
 <canvas id="particles"></canvas>
 
@@ -118,202 +45,86 @@ footer{text-align:center;padding:20px}
 <div class="center" id="home">
   <div id="typing"></div>
 
-  <div class="link" onclick="openHidden('https://dash.sgaming9107.qzz.io')">
-    Free Minecraft Server Dashboard
+  <!-- LOGIN REGISTER -->
+  <div style="max-width:300px;margin:20px auto">
+    <input id="email" placeholder="Email">
+    <input id="password" type="password" placeholder="Password">
+    <button onclick="register()">Register</button>
+    <button onclick="login()">Login</button>
+    <button onclick="logout()">Logout</button>
   </div>
-  <div class="link" onclick="openHidden('https://dash2.sgaming9107.qzz.io')">
+
+  <div class="link premiumOnly" style="display:none" onclick="window.open('https://dash2.sgaming9107.qzz.io')">
     Premium Minecraft Server Dashboard
   </div>
 
-  <label>
-    <input type="checkbox" id="premiumToggle"> ✨ Premium Mode
-  </label>
+  <div class="link" onclick="window.open('https://dash.sgaming9107.qzz.io')">
+    Free Minecraft Server Dashboard
+  </div>
 
   <div class="btn-row">
-    <div class="btn" onclick="showPage('tools')">Server Tool</div>
-    <div class="btn" onclick="openHidden('https://sdgamer8263-sketch.github.io/Own-hosting-making/')">
-      Own Hosting Create Command
-    </div>
+    <div class="btn">Server Tool</div>
+    <div class="btn premiumOnly" style="display:none">Premium Tool</div>
+    <div class="btn adminOnly" style="display:none">🤖 AI ADMIN TOOL</div>
   </div>
-</div>
-
-<!-- TOOLS -->
-<div class="page" id="tools">
-  <div class="back" onclick="goHome()">⬅</div>
-  <h2>SERVER TOOLS</h2>
-  <button onclick="showPage('status')">Server Status</button>
-  <button onclick="showPage('ping')">Server Ping</button>
-  <button onclick="showPage('paper')">Paper Build Number</button>
-</div>
-
-<!-- SERVER STATUS -->
-<div class="page" id="status">
-  <div class="back" onclick="showPage('tools')">⬅</div>
-  <h2>Server Status</h2>
-
-  <input id="sip" placeholder="Server IP">
-  <input id="sport" placeholder="Port (optional)">
-  <select id="stype">
-    <option>Java</option>
-    <option>Bedrock</option>
-    <option>Geyser</option>
-  </select>
-
-  <button onclick="checkStatus()">Check</button>
-
-  <div id="sbadge" class="centerText"></div>
-  <div id="sicon" class="centerText"></div>
-  <div id="smotd" class="centerText"></div>
-  <div id="splayers" class="centerText"></div>
-  <div id="sping" class="centerText"></div>
-</div>
-
-<!-- SERVER PING -->
-<div class="page" id="ping">
-  <div class="back" onclick="showPage('tools')">⬅</div>
-  <h2>MC PING DASHBOARD</h2>
-
-  <input id="ip" placeholder="Server IP">
-  <input id="port" value="25565">
-  <select id="type">
-    <option value="java">Java</option>
-    <option value="bedrock">Bedrock</option>
-    <option value="geyser">Geyser</option>
-  </select>
-  <button onclick="checkPing()">Check Ping</button>
-
-  <div id="statusp" class="centerText"></div>
-  <div id="pingv" class="centerText"></div>
-  <div id="quality" class="centerText"></div>
-  <canvas id="graph"></canvas>
-  <div id="map"></div>
-</div>
-
-<!-- PAPER -->
-<div class="page" id="paper">
-  <div class="back" onclick="showPage('tools')">⬅</div>
-  <h2>Paper Build Number</h2>
-  <input id="ver" placeholder="Version">
-  <button onclick="checkBuild()">Check</button>
-  <div id="result" class="centerText"></div>
 </div>
 
 <footer>
   <div id="footerText"></div>
-  <div class="discord" onclick="openHidden('https://discord.gg/C46pnM3Xz')">
-    <img src="https://cdn-icons-png.flaticon.com/512/2111/2111370.png">
-  </div>
 </footer>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut }
+from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc }
+from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-<script>
-/* NAV */
-function showPage(id){
-  document.querySelectorAll('.page').forEach(p=>p.style.display='none');
-  home.style.display='none';
-  document.getElementById(id).style.display='block';
-}
-function goHome(){
-  document.querySelectorAll('.page').forEach(p=>p.style.display='none');
-  home.style.display='block';
-}
-function openHidden(u){window.open(u,'_blank')}
-
-/* WELCOME TYPING (3 MIN) */
-const t="WELCOME IN MY GAMING NETWORK";
-let ti=0;
-function typeWelcome(){
-  typing.innerText=t.slice(0,ti++);
-  if(ti<=t.length) setTimeout(typeWelcome,120);
-}
-typeWelcome();
-setInterval(()=>{ti=0;typeWelcome()},180000);
-
-/* FOOTER TYPING (3 MIN) */
-const ft="Our hosting is fast, secure, lag-free and perfect for Minecraft gaming networks.";
-let fi=0;
-function typeFooter(){
-  footerText.innerText=ft.slice(0,fi++);
-  if(fi<=ft.length) setTimeout(typeFooter,80);
-}
-typeFooter();
-setInterval(()=>{fi=0;typeFooter()},180000);
-
-/* PREMIUM */
-premiumToggle.onchange=()=>{
-  document.body.style.filter=premiumToggle.checked
-    ?"hue-rotate(40deg) brightness(1.2)":"none";
-}
-
-/* PARTICLES */
-const pc=document.getElementById("particles"),pctx=pc.getContext("2d");
-let ps=[];function rs(){pc.width=innerWidth;pc.height=innerHeight}
-onresize=rs;rs();
-for(let i=0;i<90;i++)ps.push({x:Math.random()*pc.width,y:Math.random()*pc.height});
-(function anim(){
-  pctx.clearRect(0,0,pc.width,pc.height);
-  ps.forEach(p=>{p.y+=.6;if(p.y>pc.height)p.y=0;
-    pctx.fillStyle="#0ff";pctx.fillRect(p.x,p.y,2,2)});
-  requestAnimationFrame(anim);
-})();
-
-/* SERVER STATUS + AUTO MONITOR */
-function checkStatus(){
-  fetch(`https://api.mcsrvstat.us/2/${sip.value}${sport.value?":"+sport.value:""}`)
-  .then(r=>r.json()).then(d=>{
-    if(!d.online){
-      sbadge.innerHTML='<span class="badge bad">OFFLINE</span>';
-      return;
-    }
-    sbadge.innerHTML='<span class="badge good">ONLINE</span>';
-    splayers.innerText=`Players: ${d.players.online}/${d.players.max}`;
-    sping.innerText=`Ping: ${d.debug.ping||"N/A"} ms`;
-    smotd.innerText=d.motd.clean.join(" ");
-    if(d.icon)sicon.innerHTML=`<img src="${d.icon}" width="64">`;
-  });
-  clearInterval(window.autoStatus);
-  window.autoStatus=setInterval(checkStatus,15000);
-}
-
-/* PAPER */
-const builds={
-"1.21.11":39,"1.21.10":89,"1.21.9":59,"1.21.8":60,
-"1.20.4":499,"1.19.4":550,"1.18.2":388,"1.8.8":445
+const firebaseConfig = {
+  apiKey: "AIzaSyBvlOV7L3g_lBDRR7mcNincGVyM16xtd90",
+  authDomain: "ska-web-168fe.firebaseapp.com",
+  projectId: "ska-web-168fe",
+  appId: "1:782823377176:web:e2f62ba16d5fe0af7f366d"
 };
-function checkBuild(){
-  result.innerText=builds[ver.value]
-   ?`## The paper build number of ${ver.value} is ${builds[ver.value]}`
-   :"## Version not found ❌";
-}
 
-/* PING */
-const API="https://ping-yies.onrender.com/ping";
-const ctx=document.getElementById("graph").getContext("2d");
-let hist=[];
-const map=L.map('map').setView([20,0],2);
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-function checkPing(){
-  fetch(`${API}?ip=${ip.value}&port=${port.value}&type=${type.value}`)
-  .then(r=>r.json()).then(d=>{
-    if(!d.online){statusp.innerText="Offline ❌";return}
-    hist.push(d.ping);if(hist.length>20)hist.shift();
-    pingv.innerText=`Ping: ${d.ping} ms`;
-    quality.innerText=d.ping<120?"GOOD":d.ping<200?"MEDIUM":"BAD";
-    draw();
+window.register = async ()=>{
+  const e = email.value, p = password.value;
+  const r = await createUserWithEmailAndPassword(auth,e,p);
+  await setDoc(doc(db,"users",r.user.uid),{
+    email:e, role:"free", premium:false, admin:false
   });
-}
-function draw(){
-  ctx.clearRect(0,0,graph.width,graph.height);
-  ctx.beginPath();ctx.strokeStyle="#0ff";
-  hist.forEach((p,i)=>{
-    const x=i*(graph.width/(hist.length-1||1));
-    const y=graph.height-p;
-    i?ctx.lineTo(x,y):ctx.moveTo(x,y);
-  });
-  ctx.stroke();
-}
+  alert("Registered");
+};
+
+window.login = async ()=>{
+  await signInWithEmailAndPassword(auth,email.value,password.value);
+};
+
+window.logout = ()=>signOut(auth);
+
+onAuthStateChanged(auth, async (u)=>{
+  if(!u) return;
+  const s = await getDoc(doc(db,"users",u.uid));
+  if(!s.exists()) return;
+  const d = s.data();
+  if(d.premium) document.querySelectorAll(".premiumOnly").forEach(e=>e.style.display="block");
+  if(d.admin) document.querySelectorAll(".adminOnly").forEach(e=>e.style.display="block");
+});
+
+/* FOOTER TEXT */
+const ft=`⚡ Ultra Fast NVMe SSD Servers
+🛡️ Advanced Anti-DDoS Protection
+📶 99.99% Uptime (24/7)
+🚀 Lag-Free Performance
+🌍 Global Network
+🎮 Minecraft Optimized`;
+let i=0;
+(function t(){footerText.innerText=ft.slice(0,i++);if(i<=ft.length)setTimeout(t,40)})();
 </script>
+
 </body>
 </html>
