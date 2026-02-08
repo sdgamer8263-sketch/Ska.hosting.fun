@@ -2,95 +2,176 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<title>SKA HOSTING</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SKA HOSTING TOOLS</title>
-
 <link href="https://fonts.cdnfonts.com/css/minecraft-4" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
 <style>
-*{box-sizing:border-box;font-family:'Minecraft',sans-serif}
-body{
-  margin:0;
-  min-height:100vh;
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Minecraft',sans-serif}
+body{background:#000;color:#0ff;overflow-x:hidden}
+
+/* BACKGROUND */
+.bg{
+  position:fixed;inset:0;
   background:
-   linear-gradient(rgba(0,0,0,.75),rgba(0,0,0,.75)),
-   url("fx58j1opheu71.gif") center/cover fixed;
-  color:#0ff;
+  linear-gradient(rgba(0,0,0,.75),rgba(0,0,0,.75)),
+  url("fx58j1opheu71.gif") center/cover fixed;
+  z-index:-3;
 }
+#particles{position:fixed;inset:0;z-index:-2}
 
-.hidden{display:none}
-
-/* Header */
-header{
-  display:flex;
-  align-items:center;
-  padding:15px;
-}
-header img{
-  width:55px;
+/* HEADER */
+header{padding:15px}
+.logo{display:flex;align-items:center;gap:15px}
+.logo img{
+  width:60px;
   animation:spin 30s linear infinite;
+  filter:drop-shadow(0 0 15px #0ff)
 }
 @keyframes spin{to{transform:rotate(360deg)}}
-header h1{margin-left:12px}
 
-/* Buttons */
-button{
-  padding:12px;
-  margin:8px 0;
-  width:100%;
-  border-radius:12px;
-  border:none;
-  background:#0ff;
-  color:#000;
-  font-weight:bold;
-  cursor:pointer;
+/* HOME */
+.center{text-align:center;padding:20px}
+#typing{font-size:24px;margin:40px 0;text-shadow:0 0 20px #0ff}
+.link{cursor:pointer;margin:10px 0}
+.btn-row{display:flex;gap:15px;justify-content:center;flex-wrap:wrap}
+.btn{
+  background:#0ff;color:#000;
+  padding:12px 18px;border-radius:14px;
+  font-weight:bold;cursor:pointer;
+  box-shadow:0 0 20px #0ff
 }
-button:active{transform:scale(.96)}
 
-.card{
-  width:95%;
-  max-width:500px;
-  padding:20px;
-  margin:20px auto;
-  background:rgba(0,0,0,.45);
-  backdrop-filter:blur(15px);
-  border-radius:20px;
+/* CLICK ANIMATION */
+.btn,button,.link,label{
+  transition:.15s ease;
+}
+.btn:active,button:active,.link:active,label:active{
+  transform:scale(.95);
   box-shadow:0 0 30px #0ff;
 }
 
-.center{text-align:center}
-
-.back{
-  font-size:20px;
-  cursor:pointer;
-  margin-bottom:10px;
+/* PAGES */
+.page{
+  display:none;max-width:520px;
+  margin:30px auto;padding:20px;
+  background:rgba(0,0,0,.55);
+  backdrop-filter:blur(14px);
+  border-radius:20px;
+  box-shadow:0 0 30px #0ff;
+  position:relative;
 }
-canvas{width:100%;height:150px}
+.back{
+  position:absolute;right:15px;top:15px;
+  font-size:20px;
+  padding:6px 12px;
+  border-radius:12px;
+  background:rgba(0,255,255,.2);
+  cursor:pointer;
+}
+.back:hover{box-shadow:0 0 15px #0ff}
+
+/* FORM */
+input,select,button{
+  width:100%;padding:12px;margin:8px 0;
+  border-radius:10px;border:none
+}
+input,select{background:#111;color:#0ff}
+button{background:#0ff;color:#000;font-weight:bold}
+
+/* STATUS */
+.badge{
+  padding:8px 14px;border-radius:14px;
+  font-weight:bold;
+  animation:pulse 1.5s infinite
+}
+@keyframes pulse{
+  0%{box-shadow:0 0 5px}
+  50%{box-shadow:0 0 20px}
+  100%{box-shadow:0 0 5px}
+}
+.centerText{text-align:center;margin-top:6px}
+
+/* PING */
+.good{color:#0f0}.medium{color:#ff0}.bad{color:#f33}
 #map{height:200px;border-radius:12px;margin-top:10px}
+canvas{width:100%;height:150px}
+
+/* FOOTER */
+footer{text-align:center;padding:20px}
+.discord img{width:40px;filter:drop-shadow(0 0 10px #0ff)}
 </style>
 </head>
 
 <body>
+<div class="bg"></div>
+<canvas id="particles"></canvas>
 
 <header>
-  <img src="file_00000000387071faa7c92db633a8f726.png">
-  <h1>SKA HOSTING</h1>
+  <div class="logo">
+    <img src="file_00000000387071faa7c92db633a8f726.png">
+    <h2>SKA HOSTING</h2>
+  </div>
 </header>
 
-<!-- HOME -->
-<div id="home" class="card center">
-  <h2>SERVER TOOLS</h2>
-  <button onclick="show('ping')">Server Ping</button>
-  <button onclick="show('status')">Server Status</button>
-  <button onclick="show('build')">Paper Build Number</button>
+<div class="center" id="home">
+  <div id="typing"></div>
+
+  <div class="link" onclick="openHidden('https://dash.sgaming9107.qzz.io')">
+    Free Minecraft Server Dashboard
+  </div>
+  <div class="link" onclick="openHidden('https://dash2.sgaming9107.qzz.io')">
+    Premium Minecraft Server Dashboard
+  </div>
+
+  <label>
+    <input type="checkbox" id="premiumToggle"> ✨ Premium Mode
+  </label>
+
+  <div class="btn-row">
+    <div class="btn" onclick="showPage('tools')">Server Tool</div>
+    <div class="btn" onclick="openHidden('https://sdgamer8263-sketch.github.io/Own-hosting-making/')">
+      Own Hosting Create Command
+    </div>
+  </div>
 </div>
 
-<!-- ================= PING PAGE ================= -->
-<div id="ping" class="card hidden">
-  <div class="back" onclick="show('home')">⬅ Back</div>
+<!-- TOOLS -->
+<div class="page" id="tools">
+  <div class="back" onclick="goHome()">⬅</div>
+  <h2>SERVER TOOLS</h2>
+  <button onclick="showPage('status')">Server Status</button>
+  <button onclick="showPage('ping')">Server Ping</button>
+  <button onclick="showPage('paper')">Paper Build Number</button>
+</div>
 
-  <h2 class="center">MC PING DASHBOARD</h2>
+<!-- SERVER STATUS -->
+<div class="page" id="status">
+  <div class="back" onclick="showPage('tools')">⬅</div>
+  <h2>Server Status</h2>
+
+  <input id="sip" placeholder="Server IP">
+  <input id="sport" placeholder="Port (optional)">
+  <select id="stype">
+    <option>Java</option>
+    <option>Bedrock</option>
+    <option>Geyser</option>
+  </select>
+
+  <button onclick="checkStatus()">Check</button>
+
+  <div id="sbadge" class="centerText"></div>
+  <div id="sicon" class="centerText"></div>
+  <div id="smotd" class="centerText"></div>
+  <div id="splayers" class="centerText"></div>
+  <div id="sping" class="centerText"></div>
+</div>
+
+<!-- SERVER PING -->
+<div class="page" id="ping">
+  <div class="back" onclick="showPage('tools')">⬅</div>
+  <h2>MC PING DASHBOARD</h2>
 
   <input id="ip" placeholder="Server IP">
   <input id="port" value="25565">
@@ -98,117 +179,141 @@ canvas{width:100%;height:150px}
     <option value="java">Java</option>
     <option value="bedrock">Bedrock</option>
     <option value="geyser">Geyser</option>
-    <option value="other">Other</option>
   </select>
   <button onclick="checkPing()">Check Ping</button>
 
-  <div class="center" id="status">Ready</div>
-  <div class="center" id="ping"></div>
-  <div class="center" id="quality"></div>
-  <div class="center" id="minmax"></div>
-  <div class="center" id="timeinfo"></div>
-  <div class="center" id="location"></div>
-
+  <div id="statusp" class="centerText"></div>
+  <div id="pingv" class="centerText"></div>
+  <div id="quality" class="centerText"></div>
   <canvas id="graph"></canvas>
   <div id="map"></div>
 </div>
 
-<!-- ================= SERVER STATUS ================= -->
-<div id="statusPage" class="card hidden">
-  <div class="back" onclick="show('home')">⬅ Back</div>
-
-  <h2 class="center">SERVER STATUS</h2>
-
-  <input id="serverIP" placeholder="Server IP">
-  <input id="serverPort" placeholder="Port">
-  <select id="serverType">
-    <option value="java">Java</option>
-    <option value="bedrock">Bedrock</option>
-    <option value="geyser">Geyser</option>
-  </select>
-
-  <div id="statusText" class="center">Enter details</div>
-  <button onclick="checkServer()">Check Server</button>
+<!-- PAPER -->
+<div class="page" id="paper">
+  <div class="back" onclick="showPage('tools')">⬅</div>
+  <h2>Paper Build Number</h2>
+  <input id="ver" placeholder="Version">
+  <button onclick="checkBuild()">Check</button>
+  <div id="result" class="centerText"></div>
 </div>
 
-<!-- ================= BUILD ================= -->
-<div id="build" class="card hidden">
-  <div class="back" onclick="show('home')">⬅ Back</div>
-
-  <h2 class="center">PAPER BUILD FINDER</h2>
-  <input id="version" placeholder="Enter Java version">
-  <button onclick="findBuild()">Find Build</button>
-  <div id="result" class="center"></div>
-</div>
+<footer>
+  <div id="footerText"></div>
+  <div class="discord" onclick="openHidden('https://discord.gg/C46pnM3Xz')">
+    <img src="https://cdn-icons-png.flaticon.com/512/2111/2111370.png">
+  </div>
+</footer>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
-/* PAGE SWITCH */
-function show(id){
-  document.querySelectorAll(".card").forEach(c=>c.classList.add("hidden"));
-  if(id==="status") id="statusPage";
-  document.getElementById(id).classList.remove("hidden");
+/* NAV */
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.style.display='none');
+  home.style.display='none';
+  document.getElementById(id).style.display='block';
+}
+function goHome(){
+  document.querySelectorAll('.page').forEach(p=>p.style.display='none');
+  home.style.display='block';
+}
+function openHidden(u){window.open(u,'_blank')}
+
+/* WELCOME TYPING (3 MIN) */
+const t="WELCOME IN MY GAMING NETWORK";
+let ti=0;
+function typeWelcome(){
+  typing.innerText=t.slice(0,ti++);
+  if(ti<=t.length) setTimeout(typeWelcome,120);
+}
+typeWelcome();
+setInterval(()=>{ti=0;typeWelcome()},180000);
+
+/* FOOTER TYPING (3 MIN) */
+const ft="Our hosting is fast, secure, lag-free and perfect for Minecraft gaming networks.";
+let fi=0;
+function typeFooter(){
+  footerText.innerText=ft.slice(0,fi++);
+  if(fi<=ft.length) setTimeout(typeFooter,80);
+}
+typeFooter();
+setInterval(()=>{fi=0;typeFooter()},180000);
+
+/* PREMIUM */
+premiumToggle.onchange=()=>{
+  document.body.style.filter=premiumToggle.checked
+    ?"hue-rotate(40deg) brightness(1.2)":"none";
 }
 
-/* ================= PING (UNCHANGED LOGIC) ================= */
+/* PARTICLES */
+const pc=document.getElementById("particles"),pctx=pc.getContext("2d");
+let ps=[];function rs(){pc.width=innerWidth;pc.height=innerHeight}
+onresize=rs;rs();
+for(let i=0;i<90;i++)ps.push({x:Math.random()*pc.width,y:Math.random()*pc.height});
+(function anim(){
+  pctx.clearRect(0,0,pc.width,pc.height);
+  ps.forEach(p=>{p.y+=.6;if(p.y>pc.height)p.y=0;
+    pctx.fillStyle="#0ff";pctx.fillRect(p.x,p.y,2,2)});
+  requestAnimationFrame(anim);
+})();
+
+/* SERVER STATUS + AUTO MONITOR */
+function checkStatus(){
+  fetch(`https://api.mcsrvstat.us/2/${sip.value}${sport.value?":"+sport.value:""}`)
+  .then(r=>r.json()).then(d=>{
+    if(!d.online){
+      sbadge.innerHTML='<span class="badge bad">OFFLINE</span>';
+      return;
+    }
+    sbadge.innerHTML='<span class="badge good">ONLINE</span>';
+    splayers.innerText=`Players: ${d.players.online}/${d.players.max}`;
+    sping.innerText=`Ping: ${d.debug.ping||"N/A"} ms`;
+    smotd.innerText=d.motd.clean.join(" ");
+    if(d.icon)sicon.innerHTML=`<img src="${d.icon}" width="64">`;
+  });
+  clearInterval(window.autoStatus);
+  window.autoStatus=setInterval(checkStatus,15000);
+}
+
+/* PAPER */
+const builds={
+"1.21.11":39,"1.21.10":89,"1.21.9":59,"1.21.8":60,
+"1.20.4":499,"1.19.4":550,"1.18.2":388,"1.8.8":445
+};
+function checkBuild(){
+  result.innerText=builds[ver.value]
+   ?`## The paper build number of ${ver.value} is ${builds[ver.value]}`
+   :"## Version not found ❌";
+}
+
+/* PING */
 const API="https://ping-yies.onrender.com/ping";
-const canvas=document.getElementById("graph"),ctx=canvas.getContext("2d");
-let hist=[],minPing=null,maxPing=null,waking=false,marker=null;
+const ctx=document.getElementById("graph").getContext("2d");
+let hist=[];
 const map=L.map('map').setView([20,0],2);
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
 function checkPing(){
- const ipV=ip.value.trim();
- const portV=port.value.trim()||"25565";
- const typeV=type.value;
- if(!ipV){set("Enter server IP ❌");return}
- fetch(`${API}?ip=${ipV}&port=${portV}&type=${typeV}`)
- .then(r=>r.json()).then(d=>{
-   if(!d.online){set("Server Offline ❌");return}
-   const p=d.ping;
-   minPing=minPing===null?p:Math.min(minPing,p);
-   maxPing=maxPing===null?p:Math.max(maxPing,p);
-   ping.innerText=`Ping: ${p} ms`;
-   minmax.innerText=`Min: ${minPing} | Max: ${maxPing}`;
-   hist.push(p);if(hist.length>20)hist.shift();
-   drawGraph();
-   set("Server Online ✅");
- });
+  fetch(`${API}?ip=${ip.value}&port=${port.value}&type=${type.value}`)
+  .then(r=>r.json()).then(d=>{
+    if(!d.online){statusp.innerText="Offline ❌";return}
+    hist.push(d.ping);if(hist.length>20)hist.shift();
+    pingv.innerText=`Ping: ${d.ping} ms`;
+    quality.innerText=d.ping<120?"GOOD":d.ping<200?"MEDIUM":"BAD";
+    draw();
+  });
 }
-function drawGraph(){
- canvas.width=canvas.offsetWidth;ctx.clearRect(0,0,canvas.width,150);
- ctx.beginPath();ctx.strokeStyle="#0ff";
- hist.forEach((p,i)=>{
-  const x=i*(canvas.width/(hist.length-1||1));
-  const y=150-(p/400*150);
-  i?ctx.lineTo(x,y):ctx.moveTo(x,y);
- });
- ctx.stroke();
-}
-function set(s){status.innerText=s}
-
-/* ================= SERVER STATUS (UNCHANGED LOGIC) ================= */
-async function checkServer(){
- const ip=serverIP.value.trim();
- const port=serverPort.value.trim();
- const type=serverType.value;
- if(!ip){statusText.innerText="Enter IP";return}
- let serverString=port?`${ip}:${port}`:ip;
- let url= type==="bedrock"
- ?`https://api.mcsrvstat.us/bedrock/2/${serverString}`
- :`https://api.mcsrvstat.us/2/${serverString}`;
- const d=await fetch(url).then(r=>r.json());
- statusText.innerText=d.online?"Online ✅":"Offline ❌";
-}
-
-/* ================= BUILD (UNCHANGED LOGIC) ================= */
-const buildMap={"1.20.4":499,"1.19.4":550,"1.18.2":388,"1.16.5":794};
-function findBuild(){
- const v=version.value.trim();
- result.innerText=buildMap[v]?`Build #${buildMap[v]}`:"Not Found";
+function draw(){
+  ctx.clearRect(0,0,graph.width,graph.height);
+  ctx.beginPath();ctx.strokeStyle="#0ff";
+  hist.forEach((p,i)=>{
+    const x=i*(graph.width/(hist.length-1||1));
+    const y=graph.height-p;
+    i?ctx.lineTo(x,y):ctx.moveTo(x,y);
+  });
+  ctx.stroke();
 }
 </script>
-
 </body>
 </html>
