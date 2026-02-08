@@ -5,48 +5,294 @@
 <title>SKA HOSTING</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<!-- Fonts -->
 <link href="https://fonts.cdnfonts.com/css/minecraft-4" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+
+<!-- Leaflet -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Minecraft',sans-serif}
+body{
+  min-height:100vh;
+  background:url("arij.gif") center/cover fixed;
+  color:#0ff;
+  overflow-x:hidden;
+}
+
+/* Neon */
+.neon{ text-shadow:0 0 10px #0ff,0 0 20px #0ff }
+.btn{
+  padding:12px 18px;
+  border-radius:14px;
+  background:#0ff;
+  color:#000;
+  font-weight:bold;
+  margin:8px;
+  cursor:pointer;
+  transition:.2s;
+}
+.btn:hover{box-shadow:0 0 20px #0ff}
+.btn:active{transform:scale(.95)}
+
+.hidden{display:none}
+
+/* Header */
+header{
+  display:flex;
+  align-items:center;
+  padding:15px;
+}
+header img{
+  width:60px;
+  animation:spin 30s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+header h1{margin-left:15px}
+
+/* Center */
+.center{
+  text-align:center;
+  padding:20px;
+}
+
+/* Cards */
+.card{
+  max-width:420px;
+  margin:20px auto;
+  padding:20px;
+  background:rgba(0,0,0,.5);
+  border-radius:20px;
+  box-shadow:0 0 30px #0ff;
+}
+
+/* Inputs */
+input,select{
+  width:100%;
+  padding:12px;
+  margin:6px 0;
+  border-radius:10px;
+  border:none;
+  background:#111;
+  color:#0ff;
+}
+
+/* Footer */
+footer{
+  margin-top:40px;
+  padding:20px;
+  background:rgba(0,0,0,.6);
+  text-align:center;
+}
+
+/* Canvas */
+canvas{width:100%;height:150px}
+
+/* Back button */
+.back{
+  position:absolute;
+  right:15px;
+  top:15px;
+  font-size:20px;
+  cursor:pointer;
+}
+</style>
 </head>
 
 <body>
 
-<!-- LOGIN / REGISTER -->
-<div id="authBox">
-  <h2>LOGIN / REGISTER</h2>
-  <input id="authUser" placeholder="Username">
-  <input id="authPass" type="password" placeholder="Password">
+<header>
+  <img src="sourin.gif">
+  <h1 class="neon">SKA HOSTING</h1>
+</header>
 
+<!-- LOGIN -->
+<div id="login" class="card">
+  <h2 class="center neon">LOGIN</h2>
+  <input id="luser" placeholder="Username">
+  <input id="lpass" type="password" placeholder="Password">
   <button class="btn" onclick="login()">Login</button>
-  <button class="btn" onclick="register()">Register</button>
+  <p class="center">No account? <span onclick="show('register')" style="cursor:pointer">Register</span></p>
 </div>
 
-<!-- USER BAR -->
-<div id="userBar">
-  Logged in as: <span id="who"></span>
-  <button class="btn" onclick="logout()">Logout</button>
+<!-- REGISTER -->
+<div id="register" class="card hidden">
+  <h2 class="center neon">REGISTER</h2>
+  <input id="ruser" placeholder="Username">
+  <input id="rpass" type="password" placeholder="Password">
+  <button class="btn" onclick="register()">Create</button>
+  <div class="center back" onclick="show('login')">⬅</div>
 </div>
 
-<!-- ===== MAIN CONTENT ===== -->
-<div id="mainContent" style="display:none">
+<!-- HOME -->
+<div id="home" class="hidden center">
+  <h2 id="welcome" class="neon"></h2>
 
-  <!-- SERVER TOOL -->
-  <button class="btn premium">Server Status</button>
-  <button class="btn premium">Server Ping</button>
-  <button class="btn premium">Build Number</button>
-  <button class="btn premium" onclick="openHidden('dash2.sgaming9107.qzz.io')">
-    Premium Dashboard
+  <button class="btn" onclick="openLink('dash.sgaming9107.qzz.io')">
+    Free Minecraft Server Dashboard
   </button>
 
-  <!-- ADMIN ONLY LOCK -->
-  <div id="adminLockBox">
-    <button class="btn" onclick="togglePremiumLock()">
-      🔐 Premium Tool Lock (ON / OFF)
+  <button id="premiumDash" class="btn hidden"
+    onclick="openLink('dash2.sgaming9107.qzz.io')">
+    Premium Minecraft Server Dashboard
+  </button>
+
+  <div>
+    <button class="btn" onclick="show('tools')">Server Tool</button>
+    <button id="premiumTool" class="btn hidden" onclick="toggleLock()">
+      🔒 Premium Tool Lock
     </button>
   </div>
 
+  <button class="btn"
+    onclick="openLink('https://sdgamer8263-sketch.github.io/Own-hosting-making/')">
+    Own Hosting Create Command
+  </button>
+
+  <button class="btn" onclick="logout()">Logout</button>
 </div>
 
-<script src="auth.js"></script>
+<!-- TOOLS -->
+<div id="tools" class="hidden center">
+  <div class="back" onclick="show('home')">⬅</div>
+  <h2 class="neon">SERVER TOOLS</h2>
+
+  <button class="btn" onclick="show('status')">Server Status</button>
+  <button class="btn" onclick="show('ping')">Server Ping</button>
+  <button class="btn" onclick="show('build')">Paper Build Number</button>
+</div>
+
+<!-- SERVER STATUS -->
+<div id="status" class="card hidden">
+  <div class="back" onclick="show('tools')">⬅</div>
+  <h3 class="center neon">SERVER STATUS</h3>
+
+  <input id="sip" placeholder="Server IP">
+  <input id="sport" placeholder="Port (optional)">
+  <select id="stype">
+    <option>Java</option>
+    <option>Bedrock</option>
+    <option>Geyser</option>
+  </select>
+
+  <button class="btn" onclick="checkStatus()">Check</button>
+  <p id="sresult" class="center"></p>
+</div>
+
+<!-- SERVER PING (merged minimal wrapper) -->
+<div id="ping" class="hidden">
+  <div class="back" onclick="show('tools')">⬅</div>
+  <!-- PLACE YOUR FULL PING CODE HERE -->
+  <iframe srcdoc="PUT_YOUR_FULL_PING_HTML_HERE"
+    style="width:100%;height:100vh;border:none"></iframe>
+</div>
+
+<!-- BUILD -->
+<div id="build" class="card hidden">
+  <div class="back" onclick="show('tools')">⬅</div>
+  <h3 class="center neon">PAPER BUILD</h3>
+  <input id="ver" placeholder="Minecraft Version">
+  <button class="btn" onclick="findBuild()">Find</button>
+  <p id="bresult" class="center"></p>
+</div>
+
+<footer id="footer" class="hidden">
+  <p id="foottext"></p>
+  <img src="logo.png" width="40"
+    onclick="openLink('https://discord.gg/C46pnM3Xz')">
+</footer>
+
+<script>
+/* SPA */
+function show(id){
+  document.querySelectorAll('body > div').forEach(d=>d.classList.add('hidden'));
+  document.getElementById(id).classList.remove('hidden');
+}
+
+/* Auth */
+let admin=false;
+function login(){
+  const u=luser.value,p=lpass.value;
+  if(u==="skahosting" && p==="Z62BGma)qTi!Szs"){
+    admin=true;
+    localStorage.setItem("admin","1");
+  }else{
+    localStorage.setItem("user",u);
+  }
+  init();
+}
+function register(){
+  localStorage.setItem("user",ruser.value);
+  show('login');
+}
+function logout(){
+  admin=false;
+  localStorage.removeItem("admin");
+  show('login');
+}
+
+/* Init */
+function init(){
+  show('home');
+  typing("WELCOME IN MY  GAMING NETWORK","welcome",180000);
+  if(admin){
+    premiumTool.classList.remove("hidden");
+    premiumDash.classList.remove("hidden");
+  }
+  setTimeout(()=>{
+    footer.classList.remove("hidden");
+    typing("Why our hosting is best? Because speed, security and support matter.","foottext",180000);
+  },0);
+}
+
+/* Typing */
+function typing(text,id,delay){
+  const el=document.getElementById(id);
+  let i=0;
+  function run(){
+    el.innerHTML="";
+    i=0;
+    const t=setInterval(()=>{
+      el.innerHTML+=text[i++];
+      if(i>=text.length) clearInterval(t);
+    },80);
+  }
+  run();
+  setInterval(run,delay);
+}
+
+/* Links */
+function openLink(l){
+  const a=document.createElement("a");
+  a.href=l;a.target="_blank";a.rel="noreferrer";a.click();
+}
+
+/* Server Status */
+function checkStatus(){
+  fetch(`https://api.mcsrvstat.us/2/${sip.value}`)
+  .then(r=>r.json())
+  .then(d=>{
+    sresult.innerHTML=d.online
+      ? `Online ✅<br>Players: ${d.players.online}/${d.players.max}`
+      : "Offline ❌";
+  });
+}
+
+/* Build */
+const builds={
+"1.21.11":39,"1.21.10":89,"1.21.9":59,"1.21.8":60,"1.21.7":32,
+"1.20.4":499,"1.19.4":550,"1.18.2":388,"1.16.5":794,"1.8.8":445
+};
+function findBuild(){
+  const v=ver.value.trim();
+  bresult.innerHTML=builds[v]
+    ? `## ${v} → ${builds[v]}`
+    : "Not found ❌";
+}
+
+/* Start */
+if(localStorage.getItem("admin")){admin=true;init();}
+</script>
+
 </body>
-</html>
+  </html>
