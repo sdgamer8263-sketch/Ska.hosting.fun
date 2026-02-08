@@ -5,80 +5,58 @@
 <title>SKA HOSTING</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link href="https://fonts.cdnfonts.com/css/minecraft-4" rel="stylesheet">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Minecraft',sans-serif}
-body{background:#000;color:#0ff;overflow-x:hidden}
-.bg{position:fixed;inset:0;background:linear-gradient(rgba(0,0,0,.75),rgba(0,0,0,.75)),url("fx58j1opheu71.gif") center/cover fixed;z-index:-3}
-#particles{position:fixed;inset:0;z-index:-2}
-header{padding:15px}
-.logo{display:flex;align-items:center;gap:15px}
-.logo img{width:60px;animation:spin 30s linear infinite;filter:drop-shadow(0 0 15px #0ff)}
-@keyframes spin{to{transform:rotate(360deg)}}
+body{background:#000;color:#0ff}
 .center{text-align:center;padding:20px}
-#typing{font-size:24px;margin:40px 0;text-shadow:0 0 20px #0ff}
-.link{cursor:pointer;margin:10px 0}
-.btn-row{display:flex;gap:15px;justify-content:center;flex-wrap:wrap}
-.btn{background:#0ff;color:#000;padding:12px 18px;border-radius:14px;font-weight:bold;cursor:pointer;box-shadow:0 0 20px #0ff}
-.page{display:none;max-width:520px;margin:30px auto;padding:20px;background:rgba(0,0,0,.55);backdrop-filter:blur(14px);border-radius:20px;box-shadow:0 0 30px #0ff;position:relative}
-.back{position:absolute;right:15px;top:15px;cursor:pointer}
-input,button{width:100%;padding:12px;margin:8px 0;border-radius:10px;border:none}
+input,button{width:100%;padding:12px;margin:6px 0;border-radius:10px;border:none}
 input{background:#111;color:#0ff}
-button{background:#0ff;color:#000;font-weight:bold}
-footer{text-align:center;padding:20px}
+button{background:#0ff;color:#000;font-weight:bold;cursor:pointer}
+.link{margin:10px 0;cursor:pointer}
+.adminOnly,.premiumOnly{display:none}
 </style>
 </head>
 
 <body>
 
-<div class="bg"></div>
-<canvas id="particles"></canvas>
+<div class="center">
+  <h2>SKA HOSTING</h2>
 
-<header>
-  <div class="logo">
-    <img src="file_00000000387071faa7c92db633a8f726.png">
-    <h2>SKA HOSTING</h2>
-  </div>
-</header>
+  <!-- LOGIN / REGISTER -->
+  <input id="username" placeholder="Username">
+  <input id="password" type="password" placeholder="Password">
+  <button onclick="register()">Register</button>
+  <button onclick="login()">Login</button>
+  <button onclick="logout()">Logout</button>
 
-<div class="center" id="home">
-  <div id="typing"></div>
-
-  <!-- LOGIN REGISTER -->
-  <div style="max-width:300px;margin:20px auto">
-    <input id="email" placeholder="Email">
-    <input id="password" type="password" placeholder="Password">
-    <button onclick="register()">Register</button>
-    <button onclick="login()">Login</button>
-    <button onclick="logout()">Logout</button>
-  </div>
-
-  <div class="link premiumOnly" style="display:none" onclick="window.open('https://dash2.sgaming9107.qzz.io')">
-    Premium Minecraft Server Dashboard
-  </div>
+  <hr><br>
 
   <div class="link" onclick="window.open('https://dash.sgaming9107.qzz.io')">
     Free Minecraft Server Dashboard
   </div>
 
-  <div class="btn-row">
-    <div class="btn">Server Tool</div>
-    <div class="btn premiumOnly" style="display:none">Premium Tool</div>
-    <div class="btn adminOnly" style="display:none">🤖 AI ADMIN TOOL</div>
+  <div class="link premiumOnly" onclick="window.open('https://dash2.sgaming9107.qzz.io')">
+    Premium Minecraft Server Dashboard
+  </div>
+
+  <div class="adminOnly">
+    🤖 AI ADMIN TOOL
   </div>
 </div>
 
-<footer>
-  <div id="footerText"></div>
+<footer class="center">
+⚡ Fast Servers<br>
+🛡️ Anti DDoS Protection<br>
+📶 24/7 Uptime<br>
+🚀 Lag Free Performance<br>
+🎮 Minecraft Optimized
 </footer>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut }
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut }
 from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getFirestore, doc, setDoc, getDoc }
-from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBvlOV7L3g_lBDRR7mcNincGVyM16xtd90",
@@ -89,41 +67,44 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const db = getFirestore(app);
+
+const ADMIN_USER = "skahosting";
+const ADMIN_PASS = "Z62BGma)qTi!Szs";
 
 window.register = async ()=>{
-  const e = email.value, p = password.value;
-  const r = await createUserWithEmailAndPassword(auth,e,p);
-  await setDoc(doc(db,"users",r.user.uid),{
-    email:e, role:"free", premium:false, admin:false
-  });
-  alert("Registered");
+  const u = username.value;
+  const p = password.value;
+  const fakeEmail = u + "@ska.local";
+
+  await createUserWithEmailAndPassword(auth,fakeEmail,p);
+  alert("Registered Successfully");
 };
 
 window.login = async ()=>{
-  await signInWithEmailAndPassword(auth,email.value,password.value);
+  const u = username.value;
+  const p = password.value;
+
+  // ADMIN LOGIN
+  if(u === ADMIN_USER && p === ADMIN_PASS){
+    document.querySelector(".adminOnly").style.display="block";
+    document.querySelector(".premiumOnly").style.display="block";
+    alert("Admin Logged In");
+    return;
+  }
+
+  // NORMAL USER LOGIN
+  const fakeEmail = u + "@ska.local";
+  await signInWithEmailAndPassword(auth,fakeEmail,p);
+  document.querySelector(".premiumOnly").style.display="block";
+  alert("User Logged In");
 };
 
-window.logout = ()=>signOut(auth);
-
-onAuthStateChanged(auth, async (u)=>{
-  if(!u) return;
-  const s = await getDoc(doc(db,"users",u.uid));
-  if(!s.exists()) return;
-  const d = s.data();
-  if(d.premium) document.querySelectorAll(".premiumOnly").forEach(e=>e.style.display="block");
-  if(d.admin) document.querySelectorAll(".adminOnly").forEach(e=>e.style.display="block");
-});
-
-/* FOOTER TEXT */
-const ft=`⚡ Ultra Fast NVMe SSD Servers
-🛡️ Advanced Anti-DDoS Protection
-📶 99.99% Uptime (24/7)
-🚀 Lag-Free Performance
-🌍 Global Network
-🎮 Minecraft Optimized`;
-let i=0;
-(function t(){footerText.innerText=ft.slice(0,i++);if(i<=ft.length)setTimeout(t,40)})();
+window.logout = ()=>{
+  signOut(auth);
+  document.querySelector(".adminOnly").style.display="none";
+  document.querySelector(".premiumOnly").style.display="none";
+  alert("Logged Out");
+};
 </script>
 
 </body>
