@@ -1,21 +1,56 @@
-const c=document.getElementById("particles");
-const x=c.getContext("2d");
-function resize(){c.width=innerWidth;c.height=innerHeight}
-onresize=resize;resize();
-
-let p=[];
-for(let i=0;i<120;i++){
-p.push({x:Math.random()*c.width,y:Math.random()*c.height,s:Math.random()*1.5+0.5,h:Math.random()*360});
+<!DOCTYPE html>
+<html>
+<head>
+<title>Theme Selector</title>
+<style>
+body{
+margin:0;
+background:#000;
+color:#0ff;
+font-family:Arial;
+text-align:center;
 }
+h1{margin:20px}
+.btn{
+margin:10px;
+padding:15px;
+border:2px solid currentColor;
+display:inline-block;
+cursor:pointer;
+}
+</style>
+</head>
+<body>
 
-(function draw(){
-x.clearRect(0,0,c.width,c.height);
-p.forEach(o=>{
-o.y+=o.s;
-o.h+=1;
-if(o.y>c.height)o.y=0;
-x.fillStyle=`hsl(${o.h},100%,60%)`;
-x.fillRect(o.x,o.y,2,2);
+<h1>Theme Selector</h1>
+
+<div id="themes"></div>
+
+<script>
+const themes=[
+"hue-rotate(0deg)","hue-rotate(30deg)","hue-rotate(60deg)",
+"hue-rotate(90deg)","hue-rotate(120deg)","hue-rotate(150deg)",
+"hue-rotate(180deg)","hue-rotate(210deg)","hue-rotate(240deg)",
+"hue-rotate(270deg)","hue-rotate(300deg)","hue-rotate(330deg)",
+"brightness(1.2)","contrast(1.2)","saturate(1.5)",
+"invert(1)","sepia(1)","grayscale(1)",
+"hue-rotate(45deg) saturate(2)",
+"hue-rotate(90deg) brightness(1.4)"
+];
+
+const box=document.getElementById("themes");
+themes.forEach((t,i)=>{
+let b=document.createElement("div");
+b.className="btn";
+b.innerText="Theme "+(i+1);
+b.onclick=()=>document.body.style.filter=t;
+box.appendChild(b);
 });
-requestAnimationFrame(draw);
-})();
+
+let i=0;
+setInterval(()=>{
+document.body.style.filter=themes[i++%themes.length];
+},120000);
+</script>
+</body>
+</html>
