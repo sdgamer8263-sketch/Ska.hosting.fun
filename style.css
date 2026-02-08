@@ -1,0 +1,35 @@
+body{
+margin:0;
+min-height:100vh;
+background:linear-gradient(rgba(0,0,0,.8),rgba(0,0,0,.8)),
+url("fx58j1opheu71.gif") center/cover fixed;
+font-family:'Minecraft',sans-serif;
+color:#0ff;
+text-align:center;
+}
+
+input{
+padding:12px;
+margin:6px;
+border-radius:10px;
+border:none;
+background:#111;
+color:#0ff;
+}
+
+.btn{
+padding:14px 24px;
+margin:8px;
+border-radius:14px;
+border:none;
+background:#0ff;
+color:#000;
+font-weight:bold;
+box-shadow:0 0 20px #0ff;
+cursor:pointer;
+transition:.25s;
+}
+
+.btn:active{transform:scale(.92)}
+
+#userBar,#adminLockBox{display:none}
