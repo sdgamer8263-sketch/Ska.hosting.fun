@@ -226,8 +226,9 @@ footer div{margin:4px 0}
   <h2>MC PING DASHBOARD</h2>
   <input id="ip" placeholder="Server IP">
   <input id="port" value="25565">
+  <input id="port" value="19132">
   <select id="type">
-    <option value="java">Java</option>
+    <option value="java">Java</option>  
     <option value="bedrock">Bedrock</option>
     <option value="geyser">Geyser</option>
   </select>
@@ -317,7 +318,7 @@ function checkStatus(){
 const builds={"1.21.11":39,"1.21.10":89,"1.21.9":59,"1.21.8":60,"1.20.4":499,"1.19.4":550,"1.18.2":388,"1.8.8":445};
 function checkBuild(){
   const verValue=document.getElementById("ver").value;
-  document.getElementById("result").innerText = builds[verValue]? `The Paper build number of ${verValue} is ${builds[verValue]}` : "Version not found ❌";
+  document.getElementById("result").innerText = builds[verValue]? `The Paper build number of ${verValue}   =   ${builds[verValue]}` : "Version not found ❌";
 }
 
 // PING DASHBOARD
