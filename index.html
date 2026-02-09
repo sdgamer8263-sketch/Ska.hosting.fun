@@ -60,13 +60,21 @@ header{padding:15px}
   100% { background-position: 0% 0%; }
 }
 
-/* BUTTONS */
-.btn-row{display:flex;gap:15px;justify-content:center;flex-wrap:wrap}
+/* BUTTONS SPACING */
+.btn-row {
+  display: flex;
+  gap: 25px;          /* More space between buttons */
+  justify-content: center;
+  flex-wrap: wrap;
+}
 .btn{
-  background:#0ff;color:#000;
-  padding:12px 18px;border-radius:14px;
-  font-weight:bold;cursor:pointer;
-  box-shadow:0 0 20px #0ff
+  background:#0ff;
+  color:#000;
+  padding:14px 22px;  /* Slightly bigger padding */
+  border-radius:14px;
+  font-weight:bold;
+  cursor:pointer;
+  box-shadow:0 0 20px #0ff;
 }
 .btn,button,.link,label{
   transition:.15s ease;
@@ -132,7 +140,7 @@ footer{
 }
 footer div{margin:4px 0}
 
-/* Improved Discord Logo */
+/* Discord Logo */
 .discord-logo {
   width:50px;
   filter: drop-shadow(0 0 15px #0ff) brightness(1.2);
@@ -155,12 +163,16 @@ footer div{margin:4px 0}
   </div>
 </header>
 
+<!-- HOME -->
 <div class="center" id="home">
   <div id="typing"></div>
 
-  <!-- Free Dashboard Only -->
+  <!-- Free & Premium Dashboard Links -->
   <div class="link rainbow-text" onclick="openHidden('https://dash.sgaming9107.qzz.io')">
     Free Minecraft Server Dashboard
+  </div>
+  <div class="link rainbow-text" onclick="openHidden('https://dash2.sgaming9107.qzz.io')">
+    Premium Minecraft Server Dashboard
   </div>
 
   <div class="btn-row">
@@ -229,6 +241,7 @@ footer div{margin:4px 0}
   <div id="result" class="centerText"></div>
 </div>
 
+<!-- FOOTER -->
 <footer>
   <div>⚡ Ultra Fast NVMe SSD Servers</div>
   <div>🛡️ Advanced Anti-DDoS Protection</div>
@@ -244,7 +257,7 @@ footer div{margin:4px 0}
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-/* NAV */
+/* NAVIGATION */
 function showPage(id){
   document.querySelectorAll('.page').forEach(p=>p.style.display='none');
   home.style.display='none';
@@ -256,7 +269,7 @@ function goHome(){
 }
 function openHidden(u){window.open(u,'_blank')}
 
-/* WELCOME TYPING */
+/* TYPING EFFECT */
 const t="WELCOME IN MY GAMING NETWORK";
 let ti=0;
 function typeWelcome(){
@@ -306,40 +319,52 @@ function checkStatus(){
   window.autoStatus=setInterval(checkStatus,15000);
 }
 
-/* PAPER */
+/* PAPER BUILD */
 const builds={
 "1.21.11":39,"1.21.10":89,"1.21.9":59,"1.21.8":60,
 "1.20.4":499,"1.19.4":550,"1.18.2":388,"1.8.8":445
 };
 function checkBuild(){
-  result.innerText=builds[ver.value]
-   ?`## The paper build number of ${ver.value} is ${builds[ver.value]}`
-   :"## Version not found ❌";
+  const verValue = document.getElementById("ver").value;
+  if(builds[verValue]){
+    document.getElementById("result").innerText = `The Paper build number of ${verValue} is ${builds[verValue]}`;
+  } else {
+    document.getElementById("result").innerText = "Version not found ❌";
+  }
 }
 
-/* PING */
+/* PING DASHBOARD */
 const API="https://ping-yies.onrender.com/ping";
-const ctx=document.getElementById("graph").getContext("2d");
 let hist=[];
 const map=L.map('map').setView([20,0],2);
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
 function checkPing(){
-  fetch(`${API}?ip=${ip.value}&port=${port.value}&type=${type.value}`)
-  .then(r=>r.json()).then(d=>{
-    if(!d.online){statusp.innerText="Offline ❌";return}
-    hist.push(d.ping);if(hist.length>20)hist.shift();
-    pingv.innerText=`Ping: ${d.ping} ms`;
-    quality.innerText=d.ping<120?"GOOD":d.ping<200?"MEDIUM":"BAD";
-    draw();
-  });
+  const ipValue=document.getElementById('ip').value;
+  const portValue=document.getElementById('port').value || 25565;
+  const typeValue=document.getElementById('type').value;
+  if(!ipValue){alert('Please enter server IP'); return;}
+
+  fetch(`${API}?ip=${ipValue}&port=${portValue}&type=${typeValue}`)
+    .then(r=>r.json())
+    .then(d=>{
+      if(!d.online){statusp.innerText="Offline ❌"; return;}
+      hist.push(d.ping); if(hist.length>20) hist.shift();
+      pingv.innerText=`Ping: ${d.ping} ms`;
+      quality.innerText=d.ping<120?"GOOD":d.ping<200?"MEDIUM":"BAD";
+      drawPingGraph();
+    })
+    .catch(e=>{console.error(e); alert('Error checking ping');});
 }
-function draw(){
-  ctx.clearRect(0,0,graph.width,graph.height);
-  ctx.beginPath();ctx.strokeStyle="#0ff";
+
+function drawPingGraph(){
+  const canvas=document.getElementById('graph');
+  const ctx=canvas.getContext('2d');
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.beginPath(); ctx.strokeStyle="#0ff";
   hist.forEach((p,i)=>{
-    const x=i*(graph.width/(hist.length-1||1));
-    const y=graph.height-p;
+    const x=i*(canvas.width/(hist.length-1||1));
+    const y=canvas.height-p;
     i?ctx.lineTo(x,y):ctx.moveTo(x,y);
   });
   ctx.stroke();
