@@ -1,456 +1,349 @@
-<!DOCTYPE html>  <html lang="en">    <head>    
-<meta charset="UTF-8">    
-<meta name="viewport" content="width=device-width, initial-scale=1.0">    
-<title>Minecraft Ping Dashboard</title>    
-<link href="https://fonts.cdnfonts.com/css/minecraft-4" rel="stylesheet">    
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />    
-<style>    
-*{box-sizing:border-box;font-family:'Minecraft',sans-serif}    
-body{    
-  margin:0;min-height:100vh;    
-  background: linear-gradient(rgba(0,0,0,.75),rgba(0,0,0,.75)),    
-  url("beaa776788318ffa9adf475282e18bb5.gif") center/cover no-repeat fixed;    
-  display:flex;flex-direction:column;align-items:center;color:#0ff;    
-}    
-.card{    
-  width:95%;max-width:500px;padding:20px;    
-  background:rgba(0,0,0,.45);backdrop-filter:blur(16px);    
-  border-radius:20px;box-shadow:0 0 30px #0ff;margin-top:20px    
-}    
-h1{text-align:center;margin:0 0 10px}    
-input,select,button{    
-  width:100%;padding:12px;margin:8px 0;border-radius:10px;border:none    
-}    
-input,select{background:#111;color:#0ff}    
-button{background:#0ff;color:#000;font-weight:bold}    
-button:active{transform:scale(.97)}    
-.result{text-align:center;margin-top:6px}    
-.good{color:#0f0}.medium{color:#ff0}.bad{color:#f33}    
-canvas{margin-top:10px;width:100%;height:150px;border-radius:10px;box-shadow:0 0 15px #0ff}    
-#map{height:200px;width:100%;margin-top:10px;border-radius:12px;box-shadow:0 0 15px #0ff}    
-.small{text-align:center;font-size:12px;opacity:.8}    
-</style>    
-</head>    
-<body>  <div class="card">    
-  <h1>MC PING DASHBOARD</h1>    
-  <input id="ip" placeholder="Server IP (play.hypixel.net)">    
-  <input id="port" value="25565">    
-  <select id="type">    
-    <option value="java">Java</option>    
-    <option value="bedrock">Bedrock</option>    
-    <option value="geyser">Geyser</option>    
-    <option value="other">Other</option>    
-  </select>    
-  <button onclick="checkPing()">Check Ping</button>    <div class="result" id="status">Ready</div>    
-  <div class="result" id="ping"></div>    
-  <div class="result" id="quality"></div>    
-  <div class="result" id="minmax"></div>    
-  <div class="result" id="timeinfo"></div>    
-  <div class="result" id="location"></div>  <canvas id="graph"></canvas>    <div id="map"></div>    
-  <div class="small">Tip: First click may wake server</div>    
-</div>  <audio id="alertSound" src="sounds/alert.mp3"></audio>  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>  <script>    const API="https://ping-yies.onrender.com/ping";
-const canvas=document.getElementById("graph"),ctx=canvas.getContext("2d");
-let hist=[],times=[],minPing=null,maxPing=null,waking=false,marker=null;
-let autoPingInterval=null;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SKA HOSTING</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.cdnfonts.com/css/minecraft-4" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Minecraft',sans-serif}
+body{background:#000;color:#0ff;overflow-x:hidden}
 
-// Leaflet map
+/* BACKGROUND */
+.bg{
+  position:fixed;inset:0;
+  background:
+  linear-gradient(rgba(0,0,0,.75),rgba(0,0,0,.75)),
+  url("fx58j1opheu71.gif") center/cover fixed;
+  z-index:-3;
+}
+#particles{position:fixed;inset:0;z-index:-2}
+
+/* HEADER */
+header{padding:15px}
+.logo{display:flex;align-items:center;gap:15px}
+.logo img{
+  width:60px;
+  animation:spin 30s linear infinite;
+  filter:drop-shadow(0 0 15px #0ff)
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* HOME */
+.center{text-align:center;padding:20px}
+#typing{font-size:24px;margin:40px 0;text-shadow:0 0 20px #0ff}
+
+/* Rainbow Gradient Links */
+.rainbow-text {
+  font-weight: bold;
+  font-size: 22px;
+  background: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
+  background-size: 400% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: rainbow 4s linear infinite;
+  display: inline-block;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 10px;
+  box-shadow: 0 0 15px #0ff;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.rainbow-text:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 30px #0ff;
+}
+@keyframes rainbow {
+  0% { background-position: 0% 0%; }
+  50% { background-position: 100% 0%; }
+  100% { background-position: 0% 0%; }
+}
+
+/* BUTTONS */
+.btn-row{display:flex;gap:15px;justify-content:center;flex-wrap:wrap}
+.btn{
+  background:#0ff;color:#000;
+  padding:12px 18px;border-radius:14px;
+  font-weight:bold;cursor:pointer;
+  box-shadow:0 0 20px #0ff
+}
+.btn,button,.link,label{
+  transition:.15s ease;
+}
+.btn:active,button:active,.link:active,label:active{
+  transform:scale(.95);
+  box-shadow:0 0 30px #0ff;
+}
+
+/* PAGES */
+.page{
+  display:none;max-width:520px;
+  margin:30px auto;padding:20px;
+  background:rgba(0,0,0,.55);
+  backdrop-filter:blur(14px);
+  border-radius:20px;
+  box-shadow:0 0 30px #0ff;
+  position:relative;
+}
+.back{
+  position:absolute;right:15px;top:15px;
+  font-size:20px;
+  padding:6px 12px;
+  border-radius:12px;
+  background:rgba(0,255,255,.2);
+  cursor:pointer;
+}
+.back:hover{box-shadow:0 0 15px #0ff}
+
+/* FORM */
+input,select,button{
+  width:100%;padding:12px;margin:8px 0;
+  border-radius:10px;border:none
+}
+input,select{background:#111;color:#0ff}
+button{background:#0ff;color:#000;font-weight:bold}
+
+/* STATUS */
+.badge{
+  padding:8px 14px;border-radius:14px;
+  font-weight:bold;
+  animation:pulse 1.5s infinite
+}
+@keyframes pulse{
+  0%{box-shadow:0 0 5px}
+  50%{box-shadow:0 0 20px}
+  100%{box-shadow:0 0 5px}
+}
+.centerText{text-align:center;margin-top:6px}
+
+/* PING */
+.good{color:#0f0}.medium{color:#ff0}.bad{color:#f33}
+#map{height:200px;border-radius:12px;margin-top:10px}
+canvas{width:100%;height:150px}
+
+/* FOOTER */
+footer{
+  text-align:center;
+  padding:20px;
+  font-size:16px;
+  line-height:1.6;
+  color:#0ff;
+}
+footer div{margin:4px 0}
+
+/* Improved Discord Logo */
+.discord-logo {
+  width:50px;
+  filter: drop-shadow(0 0 15px #0ff) brightness(1.2);
+  transition: transform 0.2s, filter 0.2s;
+}
+.discord-logo:hover {
+  transform: scale(1.2) rotate(10deg);
+  filter: drop-shadow(0 0 25px #0ff) brightness(1.4);
+}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<canvas id="particles"></canvas>
+
+<header>
+  <div class="logo">
+    <img src="file_00000000387071faa7c92db633a8f726.png">
+    <h2>SKA HOSTING</h2>
+  </div>
+</header>
+
+<div class="center" id="home">
+  <div id="typing"></div>
+
+  <!-- Free Dashboard Only -->
+  <div class="link rainbow-text" onclick="openHidden('https://dash.sgaming9107.qzz.io')">
+    Free Minecraft Server Dashboard
+  </div>
+
+  <div class="btn-row">
+    <div class="btn" onclick="showPage('tools')">Server Tool</div>
+    <div class="btn" onclick="openHidden('https://sdgamer8263-sketch.github.io/Own-hosting-making/')">
+      Own Hosting Create Command
+    </div>
+  </div>
+</div>
+
+<!-- TOOLS -->
+<div class="page" id="tools">
+  <div class="back" onclick="goHome()">⬅</div>
+  <h2>SERVER TOOLS</h2>
+  <button onclick="showPage('status')">Server Status</button>
+  <button onclick="showPage('ping')">Server Ping</button>
+  <button onclick="showPage('paper')">Paper Build Number</button>
+</div>
+
+<!-- SERVER STATUS -->
+<div class="page" id="status">
+  <div class="back" onclick="showPage('tools')">⬅</div>
+  <h2>Server Status</h2>
+  <input id="sip" placeholder="Server IP">
+  <input id="sport" placeholder="Port (optional)">
+  <select id="stype">
+    <option>Java</option>
+    <option>Bedrock</option>
+    <option>Geyser</option>
+  </select>
+  <button onclick="checkStatus()">Check</button>
+
+  <div id="sbadge" class="centerText"></div>
+  <div id="sicon" class="centerText"></div>
+  <div id="smotd" class="centerText"></div>
+  <div id="splayers" class="centerText"></div>
+  <div id="sping" class="centerText"></div>
+</div>
+
+<!-- SERVER PING -->
+<div class="page" id="ping">
+  <div class="back" onclick="showPage('tools')">⬅</div>
+  <h2>MC PING DASHBOARD</h2>
+  <input id="ip" placeholder="Server IP">
+  <input id="port" value="25565">
+  <select id="type">
+    <option value="java">Java</option>
+    <option value="bedrock">Bedrock</option>
+    <option value="geyser">Geyser</option>
+  </select>
+  <button onclick="checkPing()">Check Ping</button>
+
+  <div id="statusp" class="centerText"></div>
+  <div id="pingv" class="centerText"></div>
+  <div id="quality" class="centerText"></div>
+  <canvas id="graph"></canvas>
+  <div id="map"></div>
+</div>
+
+<!-- PAPER -->
+<div class="page" id="paper">
+  <div class="back" onclick="showPage('tools')">⬅</div>
+  <h2>Paper Build Number</h2>
+  <input id="ver" placeholder="Version">
+  <button onclick="checkBuild()">Check</button>
+  <div id="result" class="centerText"></div>
+</div>
+
+<footer>
+  <div>⚡ Ultra Fast NVMe SSD Servers</div>
+  <div>🛡️ Advanced Anti-DDoS Protection</div>
+  <div>📶 99.99% Network Uptime (24/7)</div>
+  <div>🚀 Lag-Free Minecraft Performance</div>
+  <div>🌍 Global Low-Latency Network</div>
+  <div>🔄 Automatic Backups</div>
+  <div>🎮 Optimized for Gaming Networks</div>
+  <div class="discord" onclick="openHidden('https://discord.gg/C46pnM3Xz')">
+    <img src="https://cdn-icons-png.flaticon.com/512/2111/2111370.png" class="discord-logo">
+  </div>
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+/* NAV */
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.style.display='none');
+  home.style.display='none';
+  document.getElementById(id).style.display='block';
+}
+function goHome(){
+  document.querySelectorAll('.page').forEach(p=>p.style.display='none');
+  home.style.display='block';
+}
+function openHidden(u){window.open(u,'_blank')}
+
+/* WELCOME TYPING */
+const t="WELCOME IN MY GAMING NETWORK";
+let ti=0;
+function typeWelcome(){
+  typing.innerText=t.slice(0,ti++);
+  if(ti<=t.length) setTimeout(typeWelcome,120);
+}
+typeWelcome();
+setInterval(()=>{ti=0;typeWelcome()},180000);
+
+/* FOOTER TYPING */
+const ft="Our hosting is fast, secure, lag-free and perfect for Minecraft gaming networks.";
+let fi=0;
+function typeFooter(){
+  footerText.innerText=ft.slice(0,fi++);
+  if(fi<=ft.length) setTimeout(typeFooter,80);
+}
+typeFooter();
+setInterval(()=>{fi=0;typeFooter()},180000);
+
+/* PARTICLES */
+const pc=document.getElementById("particles"),pctx=pc.getContext("2d");
+let ps=[];function rs(){pc.width=innerWidth;pc.height=innerHeight}
+onresize=rs;rs();
+for(let i=0;i<90;i++)ps.push({x:Math.random()*pc.width,y:Math.random()*pc.height});
+(function anim(){
+  pctx.clearRect(0,0,pc.width,pc.height);
+  ps.forEach(p=>{p.y+=.6;if(p.y>pc.height)p.y=0;
+    pctx.fillStyle="#0ff";pctx.fillRect(p.x,p.y,2,2)});
+  requestAnimationFrame(anim);
+})();
+
+/* SERVER STATUS */
+function checkStatus(){
+  fetch(`https://api.mcsrvstat.us/2/${sip.value}${sport.value?":"+sport.value:""}`)
+  .then(r=>r.json()).then(d=>{
+    if(!d.online){
+      sbadge.innerHTML='<span class="badge bad">OFFLINE</span>';
+      return;
+    }
+    sbadge.innerHTML='<span class="badge good">ONLINE</span>';
+    splayers.innerText=`Players: ${d.players.online}/${d.players.max}`;
+    sping.innerText=`Ping: ${d.debug.ping||"N/A"} ms`;
+    smotd.innerText=d.motd.clean.join(" ");
+    if(d.icon)sicon.innerHTML=`<img src="${d.icon}" width="64">`;
+  });
+  clearInterval(window.autoStatus);
+  window.autoStatus=setInterval(checkStatus,15000);
+}
+
+/* PAPER */
+const builds={
+"1.21.11":39,"1.21.10":89,"1.21.9":59,"1.21.8":60,
+"1.20.4":499,"1.19.4":550,"1.18.2":388,"1.8.8":445
+};
+function checkBuild(){
+  result.innerText=builds[ver.value]
+   ?`## The paper build number of ${ver.value} is ${builds[ver.value]}`
+   :"## Version not found ❌";
+}
+
+/* PING */
+const API="https://ping-yies.onrender.com/ping";
+const ctx=document.getElementById("graph").getContext("2d");
+let hist=[];
 const map=L.map('map').setView([20,0],2);
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19, attribution:'© OpenStreetMap'}).addTo(map);
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
 function checkPing(){
-const ip=document.getElementById("ip").value.trim();
-const port=document.getElementById("port").value.trim()||"25565";
-const type=document.getElementById("type").value;
-if(!ip){set("Enter server IP ❌");return}
-
-fetchPing(ip,port,type);
-if(autoPingInterval) clearInterval(autoPingInterval);
-autoPingInterval = setInterval(()=>fetchPing(ip,port,type),5000);
+  fetch(`${API}?ip=${ip.value}&port=${port.value}&type=${type.value}`)
+  .then(r=>r.json()).then(d=>{
+    if(!d.online){statusp.innerText="Offline ❌";return}
+    hist.push(d.ping);if(hist.length>20)hist.shift();
+    pingv.innerText=`Ping: ${d.ping} ms`;
+    quality.innerText=d.ping<120?"GOOD":d.ping<200?"MEDIUM":"BAD";
+    draw();
+  });
 }
-
-function fetchPing(ip,port,type){
-set("Checking...");
-document.getElementById("ping").innerText="";
-document.getElementById("quality").innerText="";
-
-fetch(${API}?ip=${ip}&port=${port}&type=${type})
-.then(r=>r.json())
-.then(d=>{
-if(!d.online){set("Server Offline ❌");return}
-waking=false;
-
-const p=d.ping;    
-
-  // Min / Max    
-  minPing=minPing===null?p:Math.min(minPing,p);    
-  maxPing=maxPing===null?p:Math.max(maxPing,p);    
-  document.getElementById("minmax").innerText=`Min: ${minPing} ms | Max: ${maxPing} ms`;    
-
-  // Last check    
-  const now=new Date().toLocaleTimeString();    
-  times.push(now); if(times.length>20) times.shift();    
-  document.getElementById("timeinfo").innerText=`Last check: ${now}`;    
-
-  // Current ping    
-  hist.push(p); if(hist.length>20) hist.shift();    
-  document.getElementById("ping").innerText=`Ping: ${p} ms`;    
-
-  // Quality    
-  let t="GOOD",cls="good";    
-  if(p>200){t="BAD";cls="bad";playSound()}    
-  else if(p>120){t="MEDIUM";cls="medium"}    
-  document.getElementById("quality").innerHTML=`<span class="${cls}">${t}</span>`;    
-
-  // Location + map    
-  fetchLocation(ip);    
-
-  set("Server Online ✅");    
-  drawGraph();    
-})    
-.catch(()=>{if(!waking){waking=true;set("Waking server… tap again ⏳");}});
-
+function draw(){
+  ctx.clearRect(0,0,graph.width,graph.height);
+  ctx.beginPath();ctx.strokeStyle="#0ff";
+  hist.forEach((p,i)=>{
+    const x=i*(graph.width/(hist.length-1||1));
+    const y=graph.height-p;
+    i?ctx.lineTo(x,y):ctx.moveTo(x,y);
+  });
+  ctx.stroke();
 }
-
-function fetchLocation(ip){
-fetch(https://ipapi.co/${ip}/json/)
-.then(r=>r.json())
-.then(data=>{
-if(data && data.latitude && data.longitude){
-document.getElementById("location").innerText=Server location: ${data.city || 'Unknown'}, ${data.country_name || 'Unknown'};
-if(marker) marker.remove();
-marker=L.marker([data.latitude,data.longitude]).addTo(map)
-.bindPopup(Server: ${ip}<br>${data.city || 'Unknown'}, ${data.country_name || 'Unknown'})
-.openPopup();
-map.setView([data.latitude,data.longitude],4);
-}else{
-document.getElementById("location").innerText="Server location: Unknown";
-}
-})
-.catch(()=>document.getElementById("location").innerText="Server location: Unknown");
-}
-
-function drawGraph(){
-canvas.width=canvas.offsetWidth;
-canvas.height=150;
-ctx.clearRect(0,0,canvas.width,canvas.height);
-if(hist.length<1) return;
-
-ctx.beginPath();
-ctx.strokeStyle="#0ff";
-ctx.lineWidth=2;
-const scale = 400;
-hist.forEach((p,i)=>{
-const x = i*(canvas.width/(hist.length-1||1));
-const y = canvas.height - Math.min(p,scale)/scale*canvas.height;
-i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
-});
-ctx.stroke();
-
-// optional dots
-ctx.fillStyle="#0ff";
-hist.forEach((p,i)=>{
-const x = i*(canvas.width/(hist.length-1||1));
-const y = canvas.height - Math.min(p,scale)/scalecanvas.height;
-ctx.beginPath(); ctx.arc(x,y,3,0,Math.PI2); ctx.fill();
-});
-}
-
-function playSound(){const a=document.getElementById("alertSound");a.currentTime=0;a.play()}
-function set(s){document.getElementById("status").innerText=s}
-</script>  </body>
-
-</html> a ping ka sahi code ha ,  <!DOCTYPE html>  <html lang="en">    
-<head>    
-<meta charset="UTF-8">    
-<meta name="viewport" content="width=device-width, initial-scale=1.0">    
-<title>Minecraft Server Status</title>    
-<style>    
-body {    
-    margin: 0;    
-    padding: 0;    
-    height: 100vh;    
-    font-family: 'Arial', sans-serif;    
-    background: url('https://raw.githubusercontent.com/sdgamer8263-sketch/Paper-build/main/beaa776788318ffa9adf475282e18bb5.gif') no-repeat center center fixed;    
-    background-size: cover;    
-    display: flex;    
-    justify-content: center;    
-    align-items: center;    
-    flex-direction: column;    
-    color: #00ffff;    
-    text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 30px #00ffff;    
-}  h1 {  
-font-size: 3em;  
-margin-bottom: 20px;  
-color: #ff00ff;  
-text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 30px #ff00ff;  
-animation: neonPulse 2s infinite alternate;  
-}  .status-box {
-background: rgba(0, 0, 0, 0.6);
-padding: 30px 50px;
-border-radius: 20px;
-border: 2px solid #00ffff;
-box-shadow: 0 0 20px #00ffff, 0 0 40px #00ffff;
-text-align: center;
-min-width: 300px;
-animation: glowPulse 2s infinite alternate;
-}
-
-input, select {
-margin-top: 10px;
-padding: 5px 10px;
-border-radius: 10px;
-border: 2px solid #00ffff;
-background: rgba(0,0,0,0.6);
-color: #00ffff;
-font-size: 1em;
-text-align: center;
-}
-
-input:focus, select:focus {
-outline: none;
-border-color: #ff00ff;
-}
-
-button {
-margin-top: 20px;
-padding: 10px 20px;
-border: none;
-border-radius: 10px;
-background: #ff00ff;
-color: white;
-font-size: 1em;
-cursor: pointer;
-box-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff;
-transition: 0.3s;
-}
-
-button:hover {
-box-shadow: 0 0 20px #00ffff, 0 0 40px #00ffff;
-background: #00ffff;
-}
-
-.status {
-font-size: 1.5em;
-margin-top: 15px;
-padding: 10px;
-border-radius: 10px;
-animation: pulseStatus 1.5s infinite alternate;
-}
-
-.online {
-color: #00ff00;
-text-shadow: 0 0 15px #00ff00, 0 0 30px #00ff00, 0 0 45px #00ff00;
-}
-
-.offline {
-color: #ff0000;
-text-shadow: 0 0 15px #ff0000, 0 0 30px #ff0000, 0 0 45px #ff0000;
-}
-
-@keyframes neonPulse {
-0% { text-shadow: 0 0 5px #ff00ff, 0 0 10px #ff00ff; }
-50% { text-shadow: 0 0 20px #ff00ff, 0 0 30px #ff00ff; }
-100% { text-shadow: 0 0 5px #ff00ff, 0 0 10px #ff00ff; }
-}
-
-@keyframes glowPulse {
-0% { box-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff; }
-50% { box-shadow: 0 0 30px #00ffff, 0 0 60px #00ffff; }
-100% { box-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff; }
-}
-
-@keyframes pulseStatus {
-0% { transform: scale(1); opacity: 0.8; }
-50% { transform: scale(1.05); opacity: 1; }
-100% { transform: scale(1); opacity: 0.8; }
-}
-</style>
-
-</head>    
-<body>  <h1>Minecraft Server Status</h1>    
-<div class="status-box">    
-    <input type="text" id="serverIP" placeholder="Enter server IP or domain">    
-    <br>    
-    <input type="number" id="serverPort" placeholder="Port (default 25565)">    
-    <br>    
-    <select id="serverType">    
-        <option value="java">Java Edition</option>    
-        <option value="bedrock">Bedrock Edition</option>    
-        <option value="geyser">Geyser (Java+Bedrock)</option>    
-    </select>    
-    <div id="status" class="status">Enter IP, port, and type</div>    
-    <button onclick="checkServer()">Check Server</button>    
-</div>  <script>    
-async function checkServer() {    
-    const statusEl = document.getElementById('status');    
-    const ip = document.getElementById('serverIP').value.trim();    
-    const port = document.getElementById('serverPort').value.trim() || '';    
-    const type = document.getElementById('serverType').value;    if (!ip) {    
-    statusEl.textContent = "Please enter a server IP!";    
-    statusEl.className = "status offline";    
-    return;    
-}    
-
-statusEl.textContent = "Checking...";    
-statusEl.className = "status";    
-
-try {    
-    let url = "";    
-    let serverString = port ? `${ip}:${port}` : ip;    
-
-    if(type === "java") {    
-        url = `https://api.mcsrvstat.us/2/${serverString}`;    
-    } else if(type === "bedrock") {    
-        url = `https://api.mcsrvstat.us/bedrock/2/${serverString}`;    
-    } else if(type === "geyser") {    
-        // Geyser usually supports both, use Java API as default    
-        url = `https://api.mcsrvstat.us/2/${serverString}`;    
-    }    
-
-    const response = await fetch(url);    
-    const data = await response.json();    
-
-    if(data.online) {    
-        let playersText = data.players ? `${data.players.online}/${data.players.max} players` : '';    
-        statusEl.textContent = `Online ${playersText}`;    
-        statusEl.className = "status online";    
-    } else {    
-        statusEl.textContent = "Offline";    
-        statusEl.className = "status offline";    
-    }    
-} catch(err) {    
-    statusEl.textContent = "Error connecting!";    
-    statusEl.className = "status offline";    
-    console.error(err);    
-}
-
-}
-</script>  </body>
-
-</html>    
-A server status ka sahi code ha,    
-<!DOCTYPE html>    
-<html lang="en">    
-<head>    
-<meta charset="UTF-8">    
-<meta name="viewport" content="width=device-width, initial-scale=1.0">    
-<title>Paper Build Finder</title>    
-<style>    
-body {    
-    margin: 0;    
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;    
-    height: 100vh;    
-    display: flex;    
-    justify-content: center;    
-    align-items: center;    
-    background: linear-gradient(rgba(0,0,0,.75), rgba(0,0,0,.75)),    
-                url("https://raw.githubusercontent.com/sdgamer8263-sketch/Paper-build/main/beaa776788318ffa9adf475282e18bb5.gif") center/cover no-repeat fixed;    
-    color: #fff;    
-}  .container {  
-background: rgba(0,0,0,0.6);  
-padding: 40px 50px;  
-border-radius: 20px;  
-text-align: center;  
-box-shadow: 0 0 20px #00f6ff, 0 0 40px #00f6ff, 0 0 60px #00f6ff;  
-animation: neonGlow 2s infinite alternate;  
-backdrop-filter: blur(5px);  
-}  @keyframes neonGlow {
-0% { box-shadow: 0 0 20px #00f6ff, 0 0 40px #00f6ff, 0 0 60px #00f6ff; }
-50% { box-shadow: 0 0 30px #ff00ff, 0 0 60px #ff00ff, 0 0 90px #ff00ff; }
-100% { box-shadow: 0 0 20px #00f6ff, 0 0 40px #00f6ff, 0 0 60px #00f6ff; }
-}
-
-input, button {
-padding: 12px 15px;
-margin: 10px 5px;
-border-radius: 10px;
-border: none;
-outline: none;
-font-size: 16px;
-transition: all 0.3s;
-background: rgba(0,0,0,0.7);
-color: #fff;
-text-shadow: 0 0 5px #00f6ff;
-box-shadow: 0 0 5px #00f6ff;
-}
-
-input:focus { box-shadow: 0 0 10px #00f6ff; }
-
-button {
-background: #00f6ff;
-color: #000;
-font-weight: bold;
-cursor: pointer;
-text-shadow: none;
-}
-
-button:hover {
-transform: scale(1.1);
-box-shadow: 0 0 20px #00f6ff, 0 0 40px #00f6ff;
-}
-
-#result {
-margin-top: 25px;
-font-weight: bold;
-font-size: 18px;
-animation: fadeIn 1s;
-}
-
-@keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
-
-h1 {
-font-size: 32px;
-color: #00f6ff;
-text-shadow: 0 0 5px #00f6ff, 0 0 10px #00f6ff, 0 0 20px #ff00ff;
-}
-</style>
-
-</head>    
-<body>  <div class="container">    
-    <h1>Paper Build Finder</h1>    
-    <input type="text" id="version" placeholder="Enter Java version (e.g., 1.20.1)">    
-    <button onclick="findBuild()">Find Build</button>    
-    <div id="result"></div>    
-</div>  <script>    
-const buildMap = {    
-    "1.21.11": 39, "1.21.10": 89, "1.21.9": 59, "1.21.8": 60, "1.21.7": 32,    
-    "1.21.6": 48, "1.21.5": 114, "1.21.4": 232, "1.21.3": 83, "1.21.1": 133,    
-    "1.21": 130, "1.20.6": 151, "1.20.5": 22, "1.20.4": 499, "1.20.2": 318,    
-    "1.20.1": 196, "1.20": 17, "1.19.4": 550, "1.19.3": 448, "1.19.2": 307,    
-    "1.19.1": 111, "1.19": 81, "1.18.2": 388, "1.18.1": 216, "1.18": 66,    
-    "1.17.1": 411, "1.17": 79, "1.16.5": 794, "1.16.4": 416, "1.16.3": 253,    
-    "1.16.2": 189, "1.16.1": 138, "1.15.2": 393, "1.15.1": 62, "1.15": 21,    
-    "1.14.4": 245, "1.14.3": 134, "1.14.2": 107, "1.14.1": 50, "1.14": 17    
-};    function findBuild() {
-const version = document.getElementById('version').value.trim();
-const resultDiv = document.getElementById('result');
-
-if (!version) {    
-    resultDiv.textContent = "Please enter a version!";    
-    return;    
-}    
-
-if (buildMap[version]) {    
-    const buildNumber = buildMap[version];    
-    resultDiv.textContent = `Paper Build for ${version}: Build #${buildNumber}`;    
-} else {    
-    resultDiv.textContent = `No build found for version ${version}`;    
-}
-
-}
-</script>  </body>
-
-</html>    
-A paper build number sahi code    
-Ha is tinko deka o file sahi kardo or ha background and logo add kardana and is tino pa jo jo background ha o sabi change hoga  
-And koi modify nahi only font ko rainbow colour kardo  
-ADD Rainbow particle color  
-✨ Text glow pulse  
-🎮 Minecraft-style RGB text and full. Code  
-Koi modify, no modify only add    
- nahi Ispa Sabi tik ha sif Free Minecraft Server Dashboard      
-Premium Minecraft Server Dashboard      
-A do option ko ar acha banao       
-And footer ma o spacification ko Orbi acha banao line by line da spacification and anti ddos, uptime 7 to 24 hours, lag free etc aro kichu add karo      
-And ak option do server tool ka nicha page theme jisko click karna ka bad new page open hobe and dabe neon theme and effect with particle effect, rainbow theme and effect with particle effect iska jasa or 20 theme bala option dana jisko click karna ka but o theme hoga but background image not change and no modify any code only add    
-Ar ai theme gulo poti 2 minutes ontor onto change hobe automatic 
+</script>
+</body>
+</html>
