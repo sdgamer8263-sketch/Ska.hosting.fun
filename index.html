@@ -205,13 +205,14 @@ footer div{margin:4px 0}
 <div class="page" id="status">
   <div class="back" onclick="showPage('tools')">BACK</div>
   <h2>Server Status</h2>
-     .bg{
+ <style>    .bg{
   position:fixed; inset:0;
   background:
   linear-gradient(rgba(0,0,0,.75), rgba(0,0,0,.75)),
   url("88e5540465d258ab1d271bfc11189533.gif") center/cover fixed;
   z-index:-3; 
 }
+   </style>
   <input id="sip" placeholder="Server IP">
   <input id="sport" placeholder="Port (optional)">
   <input id="Select game " placeholder="Select Game Type">
@@ -232,13 +233,14 @@ footer div{margin:4px 0}
 
 <!-- SERVER PING -->
 <div class="page" id="ping">
-    .bg{
+<style> .bg{
   position:fixed; inset:0;
   background:
   linear-gradient(rgba(0,0,0,.75), rgba(0,0,0,.75)),
   url("e750869f635c22314b470aafd09f28e3.gif") center/cover fixed;
   z-index:-3; 
 }
+  </style>   
   <div class="back" onclick="showPage('tools')">BACK</div>
   <h2>MC PING DASHBOARD</h2>
   <input id="ip" placeholder="Server IP">
@@ -261,6 +263,7 @@ footer div{margin:4px 0}
 
 <!-- PAPER -->
 <div class="page" id="paper">
+  <style>
     .bg{
   position:fixed; inset:0;
   background:
@@ -268,6 +271,7 @@ footer div{margin:4px 0}
   url("7a96939d200f86ed03714c175a63af7b.gif") center/cover fixed;
   z-index:-3; 
 }
+    </style>
   <div class="back" onclick="showPage('tools')">⬅</div>
   <h2>Paper Build Number</h2>
   <input id="ver" placeholder="Version">
