@@ -12,13 +12,18 @@ body{background:#000;color:#0ff;overflow-x:hidden}
 
 /* BACKGROUND */
 .bg{
-  position:fixed;inset:0;
+  position:fixed; inset:0;
   background:
-  linear-gradient(rgba(0,0,0,.75),rgba(0,0,0,.75)),
+  linear-gradient(rgba(0,0,0,.75), rgba(0,0,0,.75)),
   url("fx58j1opheu71.gif") center/cover fixed;
-  z-index:-3;
+  z-index:-3; 
 }
-#particles{position:fixed;inset:0;z-index:-2}
+
+#particles{
+  position:fixed; inset:0;
+  z-index:-2; 
+  pointer-events:none;
+}
 
 /* HEADER */
 header{padding:15px}
@@ -60,17 +65,21 @@ header{padding:15px}
   100% { background-position: 0% 0%; }
 }
 
-/* BUTTONS SPACING */
-.btn-row {
+/* HOME LINKS STACKED VERTICALLY */
+.center .link,
+.center .btn-row {
   display: flex;
-  gap: 25px;          /* More space between buttons */
-  justify-content: center;
-  flex-wrap: wrap;
+  flex-direction: column;  /* Stack vertically */
+  align-items: center;
+  gap: 20px;               /* Space between each button/link */
+  margin-top: 10px;
 }
+
+/* BUTTONS */
 .btn{
   background:#0ff;
   color:#000;
-  padding:14px 22px;  /* Slightly bigger padding */
+  padding:14px 22px;
   border-radius:14px;
   font-weight:bold;
   cursor:pointer;
@@ -167,7 +176,6 @@ footer div{margin:4px 0}
 <div class="center" id="home">
   <div id="typing"></div>
 
-  <!-- Free & Premium Dashboard Links -->
   <div class="link rainbow-text" onclick="openHidden('https://dash.sgaming9107.qzz.io')">
     Free Minecraft Server Dashboard
   </div>
@@ -257,7 +265,7 @@ footer div{margin:4px 0}
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-/* NAVIGATION */
+// NAVIGATION
 function showPage(id){
   document.querySelectorAll('.page').forEach(p=>p.style.display='none');
   home.style.display='none';
@@ -269,7 +277,7 @@ function goHome(){
 }
 function openHidden(u){window.open(u,'_blank')}
 
-/* TYPING EFFECT */
+// WELCOME TYPING
 const t="WELCOME IN MY GAMING NETWORK";
 let ti=0;
 function typeWelcome(){
@@ -279,36 +287,22 @@ function typeWelcome(){
 typeWelcome();
 setInterval(()=>{ti=0;typeWelcome()},180000);
 
-/* FOOTER TYPING */
-const ft="Our hosting is fast, secure, lag-free and perfect for Minecraft gaming networks.";
-let fi=0;
-function typeFooter(){
-  footerText.innerText=ft.slice(0,fi++);
-  if(fi<=ft.length) setTimeout(typeFooter,80);
-}
-typeFooter();
-setInterval(()=>{fi=0;typeFooter()},180000);
-
-/* PARTICLES */
-const pc=document.getElementById("particles"),pctx=pc.getContext("2d");
-let ps=[];function rs(){pc.width=innerWidth;pc.height=innerHeight}
-onresize=rs;rs();
-for(let i=0;i<90;i++)ps.push({x:Math.random()*pc.width,y:Math.random()*pc.height});
-(function anim(){
+// PARTICLES
+const pc=document.getElementById("particles"), pctx=pc.getContext("2d");
+let ps=[]; function rs(){ pc.width=innerWidth; pc.height=innerHeight }
+onresize=rs; rs();
+for(let i=0;i<90;i++) ps.push({x:Math.random()*pc.width, y:Math.random()*pc.height});
+(function anim(){ 
   pctx.clearRect(0,0,pc.width,pc.height);
-  ps.forEach(p=>{p.y+=.6;if(p.y>pc.height)p.y=0;
-    pctx.fillStyle="#0ff";pctx.fillRect(p.x,p.y,2,2)});
+  ps.forEach(p=>{ p.y+=0.6; if(p.y>pc.height)p.y=0; pctx.fillStyle="#0ff"; pctx.fillRect(p.x,p.y,2,2); });
   requestAnimationFrame(anim);
 })();
 
-/* SERVER STATUS */
+// SERVER STATUS
 function checkStatus(){
   fetch(`https://api.mcsrvstat.us/2/${sip.value}${sport.value?":"+sport.value:""}`)
   .then(r=>r.json()).then(d=>{
-    if(!d.online){
-      sbadge.innerHTML='<span class="badge bad">OFFLINE</span>';
-      return;
-    }
+    if(!d.online){ sbadge.innerHTML='<span class="badge bad">OFFLINE</span>'; return; }
     sbadge.innerHTML='<span class="badge good">ONLINE</span>';
     splayers.innerText=`Players: ${d.players.online}/${d.players.max}`;
     sping.innerText=`Ping: ${d.debug.ping||"N/A"} ms`;
@@ -319,54 +313,38 @@ function checkStatus(){
   window.autoStatus=setInterval(checkStatus,15000);
 }
 
-/* PAPER BUILD */
-const builds={
-"1.21.11":39,"1.21.10":89,"1.21.9":59,"1.21.8":60,
-"1.20.4":499,"1.19.4":550,"1.18.2":388,"1.8.8":445
-};
+// PAPER BUILD
+const builds={"1.21.11":39,"1.21.10":89,"1.21.9":59,"1.21.8":60,"1.20.4":499,"1.19.4":550,"1.18.2":388,"1.8.8":445};
 function checkBuild(){
-  const verValue = document.getElementById("ver").value;
-  if(builds[verValue]){
-    document.getElementById("result").innerText = `The Paper build number of ${verValue} is ${builds[verValue]}`;
-  } else {
-    document.getElementById("result").innerText = "Version not found ❌";
-  }
+  const verValue=document.getElementById("ver").value;
+  document.getElementById("result").innerText = builds[verValue]? `The Paper build number of ${verValue} is ${builds[verValue]}` : "Version not found ❌";
 }
 
-/* PING DASHBOARD */
-const API="https://ping-yies.onrender.com/ping";
-let hist=[];
-const map=L.map('map').setView([20,0],2);
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+// PING DASHBOARD
+const API="https://ping-yies.onrender.com/ping"; let hist=[];
+const map=L.map('map').setView([20,0],2); L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
 function checkPing(){
   const ipValue=document.getElementById('ip').value;
   const portValue=document.getElementById('port').value || 25565;
   const typeValue=document.getElementById('type').value;
-  if(!ipValue){alert('Please enter server IP'); return;}
-
+  if(!ipValue){ alert('Please enter server IP'); return; }
   fetch(`${API}?ip=${ipValue}&port=${portValue}&type=${typeValue}`)
-    .then(r=>r.json())
-    .then(d=>{
-      if(!d.online){statusp.innerText="Offline ❌"; return;}
-      hist.push(d.ping); if(hist.length>20) hist.shift();
-      pingv.innerText=`Ping: ${d.ping} ms`;
-      quality.innerText=d.ping<120?"GOOD":d.ping<200?"MEDIUM":"BAD";
-      drawPingGraph();
-    })
-    .catch(e=>{console.error(e); alert('Error checking ping');});
+  .then(r=>r.json())
+  .then(d=>{
+    if(!d.online){ statusp.innerText="Offline ❌"; return; }
+    hist.push(d.ping); if(hist.length>20) hist.shift();
+    pingv.innerText=`Ping: ${d.ping} ms`;
+    quality.innerText=d.ping<120?"GOOD":d.ping<200?"MEDIUM":"BAD";
+    drawPingGraph();
+  })
+  .catch(e=>{ console.error(e); alert('Error checking ping'); });
 }
 
 function drawPingGraph(){
-  const canvas=document.getElementById('graph');
-  const ctx=canvas.getContext('2d');
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  ctx.beginPath(); ctx.strokeStyle="#0ff";
-  hist.forEach((p,i)=>{
-    const x=i*(canvas.width/(hist.length-1||1));
-    const y=canvas.height-p;
-    i?ctx.lineTo(x,y):ctx.moveTo(x,y);
-  });
+  const canvas=document.getElementById('graph'); const ctx=canvas.getContext('2d');
+  ctx.clearRect(0,0,canvas.width,canvas.height); ctx.beginPath(); ctx.strokeStyle="#0ff";
+  hist.forEach((p,i)=>{ const x=i*(canvas.width/(hist.length-1||1)); const y=canvas.height-p; i?ctx.lineTo(x,y):ctx.moveTo(x,y); });
   ctx.stroke();
 }
 </script>
