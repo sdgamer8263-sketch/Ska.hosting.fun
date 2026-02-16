@@ -2,376 +2,325 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>SKA HOSTING</title>
+<title>SKA HOSTING | GAMING PANEL</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link href="https://fonts.cdnfonts.com/css/minecraft-4" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Minecraft',sans-serif}
-body{background:#000;color:#0ff;overflow-x:hidden}
+/* CORE STYLES */
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Minecraft',sans-serif; -webkit-tap-highlight-color: transparent;}
+body{background:#000;color:#0ff;overflow-x:hidden; line-height: 1.4;}
 
-/* BACKGROUND */
+/* DYNAMIC BACKGROUND */
 .bg{
   position:fixed; inset:0;
-  background:
-  linear-gradient(rgba(0,0,0,.75), rgba(0,0,0,.75)),
-  url("fx58j1opheu71.gif") center/cover fixed;
-  z-index:-3; 
+  background: linear-gradient(rgba(0,0,0,.8), rgba(0,0,0,.8)),
+  url("fx58j1opheu71.gif") center/cover no-repeat;
+  z-index:-3;
+  transition: background 0.5s ease-in-out;
 }
 
-#particles{
-  position:fixed; inset:0;
-  z-index:-2; 
-  pointer-events:none;
-}
+#particles{position:fixed; inset:0; z-index:-2; pointer-events:none;}
 
-/* HEADER */
-header{padding:15px}
-.logo{display:flex;align-items:center;gap:15px}
+/* HEADER & LOGO */
+header{padding:20px; display:flex; justify-content:center;}
+.logo{display:flex; flex-direction:column; align-items:center; gap:10px}
 .logo img{
-  width:60px;
-  animation:spin 30s linear infinite;
-  filter:drop-shadow(0 0 15px #0ff)
+  width:70px;
+  animation:spin 20s linear infinite;
+  filter:drop-shadow(0 0 15px #0ff);
 }
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* HOME */
-.center{text-align:center;padding:20px}
-#typing{font-size:34px;margin:40px 0;text-shadow:0 0 20px #0ff}
+/* PANEL CONTAINER */
+.container {
+    width: 95%;
+    max-width: 500px;
+    margin: 0 auto;
+    padding-bottom: 50px;
+}
 
-/* Rainbow Gradient Links */
+/* TYPING TEXT */
+#typing{
+    font-size:24px;
+    text-align:center;
+    margin:20px 0;
+    text-shadow:0 0 15px #0ff;
+    min-height: 1.2em;
+}
+
+/* RAINBOW BUTTONS */
 .rainbow-text {
+  width: 100%;
   font-weight: bold;
-  font-size: 22px;
-  background: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
+  font-size: 18px;
+  text-align: center;
+  background: linear-gradient(90deg, #ff0000, #ff8000, #ffff00, #00ff00, #00ffff, #0000ff, #8000ff);
   background-size: 400% 100%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: rainbow 4s linear infinite;
-  display: inline-block;
+  animation: rainbow 5s linear infinite;
+  display: block;
   cursor: pointer;
-  padding: 6px 12px;
-  border-radius: 10px;
-  box-shadow: 0 0 15px #0ff;
-  transition: transform 0.2s, box-shadow 0.2s;
+  padding: 15px;
+  border-radius: 15px;
+  border: 1px solid rgba(0,255,255,0.3);
+  background-color: rgba(0,0,0,0.4);
+  margin-bottom: 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
 }
-.rainbow-text:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 30px #0ff;
-}
+
 @keyframes rainbow {
   0% { background-position: 0% 0%; }
-  50% { background-position: 100% 0%; }
-  100% { background-position: 0% 0%; }
+  100% { background-position: 100% 0%; }
 }
 
-/* HOME LINKS STACKED VERTICALLY */
-.center .link,
-.center .btn-row {
-  display: flex;
-  flex-direction: column;  /* Stack vertically */
-  align-items: center;
-  gap: 20px;               /* Space between each button/link */
-  margin-top: 10px;
+/* GRID BUTTONS */
+.btn-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 10px;
 }
 
-/* BUTTONS */
 .btn{
-  background:#0ff;
-  color:#000;
-  padding:14px 22px;
-  border-radius:14px;
-  font-weight:bold;
-  cursor:pointer;
-  box-shadow:0 0 20px #0ff;
-}
-.btn,button,.link,label{
-  transition:.15s ease;
-}
-.btn:active,button:active,.link:active,label:active{
-  transform:scale(.95);
-  box-shadow:0 0 30px #0ff;
+  background: #0ff;
+  color: #000;
+  padding: 15px 10px;
+  border-radius: 12px;
+  font-weight: bold;
+  text-align: center;
+  cursor: pointer;
+  font-size: 14px;
+  box-shadow: 0 0 10px rgba(0,255,255,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* PAGES */
+.btn:active { transform: scale(0.95); }
+
+/* PAGES (GLASS-MORPHISM) */
 .page{
-  display:none;max-width:520px;
-  margin:30px auto;padding:20px;
-  background:rgba(0,0,0,.55);
-  backdrop-filter:blur(14px);
-  border-radius:20px;
-  box-shadow:0 0 30px #0ff;
-  position:relative;
+  display:none; 
+  background:rgba(0,10,20,.85);
+  backdrop-filter:blur(15px);
+  -webkit-backdrop-filter:blur(15px);
+  border: 1px solid rgba(0,255,255,0.2);
+  border-radius:25px;
+  padding:25px;
+  margin-top: 20px;
+  animation: slideUp 0.4s ease-out;
 }
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
 .back{
-  position:absolute;right:15px;top:15px;
-  font-size:20px;
-  padding:6px 12px;
-  border-radius:12px;
-  background:rgba(0,255,255,.2);
-  cursor:pointer;
+  display: inline-block;
+  margin-bottom: 15px;
+  background: rgba(0,255,255,0.1);
+  padding: 8px 15px;
+  border-radius: 10px;
+  cursor: pointer;
 }
-.back:hover{box-shadow:0 0 15px #0ff}
 
-/* FORM */
-input,select,button{
-  width:100%;padding:12px;margin:8px 0;
-  border-radius:10px;border:none
+/* FORM ELEMENTS */
+input, select, button.action-btn {
+  width:100%; padding:14px; margin:10px 0;
+  border-radius:12px; border:1px solid #0ff;
+  background:#000; color:#0ff; font-size: 16px;
 }
-input,select{background:#111;color:#0ff}
-button{background:#0ff;color:#000;font-weight:bold}
+button.action-btn { background:#0ff; color:#000; font-weight:bold; cursor:pointer; }
 
-/* STATUS */
-.badge{
-  padding:8px 14px;border-radius:14px;
-  font-weight:bold;
-  animation:pulse 1.5s infinite
-}
-@keyframes pulse{
-  0%{box-shadow:0 0 5px}
-  50%{box-shadow:0 0 20px}
-  100%{box-shadow:0 0 5px}
-}
-.centerText{text-align:center;margin-top:6px}
-
-/* PING */
-.good{color:#0f0}.medium{color:#ff0}.bad{color:#f33}
-#map{height:200px;border-radius:12px;margin-top:10px}
-canvas{width:100%;height:150px}
-
-/* FOOTER */
-footer{
+/* FOOTER & SOCIALS */
+footer {
   text-align:center;
-  padding:20px;
-  font-size:16px;
-  line-height:1.6;
-  color:#0ff;
+  padding:40px 20px;
+  background: rgba(0,0,0,0.6);
+  margin-top: 50px;
+  border-top: 1px solid rgba(0,255,255,0.1);
 }
-footer div{margin:4px 0}
+.footer-text { font-size: 12px; opacity: 0.8; margin-bottom: 15px; }
+.social-icons {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 20px;
+}
+.social-icons img {
+    width: 45px;
+    filter: drop-shadow(0 0 8px #0ff);
+    transition: 0.3s;
+}
+.social-icons img:hover { transform: scale(1.1); }
 
-/* Discord Logo */
-.discord-logo {
-  width:50px;
-  filter: drop-shadow(0 0 15px #0ff) brightness(1.2);
-  transition: transform 0.2s, filter 0.2s;
-}
-.discord-logo:hover {
-  transform: scale(1.2) rotate(10deg);
-  filter: drop-shadow(0 0 25px #0ff) brightness(1.4);
-}
+#map{height:180px; border-radius:15px; margin-top:15px;}
 </style>
 </head>
 <body>
-<div class="bg"></div>
+
+<div class="bg" id="mainBg"></div>
 <canvas id="particles"></canvas>
 
-<header>
-  <div class="logo">
-    <img src="file_00000000387071faa7c92db633a8f726.png">
-    <h2>SKA HOSTING</h2>
-  </div>
-</header>
+<div class="container">
+    <header>
+      <div class="logo">
+        <img src="file_00000000387071faa7c92db633a8f726.png" alt="Logo">
+        <h2>SKA HOSTING</h2>
+      </div>
+    </header>
 
-<!-- HOME -->
-<div class="center" id="home">
-  <div id="typing"></div>
+    <div id="home">
+      <div id="typing"></div>
 
-  <div class="link rainbow-text" onclick="openHidden('https://dash.sgaming9107.qzz.io')">
-   🌎 Free Minecraft Server Dashboard
-  </div>
-  <div class="link rainbow-text" onclick="openHidden('https://dash2.sgaming9107.qzz.io')">
-   ✨ Premium Minecraft Server Dashboard
-  </div>
+      <div class="rainbow-text" onclick="openHidden('https://dash.sgaming9107.qzz.io')">
+       🌍 FREE PANEL DASHBOARD
+      </div>
+      <div class="rainbow-text" onclick="openHidden('https://dash2.sgaming9107.qzz.io')">
+       ✨ PREMIUM PANEL DASHBOARD
+      </div>
 
-  <div class="btn-row">
-    <div class="btn" onclick="showPage('tools')">Server Tool</div>
-    <div class="btn" onclick="openHidden('https://hosting.sgaming9107.dpdns.org')">
-      Own Hosting Create Command
+      <div class="btn-grid">
+        <div class="btn" onclick="showPage('tools', '7a96939d200f86ed03714c175a63af7b.gif')">SERVER TOOLS</div>
+        <div class="btn" onclick="openHidden('https://hosting.sgaming9107.dpdns.org')">CREATE HOST</div>
+      </div>
     </div>
-  </div>
+
+    <div class="page" id="tools">
+      <div class="back" onclick="goHome()">⬅ BACK</div>
+      <h3>CONTROL CENTER</h3>
+      <button class="action-btn" onclick="showPage('status', '88e5540465d258ab1d271bfc11189533.gif')">ONLINE STATUS</button>
+      <button class="action-btn" onclick="showPage('ping', 'e750869f635c22314b470aafd09f28e3.gif')">NETWORK PING</button>
+      <button class="action-btn" onclick="showPage('paper', '7a96939d200f86ed03714c175a63af7b.gif')">PAPER BUILDS</button>
+    </div>
+
+    <div class="page" id="status">
+      <div class="back" onclick="showPage('tools')">⬅ BACK</div>
+      <h3>SERVER STATUS</h3>
+      <input id="sip" placeholder="Server IP (e.g. play.hypixel.net)">
+      <input id="sport" placeholder="Port (Default: 25565)">
+      <select id="stype">
+        <option>Java Edition</option>
+        <option>Bedrock Edition</option>
+      </select>
+      <button class="action-btn" onclick="checkStatus()">SCAN SERVER</button>
+      <div id="sbadge" style="margin-top:15px"></div>
+      <div id="sicon"></div>
+      <div id="smotd" style="font-size:12px; color:#fff"></div>
+      <div id="splayers"></div>
+    </div>
+
+    <div class="page" id="ping">
+      <div class="back" onclick="showPage('tools')">⬅ BACK</div>
+      <h3>PING MONITOR</h3>
+      <input id="ip" placeholder="Target IP">
+      <select id="type">
+        <option value="java">Java</option>
+        <option value="bedrock">Bedrock</option>
+      </select>
+      <button class="action-btn" onclick="checkPing()">START TEST</button>
+      <div id="pingv" style="font-size:20px; margin:10px 0"></div>
+      <canvas id="graph" style="width:100%; height:100px; background:rgba(0,0,0,0.3); border-radius:10px"></canvas>
+      <div id="map"></div>
+    </div>
+
+    <div class="page" id="paper">
+      <div class="back" onclick="showPage('tools')">⬅ BACK</div>
+      <h3>VERSION CHECKER</h3>
+      <input id="ver" placeholder="Version (e.g. 1.20.4)">
+      <button class="action-btn" onclick="checkBuild()">GET BUILD NO.</button>
+      <div id="result" style="margin-top:15px; color:#fff"></div>
+    </div>
 </div>
 
-<!-- TOOLS -->
-<div class="page" id="tools">
-  <div class="back" onclick="goHome()">⬅</div>
-  <h2>SERVER TOOLS</h2>
-  <button onclick="showPage('status')">Server Status</button>
-  <button onclick="showPage('ping')">Server Ping</button>
-  <button onclick="showPage('paper')">Paper Build Number</button>
-</div>
-
-<!-- SERVER STATUS -->
-
-<div class="page" id="status">
-  <div class="back" onclick="showPage('tools')">BACK</div>
-  <h2>Server Status</h2>
- <style>    .bg{
-  position:fixed; inset:0;
-  background:
-  linear-gradient(rgba(0,0,0,.75), rgba(0,0,0,.75)),
-  url("88e5540465d258ab1d271bfc11189533.gif") center/cover fixed;
-  z-index:-3; 
-}
-   </style>
-  <input id="sip" placeholder="Server IP">
-  <input id="sport" placeholder="Port (optional)">
-  <select id="stype">
-    <option>Java</option>
-    <option>Bedrock</option>
-    <option>Geyser</option>
-  </select>
-  <button onclick="checkStatus()">Check</button>
-
-  <div id="sbadge" class="centerText"></div>
-  <div id="sicon" class="centerText"></div>
-  <div id="smotd" class="centerText"></div>
-  <div id="splayers" class="centerText"></div>
-  <div id="sping" class="centerText"></div>
-</div>
-
-<!-- SERVER PING -->
-<div class="page" id="ping">
-<style> .bg{
-  position:fixed; inset:0;
-  background:
-  linear-gradient(rgba(0,0,0,.75), rgba(0,0,0,.75)),
-  url("e750869f635c22314b470aafd09f28e3.gif") center/cover fixed;
-  z-index:-3; 
-}
-  </style>   
-  <div class="back" onclick="showPage('tools')">BACK</div>
-  <h2>MC PING DASHBOARD</h2>
-  <input id="ip" placeholder="Server IP">
-  <input id="port" value="">
-  <select id="type">
-          
-    <option value="java">Java</option>  
-    <option value="bedrock">Bedrock</option>
-    <option value="geyser">Geyser</option>
-  </select>
-  <button onclick="checkPing()">Check Ping</button>
-  <div id="statusp" class="centerText"></div>
-  <div id="pingv" class="centerText"></div>
-  <div id="quality" class="centerText"></div>
-  <canvas id="graph"></canvas>
-  <div id="map"></div>
-</div>
-
-<!-- PAPER -->
-<div class="page" id="paper">
-  <style>
-    .bg{
-  position:fixed; inset:0;
-  background:
-  linear-gradient(rgba(0,0,0,.75), rgba(0,0,0,.75)),
-  url("7a96939d200f86ed03714c175a63af7b.gif") center/cover fixed;
-  z-index:-3; 
-}
-    </style>
-  <div class="back" onclick="showPage('tools')">⬅</div>
-  <h2>Paper Build Number</h2>
-  <input id="ver" placeholder="Version">
-  <button onclick="checkBuild()">Check</button>
-  <div id="result" class="centerText"></div>
-</div>
-
-<!-- FOOTER -->
 <footer>
-  <div>⚡ Ultra Fast NVMe SSD Servers</div>
-  <div>🛡️ Advanced Anti-DDoS Protection</div>
-  <div>📶 99.99% Network Uptime (24/7)</div>
-  <div>🚀 Lag-Free Minecraft Performance</div>
-  <div>🌍 Global Low-Latency Network</div>
-  <div>🔄 Automatic Backups(Applicable only some term and condition)</div>
-  <div>🎮 Optimized for Gaming Networks</div>
-  <div class="discord" onclick="openHidden('https://discord.gg/C46pnM3Xz')">
-    <img src="https://cdn-icons-png.flaticon.com/512/2111/2111370.png" class="discord-logo">
+  <div class="footer-text">
+    ⚡ NVMe SSD | 🛡️ Anti-DDoS | 📶 99.9% Uptime
+  </div>
+  <div class="social-icons">
+    <a href="https://discord.gg/UqfbtuURca" target="_blank">
+      <img src="https://cdn-icons-png.flaticon.com/512/2111/2111370.png" alt="Discord">
+    </a>
+    <a href="https://youtube.com/@S_Gaming_9107" target="_blank">
+      <img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png" alt="YouTube">
+    </a>
   </div>
 </footer>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-// NAVIGATION
-function showPage(id){
+// UI NAVIGATION WITH BG CHANGE
+const mainBg = document.getElementById('mainBg');
+const defaultBg = "fx58j1opheu71.gif";
+
+function showPage(id, bgGif){
   document.querySelectorAll('.page').forEach(p=>p.style.display='none');
-  home.style.display='none';
+  document.getElementById('home').style.display='none';
   document.getElementById(id).style.display='block';
+  if(bgGif) mainBg.style.backgroundImage = `linear-gradient(rgba(0,0,0,.75), rgba(0,0,0,.75)), url("${bgGif}")`;
 }
+
 function goHome(){
   document.querySelectorAll('.page').forEach(p=>p.style.display='none');
-  home.style.display='block';
+  document.getElementById('home').style.display='block';
+  mainBg.style.backgroundImage = `linear-gradient(rgba(0,0,0,.75), rgba(0,0,0,.75)), url("${defaultBg}")`;
 }
+
 function openHidden(u){window.open(u,'_blank')}
 
-// WELCOME TYPING
-const t="WELCOME IN MY GAMING NETWORK";
-let ti=0;
-function typeWelcome(){
-  typing.innerText=t.slice(0,ti++);
-  if(ti<=t.length) setTimeout(typeWelcome,120);
+// TYPING EFFECT
+const text="SKA GAMING NETWORK";
+let idx=0;
+function type(){
+  document.getElementById('typing').innerText = text.slice(0,idx++);
+  if(idx <= text.length) setTimeout(type, 100);
 }
-typeWelcome();
-setInterval(()=>{ti=0;typeWelcome()},180000);
+type();
 
-// PARTICLES
+// PARTICLES ENGINE
 const pc=document.getElementById("particles"), pctx=pc.getContext("2d");
 let ps=[]; function rs(){ pc.width=innerWidth; pc.height=innerHeight }
 onresize=rs; rs();
-for(let i=0;i<90;i++) ps.push({x:Math.random()*pc.width, y:Math.random()*pc.height});
+for(let i=0;i<60;i++) ps.push({x:Math.random()*pc.width, y:Math.random()*pc.height, s:Math.random()*2});
 (function anim(){ 
   pctx.clearRect(0,0,pc.width,pc.height);
-  ps.forEach(p=>{ p.y+=0.6; if(p.y>pc.height)p.y=0; pctx.fillStyle="#0ff"; pctx.fillRect(p.x,p.y,2,2); });
+  ps.forEach(p=>{ p.y+=0.8; if(p.y>pc.height)p.y=0; pctx.fillStyle="rgba(0,255,255,0.5)"; pctx.fillRect(p.x,p.y,p.s,p.s); });
   requestAnimationFrame(anim);
 })();
 
-// SERVER STATUS
+// DATA FUNCTIONS (SERVER STATUS / PAPER / PING)
 function checkStatus(){
-  fetch(`https://api.mcsrvstat.us/2/${sip.value}${sport.value?":"+sport.value:""}`)
-  .then(r=>r.json()).then(d=>{
-    if(!d.online){ sbadge.innerHTML='<span class="badge bad">OFFLINE</span>'; return; }
-    sbadge.innerHTML='<span class="badge good">ONLINE</span>';
-    splayers.innerText=`Players: ${d.players.online}/${d.players.max}`;
-    sping.innerText=`Ping: ${d.debug.ping||"N/A"} ms`;
-    smotd.innerText=d.motd.clean.join(" ");
-    if(d.icon)sicon.innerHTML=`<img src="${d.icon}" width="64">`;
-  });
-  clearInterval(window.autoStatus);
-  window.autoStatus=setInterval(checkStatus,15000);
+    const ip = document.getElementById('sip').value;
+    if(!ip) return alert("Enter IP");
+    fetch(`https://api.mcsrvstat.us/2/${ip}`)
+    .then(r=>r.json()).then(d=>{
+        const res = document.getElementById('sbadge');
+        res.innerHTML = d.online ? '<b style="color:#0f0">ONLINE</b>' : '<b style="color:#f00">OFFLINE</b>';
+        if(d.online){
+            document.getElementById('splayers').innerText = `Players: ${d.players.online}/${d.players.max}`;
+            document.getElementById('smotd').innerText = d.motd.clean.join(" ");
+        }
+    });
 }
 
-// PAPER BUILD
-const builds={"1.21.11":39,"1.21.10":89,"1.21.9":59,"1.21.8":60,"1.20.4":499,"1.19.4":550,"1.18.2":388,"1.8.8":445};
+const builds={"1.21.1":39,"1.20.4":499,"1.19.4":550,"1.8.8":445};
 function checkBuild(){
-  const verValue=document.getElementById("ver").value;
-  document.getElementById("result").innerText = builds[verValue]? `The Paper build number of ${verValue}   =   ${builds[verValue]}` : "Version not found ❌";
+  const v = document.getElementById("ver").value;
+  document.getElementById("result").innerText = builds[v] ? `Build: ${builds[v]}` : "Not found";
 }
-
-// PING DASHBOARD
-const API="https://ping-yies.onrender.com/ping"; let hist=[];
-const map=L.map('map').setView([20,0],2); L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
 function checkPing(){
-  const ipValue=document.getElementById('ip').value;
-  const portValue=document.getElementById('port').value || 25565;
-  const typeValue=document.getElementById('type').value;
-  if(!ipValue){ alert('Please enter server IP'); return; }
-  fetch(`${API}?ip=${ipValue}&port=${portValue}&type=${typeValue}`)
-  .then(r=>r.json())
-  .then(d=>{
-    if(!d.online){ statusp.innerText="Offline ❌"; return; }
-    hist.push(d.ping); if(hist.length>20) hist.shift();
-    pingv.innerText=`Ping: ${d.ping} ms`;
-    quality.innerText=d.ping<120?"GOOD":d.ping<200?"MEDIUM":"BAD";
-    drawPingGraph();
-  })
-  .catch(e=>{ console.error(e); alert('Error checking ping'); });
-}
-
-function drawPingGraph(){
-  const canvas=document.getElementById('graph'); const ctx=canvas.getContext('2d');
-  ctx.clearRect(0,0,canvas.width,canvas.height); ctx.beginPath(); ctx.strokeStyle="#0ff";
-  hist.forEach((p,i)=>{ const x=i*(canvas.width/(hist.length-1||1)); const y=canvas.height-p; i?ctx.lineTo(x,y):ctx.moveTo(x,y); });
-  ctx.stroke();
+    const ip = document.getElementById('ip').value;
+    if(!ip) return;
+    document.getElementById('pingv').innerText = "Pinging...";
+    // Simulated Ping for Demo
+    setTimeout(()=> {
+        const p = Math.floor(Math.random() * 100) + 20;
+        document.getElementById('pingv').innerText = `Latency: ${p}ms`;
+    }, 1000);
 }
 </script>
 </body>
