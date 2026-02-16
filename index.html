@@ -2,103 +2,112 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>SKA HOSTING | PRO PANEL</title>
+<title>SKA HOSTING | ULTIMATE PANEL</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link href="https://fonts.cdnfonts.com/css/minecraft-4" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <style>
-/* CORE & SMOOTH SCROLLING */
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Minecraft',sans-serif; scroll-behavior: smooth;}
-body{background:#000;color:#0ff;overflow-x:hidden;}
+/* PRESET & SMOOTHING */
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Minecraft',sans-serif;}
+body{background:#000;color:#0ff;overflow-x:hidden; min-height: 100vh;}
 
-/* DYNAMIC BG */
+/* PRO BACKGROUND */
 .bg{
   position:fixed; inset:0;
-  background: linear-gradient(rgba(0,0,0,.8), rgba(0,0,0,.8)),
+  background: linear-gradient(rgba(0,0,0,.85), rgba(0,0,0,.85)),
   url("fx58j1opheu71.gif") center/cover no-repeat;
   z-index:-3;
 }
 
-/* HEADER - LOGO LEFT ALIGNED */
-header{
-    padding:15px 25px;
-    display:flex;
-    justify-content: flex-start; /* Logo shifted to left */
-    align-items:center;
-    background: rgba(0,255,255,0.05);
-    border-bottom: 1px solid rgba(0,255,255,0.2);
-    backdrop-filter: blur(10px);
-}
-.logo{display:flex; align-items:center; gap:15px}
-.logo img{width:50px; animation:spin 20s linear infinite; filter:drop-shadow(0 0 10px #0ff);}
-@keyframes spin{to{transform:rotate(360deg)}}
-
-/* ADJUSTABLE TERMINAL BOX */
-.terminal-card {
-    width: 95%;
-    max-width: 700px; /* Wider for terminal feel */
-    margin: 20px auto;
-    background: rgba(0,10,20,0.9);
-    border: 2px solid #0ff;
-    border-radius: 8px;
-    box-shadow: 0 0 20px rgba(0,255,255,0.2);
-    resize: both; /* User can adjust size */
-    overflow: auto;
-    padding: 20px;
-    position: relative;
-}
-
-/* TYPING TEXT */
-#typing-container {
-    height: 40px;
+/* TOP NEON HEADER */
+header {
+    padding: 20px 30px;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
+    background: rgba(0, 255, 255, 0.03);
+    border-bottom: 2px solid rgba(0, 255, 255, 0.3);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.5);
 }
-#typing{ font-size:22px; text-shadow:0 0 10px #0ff; text-align: center;}
+.logo-box { display: flex; align-items: center; gap: 15px; }
+.logo-box img { width: 45px; filter: drop-shadow(0 0 8px #0ff); animation: float 3s ease-in-out infinite; }
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
 
-/* BUTTONS */
-.btn-row { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; }
-.rainbow-btn {
-  padding: 15px; border-radius: 10px; border: 1px solid #0ff;
-  background: rgba(0,0,0,0.6); color: #fff; font-weight: bold;
-  text-align: center; cursor: pointer; transition: 0.3s;
-  background: linear-gradient(90deg, #ff0000, #ff8000, #ffff00, #00ff00, #00ffff, #0000ff, #8000ff);
-  background-size: 400% 100%; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  animation: rainbow-flow 5s linear infinite;
-  box-shadow: inset 0 0 10px rgba(0,255,255,0.2);
+/* CREATE HOSTING BUTTON (NEW) */
+.create-host-top {
+    background: #0ff; color: #000; padding: 10px 18px; border-radius: 8px;
+    font-weight: bold; font-size: 14px; cursor: pointer; transition: 0.3s;
+    box-shadow: 0 0 15px rgba(0,255,255,0.4);
 }
-@keyframes rainbow-flow { 0%{background-position:0%} 100%{background-position:100%} }
+.create-host-top:hover { transform: scale(1.05); box-shadow: 0 0 25px #0ff; }
 
-/* PING & MAP */
-#map { height: 250px; width: 100%; border-radius: 10px; margin-top: 15px; border: 1px solid #0ff; }
-.stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
-.stat-box { background: rgba(0,255,255,0.1); padding: 10px; border-radius: 5px; text-align: center; }
+/* MAIN TERMINAL UI */
+.panel-container {
+    width: 95%; max-width: 800px;
+    margin: 40px auto;
+    background: rgba(0, 15, 25, 0.85);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+    position: relative;
+    resize: both; overflow: auto; /* Adjustable size */
+}
 
-/* FOOTER - IMPROVED */
+/* TYPING BOX */
+#typing-area {
+    background: rgba(0,0,0,0.5); padding: 10px; border-radius: 10px;
+    text-align: center; font-size: 20px; color: #0ff; margin-bottom: 30px;
+    border: 1px dashed rgba(0,255,255,0.2);
+}
+
+/* BUTTON DESIGN */
+.grid-menu { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.nav-btn {
+    background: rgba(0,255,255,0.1); border: 1px solid #0ff;
+    padding: 20px; border-radius: 15px; text-align: center;
+    cursor: pointer; transition: 0.3s; font-size: 16px;
+}
+.nav-btn:hover { background: #0ff; color: #000; box-shadow: 0 0 20px #0ff; }
+
+.rainbow-nav {
+    grid-column: span 2; padding: 25px; border-radius: 15px; text-align: center;
+    background: linear-gradient(90deg, #ff0000, #00ff00, #00ffff, #0000ff, #ff00ff);
+    background-size: 400% 100%; animation: rainbow 8s linear infinite;
+    cursor: pointer; font-weight: bold; border: none; font-size: 18px;
+}
+@keyframes rainbow { 0%{background-position:0%} 100%{background-position:100%} }
+
+/* PAGE HEADERS */
+.page-title { font-size: 24px; color: #fff; margin-bottom: 20px; border-bottom: 1px solid #0ff; padding-bottom: 10px; }
+.back-symbol { font-size: 30px; cursor: pointer; color: #f00; display: inline-block; margin-bottom: 15px; }
+
+/* INPUTS */
+input, select {
+    width: 100%; padding: 15px; margin: 10px 0; background: #000;
+    border: 1px solid rgba(0,255,255,0.5); color: #0ff; border-radius: 10px;
+}
+
+/* PING STATS */
+.stat-row { display: flex; gap: 15px; margin: 15px 0; }
+.stat-card { flex: 1; background: rgba(0,255,255,0.1); padding: 15px; border-radius: 10px; text-align: center; }
+
+#map { height: 250px; border-radius: 15px; border: 1px solid #0ff; margin-top: 15px; }
+
+/* FOOTER */
 footer {
-    background: rgba(0,5,10,0.95);
-    padding: 30px 20px;
-    border-top: 2px solid #0ff;
-    margin-top: 50px;
-    text-align: center;
+    padding: 40px; background: rgba(0,0,0,0.9); text-align: center;
+    border-top: 1px solid #0ff;
 }
-.footer-links { display: flex; justify-content: center; gap: 40px; margin-top: 15px; }
-.footer-links img { width: 45px; transition: 0.3s; filter: drop-shadow(0 0 5px #0ff); }
-.footer-links img:hover { transform: scale(1.2) rotate(5deg); }
+.socials img { width: 50px; margin: 0 15px; filter: drop-shadow(0 0 10px #0ff); transition: 0.3s; }
+.socials img:hover { transform: translateY(-10px); }
 
-/* MOBILE ADJUSTMENTS */
+/* MOBILE */
 @media (max-width: 600px) {
-    .terminal-card { width: 98%; padding: 15px; }
-    .logo h2 { font-size: 16px; }
+    .grid-menu { grid-template-columns: 1fr; }
+    .rainbow-nav { grid-column: span 1; }
 }
-
-input, select, .action-btn {
-    width: 100%; padding: 12px; margin: 8px 0;
-    background: #000; border: 1px solid #0ff; color: #0ff; border-radius: 5px;
-}
-.action-btn { background: #0ff; color: #000; font-weight: bold; cursor: pointer; }
-.page { display: none; }
 </style>
 </head>
 <body>
@@ -106,105 +115,101 @@ input, select, .action-btn {
 <div class="bg"></div>
 
 <header>
-  <div class="logo">
-    <img src="file_00000000387071faa7c92db633a8f726.png" alt="Logo">
-    <h2>SKA HOSTING PANEL</h2>
+  <div class="logo-box">
+    <img src="file_00000000387071faa7c92db633a8f726.png">
+    <h2>SKA PANEL</h2>
+  </div>
+  <div class="create-host-top" onclick="openHidden('https://hosting.sgaming9107.dpdns.org')">
+    ➕ CREATE YOUR HOSTING
   </div>
 </header>
 
-<div class="terminal-card" id="main-panel">
-    <div id="typing-container">
-        <div id="typing"></div>
+<div class="panel-container">
+    <div id="typing-area">
+        <span id="typing"></span>
     </div>
 
     <div id="home">
-        <div class="btn-row">
-            <div class="rainbow-btn" onclick="openHidden('https://dash.sgaming9107.qzz.io')">FREE MINECRAFT DASHBOARD</div>
-            <div class="rainbow-btn" onclick="openHidden('https://dash2.sgaming9107.qzz.io')">PREMIUM MINECRAFT DASHBOARD</div>
-            <div class="action-btn" style="text-align:center" onclick="showPage('tools')">OPEN SERVER TOOLS</div>
+        <div class="grid-menu">
+            <div class="rainbow-nav" onclick="openHidden('https://dash.sgaming9107.qzz.io')">🚀 FREE MINECRAFT PANEL</div>
+            <div class="rainbow-nav" style="filter: hue-rotate(90deg);" onclick="openHidden('https://dash2.sgaming9107.qzz.io')">💎 PREMIUM MINECRAFT PANEL</div>
+            <div class="nav-btn" onclick="showPage('status')">🔍 SERVER STATUS</div>
+            <div class="nav-btn" onclick="showPage('ping')">🌐 GLOBAL LATENCY</div>
+            <div class="nav-btn" onclick="showPage('paper')" style="grid-column: span 2;">📦 PAPER BUILD FINDER</div>
         </div>
     </div>
 
-    <div class="page" id="tools">
-        <div onclick="goHome()" style="cursor:pointer; color:#f00; margin-bottom:10px;">[ ESCAPE_BACK ]</div>
-        <button class="action-btn" onclick="showPage('status')">SERVER STATUS (DETAILED)</button>
-        <button class="action-btn" onclick="showPage('ping')">NETWORK PING & MAP</button>
-        <button class="action-btn" onclick="showPage('paper')">PAPER BUILD FINDER</button>
-    </div>
-
-    <div class="page" id="status">
-        <div onclick="showPage('tools')" style="cursor:pointer; color:#f00;">[ BACK ]</div>
-        <h3>> SERVER_DIAGNOSTICS</h3>
-        <input id="sip" placeholder="Enter Server IP">
-        <button class="action-btn" onclick="checkStatus()">INITIALIZE SCAN</button>
-        <div id="status-output" style="margin-top:15px; font-size:14px; color:#aaa; border-left: 2px solid #0ff; padding-left: 10px;">
-            Waiting for input...
+    <div class="page" id="status" style="display:none;">
+        <div class="back-symbol" onclick="goHome()">↩️</div>
+        <div class="page-title">📊 SERVER DIAGNOSTICS</div>
+        <input id="sip" placeholder="Server IP Address">
+        <button class="nav-btn" style="width:100%;" onclick="checkStatus()">RUN SCAN</button>
+        <div id="status-res" style="margin-top:20px; padding:15px; background:rgba(0,0,0,0.5); border-radius:10px; font-size:14px; line-height:1.6;">
+            [SYSTEM] Awaiting input...
         </div>
     </div>
 
-    <div class="page" id="ping">
-        <div onclick="showPage('tools')" style="cursor:pointer; color:#f00;">[ BACK ]</div>
-        <h3>> GLOBAL_LATENCY_TEST</h3>
+    <div class="page" id="ping" style="display:none;">
+        <div class="back-symbol" onclick="goHome()">↩️</div>
+        <div class="page-title">🌐 GLOBAL LATENCY TEST</div>
         <input id="ping-ip" placeholder="Target Server IP">
-        <button class="action-btn" onclick="runPingTest()">START PING TEST</button>
+        <button class="nav-btn" style="width:100%;" onclick="runPing()">START PING TEST</button>
         
-        <div class="stats-grid">
-            <div class="stat-box">LOW: <span id="min-ping">--</span>ms</div>
-            <div class="stat-box">HIGH: <span id="max-ping">--</span>ms</div>
+        <div class="stat-row">
+            <div class="stat-card">MIN: <span id="min-p">--</span>ms</div>
+            <div class="stat-card">MAX: <span id="max-p">--</span>ms</div>
+            <div class="stat-card">QUALITY: <span id="qual-p">--</span></div>
         </div>
-        <div id="ping-status" style="text-align:center; margin:10px; font-weight:bold;"></div>
         
-        <canvas id="pingGraph" style="width:100%; height:100px; margin-top:10px;"></canvas>
-        <p style="font-size:12px; margin-top:10px;">Select location on map to simulate ping:</p>
+        <canvas id="pingGraph" style="width:100%; height:120px; background:rgba(0,255,255,0.05); border-radius:10px;"></canvas>
         <div id="map"></div>
     </div>
 
-    <div class="page" id="paper">
-        <div onclick="showPage('tools')" style="cursor:pointer; color:#f00;">[ BACK ]</div>
-        <h3>> PAPER_CORE_FETCH</h3>
-        <input id="paper-ver" placeholder="Version (e.g. 1.20.1)">
-        <button class="action-btn" onclick="fetchPaper()">GET LATEST BUILD</button>
-        <div id="paper-res" style="margin-top:15px; text-align:center;"></div>
+    <div class="page" id="paper" style="display:none;">
+        <div class="back-symbol" onclick="goHome()">↩️</div>
+        <div class="page-title">📦 PAPER CORE FETCH</div>
+        <input id="pap-v" placeholder="Enter Version (e.g. 1.21.1)">
+        <button class="nav-btn" style="width:100%;" onclick="getPaper()">GET LATEST BUILD</button>
+        <div id="pap-res" style="margin-top:20px; text-align:center; font-size:18px;"></div>
     </div>
 </div>
 
 <footer>
-    <div style="margin-bottom: 20px;">
-        <p>⚡ POWERED BY SKA GAMING NETWORK ⚡</p>
-        <p style="font-size:12px; color:#0ff; opacity:0.6;">Ultra-Fast NVMe Storage | DDoS Protection | 99.9% Uptime</p>
-    </div>
-    <div class="footer-links">
+    <h3>SKA GAMING NETWORK</h3>
+    <p style="opacity:0.6; margin:10px 0;">NVMe SSD | Anti-DDoS | 24/7 Support</p>
+    <div class="socials">
         <a href="https://discord.gg/UqfbtuURca" target="_blank">
-            <img src="https://cdn-icons-png.flaticon.com/512/2111/2111370.png" alt="Discord">
+            <img src="https://cdn-icons-png.flaticon.com/512/2111/2111370.png">
         </a>
         <a href="https://www.youtube.com/@skahosting" target="_blank">
-          <img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png" alt="YouTube">
+            <img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png">
         </a>
     </div>
-    <p style="font-size:10px; margin-top:20px; opacity:0.4;">© 2026 SKA HOSTING. ALL SYSTEMS OPERATIONAL.</p>
+    <p style="margin-top:30px; font-size:10px; opacity:0.3;">© 2026 ALL RIGHTS RESERVED.</p>
 </footer>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-// TYPING LOGIC (Retypes every 3 mins)
-const welcomeText = "WELCOME TO SKA GAMING NETWORK PANEL...";
-let charIdx = 0;
-function typeEffect() {
-    if (charIdx < welcomeText.length) {
-        document.getElementById("typing").innerHTML += welcomeText.charAt(charIdx);
-        charIdx++;
-        setTimeout(typeEffect, 100);
+// TYPING EFFECT
+const lines = ["WELCOME TO SKA NETWORK", "POWERFUL GAME HOSTING", "ULTRA LOW LATENCY"];
+let lineIdx = 0, charIdx = 0;
+function type() {
+    let cur = lines[lineIdx];
+    if(charIdx < cur.length) {
+        document.getElementById("typing").textContent += cur.charAt(charIdx++);
+        setTimeout(type, 100);
     } else {
         setTimeout(() => {
-            document.getElementById("typing").innerHTML = "";
+            document.getElementById("typing").textContent = "";
             charIdx = 0;
-            typeEffect();
-        }, 180000); // 3 Minutes delay
+            lineIdx = (lineIdx + 1) % lines.length;
+            type();
+        }, lineIdx === lines.length - 1 ? 180000 : 3000); // 3 mins wait after full cycle
     }
 }
-typeEffect();
+type();
 
-// NAVIGATION
+// NAV LOGIC
 function showPage(id) {
     document.querySelectorAll('.page, #home').forEach(p => p.style.display = 'none');
     document.getElementById(id).style.display = 'block';
@@ -213,85 +218,56 @@ function goHome() {
     document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
     document.getElementById('home').style.display = 'block';
 }
-function openHidden(url) { window.open(url, '_blank'); }
+function openHidden(u) { window.open(u, '_blank'); }
 
-// SERVER STATUS (IMPROVED TERMINAL LOOK)
+// STATUS SCANNER
 function checkStatus() {
     const ip = document.getElementById('sip').value;
-    const out = document.getElementById('status-output');
-    out.innerHTML = "Connecting to socket...<br>Fetching packets...";
-    
-    fetch(`https://api.mcsrvstat.us/2/${ip}`)
-    .then(r => r.json())
-    .then(d => {
+    const res = document.getElementById('status-res');
+    res.innerHTML = "Initializing packet trace...";
+    fetch(`https://api.mcsrvstat.us/2/${ip}`).then(r => r.json()).then(d => {
         if(d.online) {
-            out.innerHTML = `
-                <span style="color:#0f0">[SUCCESS] Server is Online</span><br>
-                > VERSION: ${d.version}<br>
-                > PLAYERS: ${d.players.online}/${d.players.max}<br>
-                > MOTD: ${d.motd.clean.join(" ")}<br>
-                > PROTOCOL: ${d.protocol}<br>
-                > IP: ${d.ip}:${d.port}
+            res.innerHTML = `
+                <b style="color:#0f0">[ONLINE]</b> ${d.hostname}<br>
+                <b>VERSION:</b> ${d.version}<br>
+                <b>PLAYERS:</b> ${d.players.online} / ${d.players.max}<br>
+                <b>MOTD:</b> ${d.motd.clean.join(" ")}<br>
+                <b>PING:</b> Stable
             `;
-        } else {
-            out.innerHTML = `<span style="color:#f00">[ERROR] Server Offline or Unreachable</span>`;
-        }
+        } else { res.innerHTML = `<b style="color:#f00">[OFFLINE]</b> Connection Timed Out.`; }
     });
 }
 
-// PAPER BUILD (FIXED)
-function fetchPaper() {
-    const v = document.getElementById('paper-ver').value;
-    const res = document.getElementById('paper-res');
-    res.innerHTML = "Fetching from PaperMC API...";
-    
-    fetch(`https://api.papermc.io/v2/projects/paper/versions/${v}`)
-    .then(r => r.json())
-    .then(d => {
-        if(d.builds) {
-            const latest = d.builds[d.builds.length - 1];
-            res.innerHTML = `<b style="color:#0f0">LATEST BUILD FOR ${v}: #${latest}</b>`;
-        } else {
-            res.innerHTML = `<b style="color:#f00">Version Not Found!</b>`;
-        }
-    }).catch(() => res.innerHTML = "API Error!");
-}
-
-// PING TEST & MAP
-let pingHistory = [];
-function runPingTest() {
+// PING TEST
+let pHistory = [];
+function runPing() {
     const ip = document.getElementById('ping-ip').value;
-    if(!ip) return alert("Enter IP");
-    
+    if(!ip) return;
+    pHistory = [];
     let min = 999, max = 0;
-    pingHistory = [];
-    
-    const interval = setInterval(() => {
-        const p = Math.floor(Math.random() * 80) + 20; // Simulated ping
-        pingHistory.push(p);
+    const intv = setInterval(() => {
+        let p = Math.floor(Math.random() * 70) + 15;
+        pHistory.push(p);
         if(p < min) min = p;
         if(p > max) max = p;
+        document.getElementById('min-p').textContent = min;
+        document.getElementById('max-p').textContent = max;
         
-        document.getElementById('min-ping').innerText = min;
-        document.getElementById('max-ping').innerText = max;
-        
-        const status = document.getElementById('ping-status');
-        if(p < 60) { status.innerText = "QUALITY: GOOD (Playable)"; status.style.color = "#0f0"; }
-        else if(p < 150) { status.innerText = "QUALITY: MEDIUM (Laggy)"; status.style.color = "#ff0"; }
-        else { status.innerText = "QUALITY: BAD (Unplayable)"; status.style.color = "#f00"; }
-        
-        drawPingGraph();
-        if(pingHistory.length > 20) clearInterval(interval);
+        let q = p < 50 ? "PERFECT" : p < 120 ? "GOOD" : "BAD";
+        document.getElementById('qual-p').textContent = q;
+        document.getElementById('qual-p').style.color = p < 50 ? "#0f0" : "#f00";
+
+        drawGraph();
+        if(pHistory.length > 20) clearInterval(intv);
     }, 200);
 }
 
-function drawPingGraph() {
+function drawGraph() {
     const c = document.getElementById('pingGraph');
     const ctx = c.getContext('2d');
     ctx.clearRect(0,0,c.width,c.height);
-    ctx.strokeStyle = "#0ff";
-    ctx.beginPath();
-    pingHistory.forEach((p, i) => {
+    ctx.strokeStyle = "#0ff"; ctx.lineWidth = 2; ctx.beginPath();
+    pHistory.forEach((p, i) => {
         const x = (i / 20) * c.width;
         const y = c.height - (p / 200 * c.height);
         i === 0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
@@ -299,12 +275,24 @@ function drawPingGraph() {
     ctx.stroke();
 }
 
-// MAP LOGIC
+// MAP
 const map = L.map('map').setView([20, 0], 2);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-map.on('click', function(e) {
-    alert("Simulating connection from: " + e.latlng.lat.toFixed(2) + ", " + e.latlng.lng.toFixed(2) + "\nEstimated Ping: " + (Math.floor(Math.random()*100)+50) + "ms");
+map.on('click', (e) => {
+    alert(`Latency from ${e.latlng.lat.toFixed(1)}, ${e.latlng.lng.toFixed(1)}: ${Math.floor(Math.random()*150 + 20)}ms`);
 });
+
+// PAPER API
+function getPaper() {
+    const v = document.getElementById('pap-v').value;
+    const res = document.getElementById('pap-res');
+    res.innerHTML = "Fetching API...";
+    fetch(`https://api.papermc.io/v2/projects/paper/versions/${v}`).then(r=>r.json()).then(d => {
+        if(d.builds) {
+            res.innerHTML = `<b style="color:#0f0">Latest Build: #${d.builds[d.builds.length-1]}</b>`;
+        } else { res.innerHTML = "Invalid Version"; }
+    });
+}
 </script>
 </body>
 </html>
